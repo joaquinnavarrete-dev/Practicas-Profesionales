@@ -1,12 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Navbar } from './componentes/navbar/navbar';
+import { Footer } from './componentes/footer/footer';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
-  templateUrl: './app.html',
+  imports: [RouterOutlet, Navbar, Footer],
+  templateUrl: './app.component.html', // (o './app.html' según el que hayas limpiado)
+  styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('frontend');
+export class AppComponent {
+  title = 'San Gabriel';
 }

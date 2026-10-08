@@ -1,0 +1,29 @@
+<!-- Encabezado general que contendrá el logo, el menú y el botón de acción -->
+<header class="navbar-header">
+
+  <!-- Sección de identidad visual de la clínica (logo + títulos) -->
+  <div class="navbar-brand">
+    <!-- Ícono estilizado de cruz médica -->
+    <div class="brand-logo">+</div>
+    
+    <!-- Texto institucional con nombre y subtítulo -->
+    <div class="brand-info">
+      <span class="brand-title">Clínica San Gabriel</span>
+      <span class="brand-subtitle">Portal Asistencial</span>
+    </div>
+  </div>
+
+  <!-- Menú principal de navegación; routerLink reemplaza al href tradicional para no recargar la página -->
+  <nav class="navbar-menu">
+    <a routerLink="/" class="nav-item">Inicio</a>
+    <a routerLink="/turnos" class="nav-item">Turnos</a>
+    <a routerLink="/especialidades" class="nav-item">Especialidades</a>
+    <a routerLink="/medicos" class="nav-item">Médicos</a>
+  </nav>
+
+  <!-- Botón de acceso directo al portal de autenticación de personal -->
+  <div class="navbar-actions">
+    <a routerLink="/login" class="btn-login">Acceso Personal</a>
+  </div>
+
+</header>

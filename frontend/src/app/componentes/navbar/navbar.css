@@ -1,0 +1,99 @@
+/* Contenedor principal de la barra de navegación */
+.navbar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky; /* Se mantiene fija arriba al hacer scroll */
+  top: 0;
+  z-index: 50;       /* Asegura que quede siempre por encima del contenido */
+}
+
+/* Agrupador del isotipo y del texto de la clínica */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+/* Caja azul con la cruz blanca médica */
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  background-color: #004b93; /* Azul institucional */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.4rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenedor vertical de los textos de la marca */
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título principal de la clínica */
+.brand-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+/* Subtítulo institucional */
+.brand-subtitle {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Contenedor horizontal de los links del menú */
+.navbar-menu {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Enlaces individuales del menú */
+.nav-item {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+  transition: color 0.2s ease;
+}
+
+/* Efecto al pasar el mouse por encima del enlace */
+.nav-item:hover {
+  color: #004b93;
+}
+
+/* Botón de acceso al login institucional */
+.btn-login {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #004b93;
+  background-color: #f0f7ff;
+  border: 1px solid #bae0fd;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* Inversión de colores al pasar el mouse por el botón de login */
+.btn-login:hover {
+  background-color: #004b93;
+  color: #ffffff;
+}

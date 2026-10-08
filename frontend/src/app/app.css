@@ -1,0 +1,12 @@
+/* Layout estructurado para que el footer nunca flote en el medio de la pantalla */
+.contenedor-principal {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;      /* Ocupa el 100% del alto visible de la ventana */
+  background-color: #f8fafc;
+}
+
+/* El main se expande para empujar el footer hacia el borde inferior */
+.cuerpo {
+  flex: 1;
+}

@@ -1,0 +1,77 @@
+/* Fondo oscuro y tipografía clara para contraste con el resto de la aplicación */
+.footer-layout {
+  background-color: #0f172a; /* Fondo azul oscuro pizarra */
+  color: #94a3b8;
+  margin-top: auto;          /* Clave de Flexbox para empujarlo al fondo */
+  border-top: 1px solid #1e293b;
+  font-size: 0.85rem;
+}
+
+/* Grilla responsive que se adapta según el ancho de la pantalla */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+/* Cabecera del logo secundario */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Caja reducida para la cruz médica en el pie */
+.logo-box {
+  width: 22px;
+  height: 22px;
+  background-color: #0284c7;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Texto del logo en el pie */
+.logo-name {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Párrafo descriptivo de la institución */
+.footer-desc {
+  line-height: 1.5;
+  color: #64748b;
+}
+
+/* Encabezados de cada bloque del pie */
+.col-title {
+  color: #f1f5f9;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-col p {
+  margin: 0.35rem 0;
+  line-height: 1.4;
+}
+
+/* Barra inferior de copyright */
+.footer-bar {
+  border-top: 1px solid #1e293b;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+}

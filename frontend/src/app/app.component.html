@@ -1,0 +1,15 @@
+<!-- Contenedor general que abarca el 100% de la altura de la ventana -->
+<div class="contenedor-principal">
+
+  <!-- Barra de navegación fija en la parte superior -->
+  <app-navbar></app-navbar>
+
+  <!-- Área central dinámica: aquí se cargará cada página según la URL -->
+  <main class="cuerpo">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Pie de página fijo en la base del sitio -->
+  <app-footer></app-footer>
+
+</div>
