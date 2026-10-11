@@ -2,14 +2,14 @@
 import { Component } from '@angular/core';
 
 // Importamos 'RouterLink' para poder navegar entre vistas mediante enlaces sin recargar el navegador
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   // Etiqueta HTML personalizada que usaremos para renderizar este componente (<app-navbar></app-navbar>)
   selector: 'app-navbar',
 
   // Declaramos qué herramientas externas o directivas necesita este template (en este caso, enlaces de rutas)
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
 
   // Archivo donde reside la estructura visual HTML
   templateUrl: './navbar.html',

@@ -1,99 +1,173 @@
-/* Contenedor principal de la barra de navegación */
-.navbar-header {
+.navbar-portal {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 2rem;
+  height: 68px;
+  padding: 0 2.25rem;
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  position: sticky; /* Se mantiene fija arriba al hacer scroll */
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  position: sticky;
   top: 0;
-  z-index: 50;       /* Asegura que quede siempre por encima del contenido */
+  z-index: 100;
 }
 
-/* Agrupador del isotipo y del texto de la clínica */
-.navbar-brand {
+/* Identidad corporativa */
+.brand-group {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
-/* Caja azul con la cruz blanca médica */
-.brand-logo {
-  width: 36px;
-  height: 36px;
-  background-color: #004b93; /* Azul institucional */
+.logo-shield {
+  width: 40px;
+  height: 40px;
+  background-color: #004b93;
   color: #ffffff;
-  font-weight: 700;
-  font-size: 1.4rem;
-  border-radius: 8px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 75, 147, 0.2);
 }
 
-/* Contenedor vertical de los textos de la marca */
-.brand-info {
+.shield-svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand-titles {
   display: flex;
   flex-direction: column;
 }
 
-/* Título principal de la clínica */
-.brand-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 800;
   color: #0f172a;
-  line-height: 1.2;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
 }
 
-/* Subtítulo institucional */
 .brand-subtitle {
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: 0.65rem;
+  font-weight: 600;
   color: #64748b;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* Contenedor horizontal de los links del menú */
-.navbar-menu {
+/* Enlaces horizontales */
+.nav-links {
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 1.75rem;
 }
 
-/* Enlaces individuales del menú */
-.nav-item {
+.nav-links a {
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 500;
   color: #475569;
-  transition: color 0.2s ease;
+  padding: 0.35rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
 }
 
-/* Efecto al pasar el mouse por encima del enlace */
-.nav-item:hover {
+.nav-links a:hover {
   color: #004b93;
 }
 
-/* Botón de acceso al login institucional */
-.btn-login {
+.nav-links a.active {
+  color: #004b93;
+  font-weight: 600;
+  border-bottom-color: #004b93;
+}
+
+/* Acciones a la derecha */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.badge-guardia {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #dc2626;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #004b93;
-  background-color: #f0f7ff;
-  border: 1px solid #bae0fd;
-  border-radius: 6px;
+  border-radius: 8px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
-/* Inversión de colores al pasar el mouse por el botón de login */
-.btn-login:hover {
+.badge-guardia:hover {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.asterisk-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-portal-blue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.15rem;
   background-color: #004b93;
   color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-portal-blue:hover {
+  background-color: #00366a;
+  box-shadow: 0 2px 6px rgba(0, 75, 147, 0.25);
+}
+
+.portal-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-avatar:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 1100px) {
+  .nav-links {
+    display: none;
+  }
 }

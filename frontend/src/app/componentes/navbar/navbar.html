@@ -1,29 +1,49 @@
-<!-- Encabezado general que contendrá el logo, el menú y el botón de acción -->
-<header class="navbar-header">
-
-  <!-- Sección de identidad visual de la clínica (logo + títulos) -->
-  <div class="navbar-brand">
-    <!-- Ícono estilizado de cruz médica -->
-    <div class="brand-logo">+</div>
-    
-    <!-- Texto institucional con nombre y subtítulo -->
-    <div class="brand-info">
-      <span class="brand-title">Clínica San Gabriel</span>
-      <span class="brand-subtitle">Portal Asistencial</span>
+<header class="navbar-portal">
+  <!-- Marca / Identidad Institucional -->
+  <div class="brand-group" routerLink="/">
+    <div class="logo-shield">
+      <svg viewBox="0 0 24 24" class="shield-svg" fill="currentColor">
+        <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 12h-2v-3H8V9h3V6h2v3h3v2h-3v3z"/>
+      </svg>
+    </div>
+    <div class="brand-titles">
+      <span class="brand-name">SAN GABRIEL</span>
+      <span class="brand-subtitle">CLÍNICA PRIVADA</span>
     </div>
   </div>
 
-  <!-- Menú principal de navegación; routerLink reemplaza al href tradicional para no recargar la página -->
-  <nav class="navbar-menu">
-    <a routerLink="/" class="nav-item">Inicio</a>
-    <a routerLink="/turnos" class="nav-item">Turnos</a>
-    <a routerLink="/especialidades" class="nav-item">Especialidades</a>
-    <a routerLink="/medicos" class="nav-item">Médicos</a>
+  <!-- Navegación Principal -->
+  <nav class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+    <a routerLink="/especialidades" routerLinkActive="active">Especialidades</a>
+    <a routerLink="/medicos" routerLinkActive="active">Cuerpo Médico</a>
+    <a routerLink="/servicios" routerLinkActive="active">Servicios</a>
+    <a routerLink="/obras-sociales" routerLinkActive="active">Coberturas y Obras Sociales</a>
+    <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
   </nav>
 
-  <!-- Botón de acceso directo al portal de autenticación de personal -->
-  <div class="navbar-actions">
-    <a routerLink="/login" class="btn-login">Acceso Personal</a>
-  </div>
+  <!-- Acciones y Accesos Directos -->
+  <div class="nav-actions">
+    <!-- Botón Guardia 24hs con pastilla suave -->
+    <a routerLink="/guardia" class="badge-guardia">
+      <span class="asterisk-icon">✱</span>
+      <span>Guardia 24hs</span>
+    </a>
 
+    <!-- Botón Portal Pacientes / Mi Portal -->
+    <a routerLink="/login" class="btn-portal-blue">
+      <svg class="portal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+      </svg>
+      <span>Portal Pacientes</span>
+    </a>
+
+    <!-- Botón de Avatar de Usuario -->
+    <button class="btn-avatar" title="Cuenta de usuario">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    </button>
+  </div>
 </header>
