@@ -1,0 +1,357 @@
+<div class="inicio-container">
+
+  <!-- ================= SECCIÓN HERO ================= -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <!-- Tag superior -->
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Centro de Alta Complejidad Médica</span>
+      </div>
+
+      <!-- Título principal y subtítulo -->
+      <h1 class="hero-title">Tu salud coordinada al instante.</h1>
+      <p class="hero-subtitle">
+        Gestión digital de turnos médicos, historial unificado y guardia activa con especialistas las 24 horas.
+      </p>
+
+      <!-- Métricas rápidas -->
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <span class="metric-num">+45</span>
+          <span class="metric-label">ESPECIALIDADES</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-num">+120</span>
+          <span class="metric-label">MÉDICOS</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-num">24/7</span>
+          <span class="metric-label">GUARDIA</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-num">98%</span>
+          <span class="metric-label">SATISFACCIÓN</span>
+        </div>
+      </div>
+
+      <!-- Pastillas de características -->
+      <div class="hero-features">
+        <div class="feature-chip">
+          <span class="feature-icon blue">📅</span>
+          <div>
+            <strong>Turnos Inmediatos</strong>
+            <small>WhatsApp & Recordatorio</small>
+          </div>
+        </div>
+        <div class="feature-chip">
+          <span class="feature-icon purple">📑</span>
+          <div>
+            <strong>Historia Digital</strong>
+            <small>Recetas y diagnósticos</small>
+          </div>
+        </div>
+        <div class="feature-chip">
+          <span class="feature-icon green">📊</span>
+          <div>
+            <strong>Resultados en el Día</strong>
+            <small>Laboratorio & Imágenes</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de acción inferior -->
+      <div class="hero-buttons">
+        <button class="btn-primary" routerLink="/turnos/solicitar">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+          </svg>
+          Reservar Consulta
+        </button>
+        <button class="btn-outline-red" routerLink="/guardia">
+          <span class="red-star">✱</span>
+          Estado de Guardia
+        </button>
+        <button class="btn-outline" routerLink="/obras-sociales">
+          📁 Obras Sociales
+        </button>
+      </div>
+    </div>
+
+    <!-- TARJETA FLOTANTE DE INICIO DE SESIÓN / MI PORTAL -->
+    <div class="hero-card-wrapper">
+      <div class="login-card">
+        <!-- Pestañas Iniciar Sesión / Registrarme -->
+        <div class="card-tabs">
+          <button class="tab-btn active">Iniciar Sesión</button>
+          <button class="tab-btn" routerLink="/registro">Registrarme</button>
+        </div>
+
+        <!-- Selector de Perfil -->
+        <div class="role-selector">
+          <button class="role-chip active">Paciente</button>
+          <button class="role-chip">Médico</button>
+          <button class="role-chip">Personal</button>
+        </div>
+
+        <form class="login-form">
+          <div class="form-group">
+            <label>DNI O CORREO</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" placeholder="Ej: 34567890" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label>CONTRASEÑA</label>
+              <a href="#olvide" class="forgot-link">¿Olvidaste clave?</a>
+            </div>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" value="••••••••••••" />
+              <button type="button" class="toggle-pwd">👁</button>
+            </div>
+          </div>
+
+          <div class="form-footer-check">
+            <label class="check-container">
+              <input type="checkbox" checked />
+              <span>Recordar sesión</span>
+            </label>
+            <span class="tls-security">🛡 TLS 256-bit</span>
+          </div>
+
+          <button type="submit" class="btn-submit-portal">
+            Entrar al Portal →
+          </button>
+        </form>
+
+        <div class="quick-turno-box">
+          <div class="quick-text">
+            <span class="bolt-icon">⚡</span>
+            <span>¿Turno rápido sin cuenta?</span>
+          </div>
+          <button class="btn-pedir" routerLink="/turnos/solicitar">Pedir</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BARRA DE OBRAS SOCIALES ================= -->
+  <section class="prepagas-bar">
+    <div class="prepagas-header">
+      <span class="prepagas-title">OBRAS SOCIALES & PREPAGAS</span>
+      <span class="badge-convenio">Convenio directo</span>
+    </div>
+    <div class="prepagas-tags">
+      <span class="tag-prepaga">OSDE</span>
+      <span class="tag-prepaga">SWISS MEDICAL</span>
+      <span class="tag-prepaga">GALENO</span>
+      <span class="tag-prepaga">PAMI</span>
+      <span class="tag-prepaga">MEDIFÉ</span>
+      <span class="tag-prepaga">OMINT</span>
+      <span class="tag-prepaga">IOMA</span>
+      <span class="tag-prepaga">ACCORD</span>
+    </div>
+    <a routerLink="/obras-sociales" class="link-ver-planes">Ver planes →</a>
+  </section>
+
+  <!-- ================= CARTILLA DE ESPECIALIDADES ================= -->
+  <section class="especialidades-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-tagline">CARTILLA MÉDICA</span>
+        <h2 class="section-title">Especialidades con Turnos Disponibles</h2>
+      </div>
+      <span class="instruction-text">Seleccioná y reservá al instante</span>
+    </div>
+
+    <div class="cards-grid">
+      <!-- Card 1 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble blue">💙</div>
+          <span class="pill-badge pill-blue">Hoy</span>
+        </div>
+        <h3>Cardiología</h3>
+        <p class="card-tags">Holter • Doppler</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble cyan">🍼</div>
+          <span class="pill-badge pill-green">24hs</span>
+        </div>
+        <h3>Pediatría</h3>
+        <p class="card-tags">Guardia • Controles</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble green">🦴</div>
+          <span class="pill-badge pill-cyan">Disponible</span>
+        </div>
+        <h3>Traumatología</h3>
+        <p class="card-tags">Artroscopía • Columna</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble purple">🧠</div>
+          <span class="pill-badge pill-gray">Semanal</span>
+        </div>
+        <h3>Neurología</h3>
+        <p class="card-tags">Cefaleas • EEG</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble blue">👁</div>
+          <span class="pill-badge pill-blue">Láser</span>
+        </div>
+        <h3>Oftalmología</h3>
+        <p class="card-tags">OCT • Refractiva</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble cyan">🦷</div>
+          <span class="pill-badge pill-green">3D Scan</span>
+        </div>
+        <h3>Odontología</h3>
+        <p class="card-tags">Implantes • Alineadores</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble purple">♀️</div>
+          <span class="pill-badge pill-cyan">Eco 5D</span>
+        </div>
+        <h3>Ginecología</h3>
+        <p class="card-tags">Obstetricia • Fertilidad</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="card-item" routerLink="/turnos/solicitar">
+        <div class="card-top">
+          <div class="icon-bubble blue">📷</div>
+          <span class="pill-badge pill-green">Digital</span>
+        </div>
+        <h3>Imágenes</h3>
+        <p class="card-tags">Resonancia • Tomografía</p>
+        <span class="card-action">Reservar →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MONITOREO DE INSTALACIONES 24HS ================= -->
+  <section class="instalaciones-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-tagline red">MONITOREO OPERATIVO</span>
+        <h2 class="section-title">Instalaciones & Estado 24hs</h2>
+      </div>
+      <div class="location-chip">
+        📍 Av. San Gabriel 1420
+      </div>
+    </div>
+
+    <div class="instalaciones-grid">
+      <!-- Tarjeta 1: Triage -->
+      <div class="inst-card">
+        <div class="inst-img-placeholder img-triage">
+          <span class="floating-badge badge-red">Guardia Adultos 24h</span>
+        </div>
+        <div class="inst-info">
+          <div class="inst-row">
+            <strong>Triage Manchester</strong>
+            <span class="time-metric">&lt; 15 min</span>
+          </div>
+          <div class="inst-row-sub">
+            <span class="sub-text">Emergentología presencial</span>
+            <span class="sector-text">Ingreso A</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Espera -->
+      <div class="inst-card">
+        <div class="inst-img-placeholder img-espera">
+          <span class="floating-badge badge-blue">Sector Pediátrico</span>
+        </div>
+        <div class="inst-info">
+          <div class="inst-row">
+            <strong>Espera Climatizada</strong>
+            <span class="status-metric text-green">Normal</span>
+          </div>
+          <div class="inst-row-sub">
+            <span class="sub-text">Pediatras permanentes</span>
+            <span class="sector-text">Sector B</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3: Quirófano -->
+      <div class="inst-card">
+        <div class="inst-img-placeholder img-quirofano">
+          <span class="floating-badge badge-blue">4 Quirófanos</span>
+        </div>
+        <div class="inst-info">
+          <div class="inst-row">
+            <strong>Cirugía & UTI</strong>
+            <span class="status-metric text-green">Activo</span>
+          </div>
+          <div class="inst-row-sub">
+            <span class="sub-text">Suites individuales</span>
+            <span class="sector-text">Piso 2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 4: Diagnóstico -->
+      <div class="inst-card">
+        <div class="inst-img-placeholder img-resonador">
+          <span class="floating-badge badge-green">Resonador 3.0T</span>
+        </div>
+        <div class="inst-info">
+          <div class="inst-row">
+            <strong>Diagnóstico Digital</strong>
+            <span class="time-metric">Entrega 24h</span>
+          </div>
+          <div class="inst-row-sub">
+            <span class="sub-text">Vacunatorio 07-20hs</span>
+            <span class="sector-text">PB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BANNER ACCESO DIGITAL UNIFICADO ================= -->
+  <section class="banner-cta">
+    <div class="banner-content">
+      <h2>Acceso digital unificado</h2>
+      <p>Turnos, recetas y analíticas en tu celular.</p>
+    </div>
+    <div class="banner-actions">
+      <button class="btn-banner-white" routerLink="/registro">Registrarme Gratis</button>
+      <button class="btn-banner-outline" routerLink="/especialidades">Ver Cartilla</button>
+    </div>
+  </section>
+
+</div>

@@ -1,20 +1,21 @@
 import { Routes } from '@angular/router';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout';
 import { AdminLayout } from './layouts/admin-layout/admin-layout';
+import { InicioComponent } from './paginas/inicio/inicio';
 
 export const routes: Routes = [
-  // RUTAS PÚBLICAS (Se renderizan con Navbar y Footer)
+  // RUTAS PÚBLICAS (Navbar + Footer)
   {
     path: '',
     component: PublicLayoutComponent,
     children: [
-      // { path: '', component: InicioComponent },
+      { path: '', component: InicioComponent }, // La Home / Index activa
       // { path: 'login', component: LoginComponent },
       // { path: 'registro', component: RegistroComponent },
     ]
   },
 
-  // RUTAS ADMINISTRATIVAS (Se renderizan con Sidebar)
+  // RUTAS ADMINISTRATIVAS (Sidebar)
   {
     path: 'admin',
     component: AdminLayout,
@@ -26,6 +27,6 @@ export const routes: Routes = [
     ]
   },
 
-  // Redirección por defecto
+  // Redirección por defecto ante rutas desconocidas
   { path: '**', redirectTo: '' }
 ];
