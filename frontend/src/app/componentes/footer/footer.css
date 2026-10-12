@@ -1,0 +1,136 @@
+.footer-root {
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  margin-top: auto;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.footer-columns {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 3rem 2rem 2.25rem;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+  gap: 2.5rem;
+}
+
+.col-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  color: #0f172a;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+}
+
+.brand-header {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.brand-text {
+  line-height: 1.5;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+}
+
+.acreditacion-tag {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  background-color: #f1f5f9;
+  color: #334155;
+  border-radius: 4px;
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+.col-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.col-links li {
+  margin-bottom: 0.55rem;
+}
+
+.col-links a {
+  text-decoration: none;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.col-links a:hover {
+  color: #004b93;
+}
+
+.info-line {
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+.guardia-highlight {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.security-text {
+  line-height: 1.5;
+  color: #64748b;
+}
+
+/* Barra inferior */
+.footer-bottom-bar {
+  border-top: 1px solid #f1f5f9;
+  background-color: #fafbfc;
+}
+
+.bottom-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 1.15rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.copyright-notice {
+  margin: 0;
+}
+
+.legal-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.legal-nav a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.legal-nav a:hover {
+  color: #475569;
+}
+
+@media (max-width: 900px) {
+  .footer-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-columns {
+    grid-template-columns: 1fr;
+  }
+  .bottom-inner {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+}

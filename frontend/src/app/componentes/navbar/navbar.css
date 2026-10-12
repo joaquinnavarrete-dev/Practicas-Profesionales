@@ -1,0 +1,173 @@
+.navbar-portal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 0 2.25rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Identidad corporativa */
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logo-shield {
+  width: 40px;
+  height: 40px;
+  background-color: #004b93;
+  color: #ffffff;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 75, 147, 0.2);
+}
+
+.shield-svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+}
+
+.brand-subtitle {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+/* Enlaces horizontales */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #475569;
+  padding: 0.35rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #004b93;
+}
+
+.nav-links a.active {
+  color: #004b93;
+  font-weight: 600;
+  border-bottom-color: #004b93;
+}
+
+/* Acciones a la derecha */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.badge-guardia {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #dc2626;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.badge-guardia:hover {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.asterisk-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-portal-blue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.15rem;
+  background-color: #004b93;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-portal-blue:hover {
+  background-color: #00366a;
+  box-shadow: 0 2px 6px rgba(0, 75, 147, 0.25);
+}
+
+.portal-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-avatar:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 1100px) {
+  .nav-links {
+    display: none;
+  }
+}
