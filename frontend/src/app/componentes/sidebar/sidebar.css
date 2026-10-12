@@ -1,0 +1,150 @@
+.sidebar-container {
+  width: 250px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 1.25rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.sidebar-logo {
+  width: 36px;
+  height: 36px;
+  background-color: #004b93;
+  color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cross-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand .name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.badge-role {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.sidebar-cta {
+  padding: 0.5rem 0 1.25rem;
+}
+
+.btn-new-turno {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #004b93;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-new-turno:hover {
+  background-color: #00366a;
+}
+
+.plus-sign {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #475569;
+  transition: all 0.15s ease;
+}
+
+.menu-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.menu-item.active {
+  background-color: #e0f2fe;
+  color: #004b93;
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.footer-link,
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.footer-link:hover {
+  color: #0f172a;
+}
+
+.btn-logout {
+  color: #dc2626;
+}
+
+.btn-logout:hover {
+  background-color: #fef2f2;
+}
