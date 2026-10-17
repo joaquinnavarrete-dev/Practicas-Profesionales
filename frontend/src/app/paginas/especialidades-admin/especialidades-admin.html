@@ -1,0 +1,205 @@
+<div class="admin-view-wrapper">
+
+  <!-- 1. Topbar Administrativo Superior -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">📋</span>
+        <h2 class="module-title">Gestión de Especialidades</h2>
+      </div>
+    </div>
+
+    <!-- Buscador global superior -->
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar especialidad, código, departamento..." 
+        [(ngModel)]="terminoGlobal"
+      />
+    </div>
+
+    <!-- Notificaciones, ajustes y perfil -->
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuraciones">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Área Central de Gestión -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de la página -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Especialidades Médicas</h1>
+        <p class="sub-heading">Catálogo de especialidades clínicas y asignación de profesionales.</p>
+      </div>
+
+      <button class="btn-create-modal" (click)="abrirModalNueva()">
+        <span class="plus-symbol">+</span> Nueva Especialidad
+      </button>
+    </div>
+
+    <!-- Barra de Filtros Rápidos -->
+    <div class="filters-card">
+      <div class="filter-search-box">
+        <span class="lens-icon">🔍</span>
+        <input 
+          type="text" 
+          placeholder="Buscar especialidad por nombre..." 
+          [(ngModel)]="filtroNombre"
+          (input)="aplicarFiltros()"
+        />
+      </div>
+
+      <div class="filter-select-wrapper">
+        <select [(ngModel)]="filtroDepto" (change)="aplicarFiltros()">
+          <option value="Todos">Departamento: Todos</option>
+          <option value="Cardiología">Cardiología</option>
+          <option value="Materno Infantil">Materno Infantil</option>
+          <option value="Cirugía">Cirugía</option>
+          <option value="Neurociencias">Neurociencias</option>
+          <option value="Salud Femenina">Salud Femenina</option>
+        </select>
+      </div>
+
+      <div class="filter-select-wrapper">
+        <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+          <option value="Todas">Estado: Todas</option>
+          <option value="Activa">Activa</option>
+          <option value="Inactiva">Inactiva</option>
+        </select>
+      </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Restablecer
+      </button>
+    </div>
+
+    <!-- Tabla Principal de Datos -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ESPECIALIDAD</th>
+            <th>DEPARTAMENTO</th>
+            <th>DURACIÓN</th>
+            <th>MÉDICOS ASIGNADOS</th>
+            <th>ESTADO</th>
+            <th class="col-actions">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listaFiltrada">
+            <!-- Especialidad con Ícono -->
+            <td>
+              <div class="table-item-info">
+                <div class="icon-avatar" [ngClass]="item.bgClase">
+                  <span>{{ item.icono }}</span>
+                </div>
+                <strong class="item-name">{{ item.nombre }}</strong>
+              </div>
+            </td>
+
+            <!-- Departamento -->
+            <td class="cell-muted">{{ item.departamento }}</td>
+
+            <!-- Duración -->
+            <td>
+              <span class="tag-duration">
+                🕒 {{ item.duracion }} min
+              </span>
+            </td>
+
+            <!-- Médicos -->
+            <td>
+              <span class="tag-team">
+                👥 {{ item.medicos }} médicos
+              </span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span class="badge-status-active">
+                ● {{ item.estado }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button class="btn-action-icon" (click)="editarEspecialidad(item)" title="Editar">
+                  ✏️
+                </button>
+                <button class="btn-action-icon" (click)="verDetalle(item)" title="Ver Detalle">
+                  👁️
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginador de la tabla -->
+      <div class="table-pagination-footer">
+        <span class="pagination-legend">Mostrando 1 a 6 de 24 especialidades</span>
+        <div class="pages-list">
+          <button class="page-nav-btn" disabled>&lt;</button>
+          <button class="page-num-btn active">1</button>
+          <button class="page-num-btn">2</button>
+          <button class="page-num-btn">3</button>
+          <button class="page-num-btn">4</button>
+          <button class="page-nav-btn">&gt;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Tarjetas Inferiores de Estadísticas -->
+    <div class="stats-overview-grid">
+      <!-- Tarjeta 1: Total Especialidades -->
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-blue">
+          <span>🩺</span>
+        </div>
+        <div class="stat-body">
+          <span class="stat-caption">Total Especialidades</span>
+          <strong class="stat-number">24 Activas</strong>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Departamentos -->
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-cyan">
+          <span>🏢</span>
+        </div>
+        <div class="stat-body">
+          <span class="stat-caption">Departamentos</span>
+          <strong class="stat-number">6 Áreas</strong>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3: Especialistas -->
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-amber">
+          <span>🪪</span>
+        </div>
+        <div class="stat-body">
+          <span class="stat-caption">Especialistas</span>
+          <strong class="stat-number">68 Médicos</strong>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

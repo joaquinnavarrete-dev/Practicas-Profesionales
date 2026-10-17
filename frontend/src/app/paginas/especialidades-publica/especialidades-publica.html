@@ -1,0 +1,61 @@
+<div class="cartilla-container">
+  <!-- Encabezado de la Cartilla -->
+  <header class="cartilla-header">
+    <div class="header-titles">
+      <span class="badge-cat">CARTILLA MÉDICA INSTITUCIONAL</span>
+      <h1 class="main-title">Especialidades Médicas</h1>
+      <p class="subtitle">
+        Conocé nuestro cuerpo de especialidades y servicios asistenciales de alta complejidad.
+      </p>
+    </div>
+
+    <!-- Barra de búsqueda rápida para el paciente -->
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar especialidad o síntoma (ej: cardiología, dolor, controles)..." 
+        [(ngModel)]="busqueda"
+        (input)="filtrar()"
+      />
+    </div>
+  </header>
+
+  <!-- Grilla de Especialidades estilo Tarjeta de Cartilla -->
+  <section class="especialidades-grid">
+    <div class="especialidad-card" *ngFor="let esp of especialidadesFiltradas">
+      <div class="card-head">
+        <div class="icon-circle" [ngClass]="esp.colorClase">
+          <span>{{ esp.icono }}</span>
+        </div>
+        <span class="badge-atencion" *ngIf="esp.atencion24hs">Guardia 24hs</span>
+      </div>
+
+      <div class="card-body">
+        <h3 class="esp-title">{{ esp.nombre }}</h3>
+        <p class="esp-desc">{{ esp.descripcion }}</p>
+        
+        <div class="esp-tags">
+          <span class="tag-item" *ngFor="let tag of esp.etiquetas">{{ tag }}</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <!-- El paciente hace clic acá y lo mandás directo al flujo de solicitar turno -->
+        <a [routerLink]="['/turnos/solicitar']" [queryParams]="{ especialidad: esp.id }" class="btn-reservar">
+          <span>Sacar Turno</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner de orientación al paciente -->
+  <div class="soporte-banner">
+    <div class="banner-text">
+      <strong>¿No encontrás la especialidad que buscás?</strong>
+      <p>Comunicate con nuestra central de orientación médica o acercate a la guardia presencial.</p>
+    </div>
+    <a routerLink="/contacto" class="btn-contacto">Contactar Orientación</a>
+  </div>
+</div>

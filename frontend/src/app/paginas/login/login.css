@@ -1,0 +1,213 @@
+.login-wrapper {
+  min-height: calc(100vh - 180px); /* Centrado visual considerando navbar/footer */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background-color: #f8fafc;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  padding: 2.75rem 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header de la tarjeta */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.brand-badge {
+  width: 58px;
+  height: 58px;
+  background-color: #e0edff;
+  color: #004b93;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.badge-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.login-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #00366a;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.4rem;
+}
+
+.login-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Formulario */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.45rem;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.forgot-link {
+  font-size: 0.82rem;
+  color: #004b93;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.forgot-link:hover {
+  color: #002b55;
+  text-decoration: underline;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: #004b93;
+  box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.1);
+}
+
+.field-icon {
+  position: absolute;
+  left: 0.9rem;
+  width: 19px;
+  height: 19px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.field-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.75rem 0.9rem 0.75rem 2.6rem;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  color: #0f172a;
+  background: transparent;
+}
+
+.input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  transition: color 0.15s;
+}
+
+.toggle-password:hover {
+  color: #0f172a;
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Botón Iniciar Sesión */
+.btn-login-submit {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: #004b93;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-login-submit:hover {
+  background-color: #00366a;
+  box-shadow: 0 4px 12px rgba(0, 75, 147, 0.25);
+}
+
+/* Footer de la tarjeta */
+.card-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: center;
+}
+
+.secure-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.shield-mini {
+  width: 15px;
+  height: 15px;
+  color: #475569;
+}

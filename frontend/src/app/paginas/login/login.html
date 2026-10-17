@@ -1,0 +1,100 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    
+    <!-- Ícono / Isotipo Superior -->
+    <div class="card-header">
+      <div class="brand-badge">
+        <svg viewBox="0 0 24 24" class="badge-icon" fill="currentColor">
+          <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 12h-2v-3H8V9h3V6h2v3h3v2h-3v3z"/>
+        </svg>
+      </div>
+      <h1 class="login-title">San Gabriel</h1>
+      <p class="login-subtitle">Acceso al Sistema de Gestión Médica</p>
+    </div>
+
+    <!-- Formulario -->
+    <form class="login-form" (ngSubmit)="iniciarSesion()">
+      
+      <!-- Campo Correo Electrónico -->
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <div class="input-wrapper">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+          </span>
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="email" 
+            name="email" 
+            placeholder="usuario@clinicasangabriel.com" 
+            required 
+          />
+        </div>
+      </div>
+
+      <!-- Campo Contraseña -->
+      <div class="form-group">
+        <div class="label-row">
+          <label for="password">Contraseña</label>
+          <a href="#olvide-clave" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+        <div class="input-wrapper">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </span>
+          <input 
+            [type]="mostrarPassword ? 'text' : 'password'" 
+            id="password" 
+            [(ngModel)]="password" 
+            name="password" 
+            placeholder="••••••••" 
+            required 
+          />
+          <button 
+            type="button" 
+            class="toggle-password" 
+            (click)="toggleMostrarPassword()" 
+            title="Mostrar / ocultar contraseña"
+          >
+            <!-- Ícono ojo -->
+            <svg *ngIf="!mostrarPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <!-- Ícono ojo tachado -->
+            <svg *ngIf="mostrarPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+              <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+              <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+              <line x1="2" y1="2" x2="22" y2="22"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón Iniciar Sesión -->
+      <button type="submit" class="btn-login-submit">
+        Iniciar Sesión
+      </button>
+
+    </form>
+
+    <!-- Footer de la tarjeta con sello de seguridad -->
+    <div class="card-footer">
+      <div class="secure-badge">
+        <svg viewBox="0 0 24 24" class="shield-mini" fill="currentColor">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v6h-2V7zm0 8h2v2h-2v-2z"/>
+        </svg>
+        <span>Acceso Seguro y Encriptado</span>
+      </div>
+    </div>
+
+  </div>
+</div>

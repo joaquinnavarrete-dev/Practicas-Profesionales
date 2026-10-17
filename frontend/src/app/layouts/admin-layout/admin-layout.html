@@ -1,1 +1,9 @@
-<p>admin-layout works!</p>
+<div class="layout-admin-contenedor">
+  <!-- Columna lateral fija a la izquierda -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Área derecha donde Angular va a renderizar EspecialidadesAdmin -->
+  <div class="admin-main-area">
+    <router-outlet></router-outlet>
+  </div>
+</div>
