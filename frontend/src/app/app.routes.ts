@@ -5,6 +5,9 @@ import { InicioComponent } from './paginas/inicio/inicio';
 import {LoginComponent} from './paginas/login/login';
 import {EspecialidadesPublicaComponent} from './paginas/especialidades-publica/especialidades-publica';
 import {EspecialidadesAdminComponent} from './paginas/especialidades-admin/especialidades-admin';
+import { SolicitarTurnoComponent } from './paginas/solicitar-turno/solicitar-turno';
+import { DiasAtencionComponent } from './paginas/dias-atencion-admin/dias-atencion';
+import { PacientesPorMedicoComponent } from './paginas/pacientes-por-medico-admin/pacientes-por-medico';
 
 export const routes: Routes = [
   // RUTAS PÚBLICAS (Navbar + Footer)
@@ -15,7 +18,7 @@ export const routes: Routes = [
       { path: '', component: InicioComponent }, // La Home / Index activa
       { path: 'login', component: LoginComponent }, //ruta activa para el login
       { path: 'especialidades', component: EspecialidadesPublicaComponent },
-      // { path: 'registro', component: RegistroComponent },
+      { path: 'turnos/solicitar', component: SolicitarTurnoComponent}
     ]
   },
 
@@ -25,6 +28,8 @@ export const routes: Routes = [
     component: AdminLayout,
     children: [
        { path: 'especialidades', component: EspecialidadesAdminComponent },
+       { path: 'dias-atencion', component: DiasAtencionComponent },
+       {path: 'pacientes-por-medicos', component: PacientesPorMedicoComponent },
       // { path: 'medicos', component: MedicosComponent },
       // { path: 'especialidades', component: EspecialidadesComponent },
       // { path: 'obras-sociales', component: ObrasSocialesComponent },

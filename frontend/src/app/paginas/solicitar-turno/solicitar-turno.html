@@ -1,1 +1,449 @@
-<p>solicitar-turno works!</p>
+<div class="turnos-page-wrapper">
+
+
+  <!-- ================= CONTENEDOR CENTRAL DEL ASISTENTE ================= -->
+  <main class="wizard-container">
+
+    <!-- Título Principal y Subtítulo -->
+    <div class="wizard-header-text">
+      <h1 class="wizard-title">Solicitar Nuevo Turno</h1>
+      <p class="wizard-subtitle">
+        Siga los pasos a continuación para agendar su cita médica. Seleccione especialidad, profesional y el horario que mejor se adapte a su disponibilidad.
+      </p>
+    </div>
+
+    <!-- ================= STEPPER DE 4 PASOS ================= -->
+    <div class="stepper-indicator">
+      <!-- Paso 1 -->
+      <div class="step-node" [class.active]="pasoActual === 1" [class.completed]="pasoActual > 1" (click)="irAlPaso(1)">
+        <div class="node-circle">
+          <span *ngIf="pasoActual <= 1">1</span>
+          <span *ngIf="pasoActual > 1">✓</span>
+        </div>
+        <span class="node-label">Especialidad</span>
+      </div>
+
+      <div class="step-connector" [class.filled]="pasoActual > 1"></div>
+
+      <!-- Paso 2 -->
+      <div class="step-node" [class.active]="pasoActual === 2" [class.completed]="pasoActual > 2" (click)="irAlPaso(2)">
+        <div class="node-circle">
+          <span *ngIf="pasoActual <= 2">2</span>
+          <span *ngIf="pasoActual > 2">✓</span>
+        </div>
+        <span class="node-label">Médico</span>
+      </div>
+
+      <div class="step-connector" [class.filled]="pasoActual > 2"></div>
+
+      <!-- Paso 3 -->
+      <div class="step-node" [class.active]="pasoActual === 3" [class.completed]="pasoActual > 3" (click)="irAlPaso(3)">
+        <div class="node-circle">
+          <span *ngIf="pasoActual <= 3">3</span>
+          <span *ngIf="pasoActual > 3">✓</span>
+        </div>
+        <span class="node-label">Fecha y Hora</span>
+      </div>
+
+      <div class="step-connector" [class.filled]="pasoActual > 3"></div>
+
+      <!-- Paso 4 -->
+      <div class="step-node" [class.active]="pasoActual === 4">
+        <div class="node-circle">4</div>
+        <span class="node-label">Confirmación</span>
+      </div>
+    </div>
+
+    <!-- ================= TARJETA PRINCIPAL DEL CONTENIDO ================= -->
+    <div class="wizard-main-card">
+
+      <!-- ========================================== -->
+      <!-- PASO 1: SELECCIÓN DE ESPECIALIDAD          -->
+      <!-- ========================================== -->
+      <div class="step-content" *ngIf="pasoActual === 1">
+        <div class="step-card-header">
+          <span class="step-ico">📐</span>
+          <h2 class="step-card-title">Seleccione una Especialidad</h2>
+        </div>
+
+        <div class="grid-especialidades">
+          <div 
+            class="especialidad-tile" 
+            *ngFor="let esp of especialidades"
+            [class.selected]="turnoBorrador.especialidad?.id === esp.id"
+            (click)="seleccionarEspecialidad(esp)"
+          >
+            <span class="esp-icon-huge">{{ esp.icono }}</span>
+            <span class="esp-tile-name">{{ esp.nombre }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- PASO 2: SELECCIÓN DE MÉDICO                -->
+      <!-- ========================================== -->
+      <div class="step-content" *ngIf="pasoActual === 2">
+        <!-- Barra de contexto: Especialidad elegida -->
+        <div class="context-bar">
+          <div class="context-left">
+            <span class="heart-ico">❤️</span>
+            <span>Especialidad seleccionada: <strong>{{ turnoBorrador.especialidad?.nombre }}</strong></span>
+            <button class="btn-change-link" (click)="irAlPaso(1)">Cambiar</button>
+          </div>
+          <span class="context-right">Mostrando 4 médicos de guardia y consultorio</span>
+        </div>
+
+        <!-- Filtros de Médico y Sede -->
+        <div class="medicos-filter-row">
+          <div class="row-title">
+            <span class="stetho-ico">🩺</span>
+            <div>
+              <h3>Seleccione un Médico / Profesional</h3>
+              <p>Haga clic sobre el profesional para avanzar con el turno</p>
+            </div>
+          </div>
+          <div class="row-inputs">
+            <input type="text" placeholder="Buscar por nombre de profesional..." [(ngModel)]="filtroNombreMedico" />
+            <select>
+              <option>Sede Central (Av. San Gabriel 1420)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Opción Recomendada -->
+        <div class="recommended-banner">
+          <div class="rec-left">
+            <div class="bolt-circle">⚡</div>
+            <div>
+              <div class="rec-badge-row">
+                <span class="badge-blue-rec">OPCIÓN RECOMENDADA</span>
+                <span class="badge-green-rec">● Turno más rápido</span>
+              </div>
+              <h4>Primer profesional disponible en {{ turnoBorrador.especialidad?.nombre }}</h4>
+              <p>Asignación automática con el turno más próximo: <strong>Hoy 18:30 hs con Dra. Mariana Gómez</strong></p>
+            </div>
+          </div>
+          <button class="btn-rec-action" (click)="avanzar()">Elegir opción rápida →</button>
+        </div>
+
+        <!-- Grilla de Tarjetas de Médicos -->
+        <div class="grid-medicos">
+          <div 
+            class="medico-card" 
+            *ngFor="let med of medicos"
+            [class.selected]="turnoBorrador.medico?.id === med.id"
+            (click)="seleccionarMedico(med)"
+          >
+            <div class="medico-header">
+              <div class="medico-avatar-ph">{{ med.fotoUrl }}</div>
+              <div class="medico-info">
+                <div class="medico-name-rating">
+                  <h4>{{ med.nombre }}</h4>
+                  <span class="rating-star">★ {{ med.calificacion }}</span>
+                </div>
+                <span class="medico-subesp">{{ med.subespecialidad }}</span>
+                <span class="medico-mat">{{ med.matricula }}</span>
+              </div>
+            </div>
+
+            <div class="medico-details">
+              <p>📅 {{ med.diasAtencion }} • {{ med.consultorio }}</p>
+              <p>🛡️ {{ med.coberturas }}</p>
+            </div>
+
+            <div class="medico-card-footer">
+              <span class="badge-next-date">{{ med.proximoTurnoTexto }}</span>
+              <span class="select-label" *ngIf="turnoBorrador.medico?.id === med.id">Seleccionado ✓</span>
+              <span class="select-label-idle" *ngIf="turnoBorrador.medico?.id !== med.id">Seleccionar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- PASO 3: SELECCIÓN DE FECHA Y HORA          -->
+      <!-- ========================================== -->
+      <div class="step-content" *ngIf="pasoActual === 3">
+        <!-- Barra de contexto -->
+        <div class="context-bar">
+          <div class="context-left">
+            <span>● Especialidad: <strong>{{ turnoBorrador.especialidad?.nombre }}</strong></span>
+            <button class="btn-change-link" (click)="irAlPaso(1)">Cambiar</button>
+            <span class="sep">|</span>
+            <span>Profesional: <strong>{{ turnoBorrador.medico?.nombre }}</strong></span>
+            <button class="btn-change-link" (click)="irAlPaso(2)">Cambiar</button>
+          </div>
+          <span class="context-right">📍 Modalidad Presencial • Sede Central</span>
+        </div>
+
+        <div class="step-card-header">
+          <span class="step-ico">📅</span>
+          <div>
+            <h2 class="step-card-title">Seleccione Fecha y Horario de Atención</h2>
+            <p class="step-card-sub">Los horarios mostrados corresponden a la agenda en tiempo real del profesional seleccionado.</p>
+          </div>
+          <span class="badge-realtime">● Agenda en tiempo real</span>
+        </div>
+
+        <!-- Dos Columnas: Calendario a la izquierda y Horas a la derecha -->
+        <div class="datetime-grid">
+          
+          <!-- Columna Calendario -->
+          <div class="calendar-card">
+            <div class="cal-nav">
+              <strong>Octubre 2025</strong>
+              <div class="cal-arrows">
+                <button>&lt;</button>
+                <button>&gt;</button>
+              </div>
+            </div>
+            
+            <div class="cal-week-labels">
+              <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+            </div>
+
+            <div class="cal-days-grid">
+              <div 
+                class="cal-day-cell" 
+                *ngFor="let d of diasMes"
+                [class.has-turno]="d.disponible"
+                [class.selected-day]="d.seleccionado"
+              >
+                {{ d.dia }}
+                <span class="day-dot" *ngIf="d.disponible"></span>
+              </div>
+            </div>
+
+            <div class="cal-legend">
+              <span><i class="dot-green"></i> Disponible</span>
+              <span><i class="dot-gray"></i> Sin turnos</span>
+              <span><i class="dot-blue"></i> Seleccionado</span>
+            </div>
+          </div>
+
+          <!-- Columna Bloques Horarios -->
+          <div class="hours-card">
+            <div class="hours-header">
+              <h4>Horarios para el Miércoles 22 de Octubre</h4>
+              <span class="badge-avail-count">6 turnos disponibles</span>
+            </div>
+
+            <div class="hour-group">
+              <span class="hour-group-title">☀️ TURNO MAÑANA (08:00 A 13:00)</span>
+              <div class="slots-grid">
+                <button 
+                  *ngFor="let h of horariosManana" 
+                  class="slot-btn"
+                  [class.active]="turnoBorrador.hora === h.hora"
+                  [disabled]="!h.disponible"
+                  (click)="seleccionarHorario(h)"
+                >
+                  {{ h.hora }} <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="hour-group">
+              <span class="hour-group-title">🌙 TURNO TARDE (14:00 A 19:00)</span>
+              <div class="slots-grid">
+                <button 
+                  *ngFor="let h of horariosTarde" 
+                  class="slot-btn"
+                  [class.active]="turnoBorrador.hora === h.hora"
+                  [disabled]="!h.disponible"
+                  (click)="seleccionarHorario(h)"
+                >
+                  {{ h.hora }} <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="info-alert-box">
+              <span>ℹ️</span>
+              <p>Duración estimada de la consulta: 30 minutos. Por favor presentarse 15 minutos antes con su Documento Nacional de Identidad (DNI) y la credencial de su cobertura médica.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner resumen preseleccionado -->
+        <div class="preselected-banner">
+          <div class="presel-left">
+            <span class="check-circle-green">✓</span>
+            <div>
+              <small>Turno preseleccionado:</small>
+              <strong>Miércoles 22 de Octubre a las {{ turnoBorrador.hora }} — {{ turnoBorrador.medico?.consultorio }} con {{ turnoBorrador.medico?.nombre }}</strong>
+            </div>
+          </div>
+          <span class="badge-reservable">Disponible para reservar</span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- PASO 4: CONFIRMACIÓN Y RESUMEN FINAL       -->
+      <!-- ========================================== -->
+      <div class="step-content" *ngIf="pasoActual === 4">
+        
+        <div class="confirm-head-bar">
+          <div class="confirm-head-left">
+            <span class="shield-check">🛡️</span>
+            <div>
+              <h2>Resumen de la Cita Médica <span class="badge-step-final">Paso final</span></h2>
+              <p>Por favor verifique que la información sea correcta antes de confirmar.</p>
+            </div>
+          </div>
+          <button class="btn-print-draft">📥 Descargar borrador</button>
+        </div>
+
+        <div class="confirm-layout-grid">
+          
+          <!-- Columna Izquierda: Datos del Profesional, Turno y Copago -->
+          <div class="confirm-left-col">
+            
+            <!-- Tarjeta Profesional -->
+            <div class="summary-card">
+              <div class="card-head-row">
+                <span class="card-sub-title">👨‍⚕️ PROFESIONAL ASIGNADO</span>
+                <button class="link-mod" (click)="irAlPaso(2)">✏️ Modificar turno</button>
+              </div>
+              <div class="med-confirm-flex">
+                <div class="med-avatar-big">{{ turnoBorrador.medico?.fotoUrl }}</div>
+                <div>
+                  <div class="med-verified-row">
+                    <h3>{{ turnoBorrador.medico?.nombre }}</h3>
+                    <span class="badge-verified">Verificada</span>
+                  </div>
+                  <p class="med-mat-text">Matrícula Nacional: {{ turnoBorrador.medico?.matricula }}</p>
+                  <div class="med-tags-row">
+                    <span class="pill-blue-light">💙 {{ turnoBorrador.medico?.subespecialidad }}</span>
+                    <span class="pill-gray-light">✋ Modalidad Presencial</span>
+                  </div>
+                </div>
+              </div>
+              <p class="loc-text">📍 <strong>Lugar de atención:</strong> {{ turnoBorrador.sede }}, {{ turnoBorrador.medico?.consultorio }}</p>
+            </div>
+
+            <!-- Tarjeta Fecha y Hora -->
+            <div class="summary-card date-highlight-card">
+              <span class="card-sub-title">📅 FECHA Y HORARIO DE LA CITA</span>
+              <div class="date-flex-row">
+                <div class="date-badge-box">
+                  <span class="month">OCT</span>
+                  <span class="day">22</span>
+                </div>
+                <div class="date-meta">
+                  <strong>Miércoles 22 de Octubre, 2025</strong>
+                  <small>Horario asignado</small>
+                </div>
+                <div class="time-badge-box">
+                  <span class="clock-ico">🕒</span>
+                  <div>
+                    <strong>{{ turnoBorrador.hora }}</strong>
+                    <small>Duración estimada: 30 minutos</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta Cobertura Médica -->
+            <div class="summary-card">
+              <span class="card-sub-title">💳 COBERTURA MÉDICA & COPAGO</span>
+              <div class="copago-flex-row">
+                <div class="osde-badge-logo">OSDE</div>
+                <div class="osde-meta">
+                  <strong>{{ turnoBorrador.obraSocial }}</strong>
+                  <small>Afiliado Nº: {{ turnoBorrador.afiliadoNro }}</small>
+                </div>
+                <div class="copago-cost">
+                  <span class="badge-cost">{{ turnoBorrador.copago }}</span>
+                  <small>Sin coseguro requerido en sede</small>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Columna Derecha: Datos del Paciente, Checkboxes y Motivo -->
+          <div class="confirm-right-col">
+            
+            <div class="patient-data-card">
+              <span class="card-sub-title">👤 DATOS DEL TITULAR / PACIENTE</span>
+              
+              <div class="patient-fields-table">
+                <div class="p-field-row">
+                  <span>Nombre y Apellido:</span>
+                  <strong>{{ turnoBorrador.pacienteNombre }}</strong>
+                </div>
+                <div class="p-field-row">
+                  <span>Documento (DNI):</span>
+                  <strong>{{ turnoBorrador.pacienteDni }}</strong>
+                </div>
+                <div class="p-field-row">
+                  <span>Teléfono de contacto:</span>
+                  <strong>{{ turnoBorrador.pacienteTelefono }}</strong>
+                </div>
+                <div class="p-field-row">
+                  <span>Correo electrónico:</span>
+                  <strong>{{ turnoBorrador.pacienteEmail }}</strong>
+                </div>
+              </div>
+
+              <div class="checkboxes-zone">
+                <label class="check-line">
+                  <input type="checkbox" [(ngModel)]="turnoBorrador.recordatorioWhatsapp" />
+                  <span>💬 <strong>Recordatorio por WhatsApp</strong> (Aviso 24 horas previas con opción de reprogramar)</span>
+                </label>
+                <label class="check-line">
+                  <input type="checkbox" [(ngModel)]="turnoBorrador.comprobanteEmail" />
+                  <span>✉️ <strong>Comprobante y orden por Email</strong> (Recibirá el voucher PDF descargable con QR)</span>
+                </label>
+              </div>
+
+              <!-- Motivo opcional -->
+              <div class="motivo-zone">
+                <div class="motivo-label-row">
+                  <label>📝 MOTIVO DE CONSULTA (OPCIONAL)</label>
+                  <small>opcional</small>
+                </div>
+                <textarea 
+                  rows="3" 
+                  placeholder="Ej. Control anual de rutina, revisión de electrocardiograma, dolor de pecho ocasional..."
+                  [(ngModel)]="turnoBorrador.motivoConsulta"
+                ></textarea>
+                <small class="textarea-note">Esta nota será visible para el profesional antes de ingresar al consultorio.</small>
+              </div>
+
+              <!-- Información importante -->
+              <div class="important-notice-box">
+                <span class="info-ico">ℹ️</span>
+                <div>
+                  <strong>Información Importante:</strong>
+                  <ul>
+                    <li>Presentarse 15 minutos antes del horario con DNI físico y credencial vigente (digital o tarjeta).</li>
+                    <li>Puede cancelar o reprogramar su turno hasta con <strong>24 horas de antelación</strong> sin costo adicional.</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= BOTONERA INFERIOR FIJA ================= -->
+    <div class="wizard-bottom-actions">
+      <button class="btn-action-back" (click)="retroceder()">
+        ← {{ pasoActual === 1 ? 'Cancelar' : 'Volver al Paso ' + (pasoActual - 1) }}
+      </button>
+
+      <button class="btn-action-next" (click)="avanzar()">
+        {{ pasoActual === 4 ? '✓ Confirmar Turno' : 'Siguiente →' }}
+      </button>
+    </div>
+
+  </main>
+</div>

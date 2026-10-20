@@ -1,0 +1,118 @@
+<div class="dias-atencion-wrapper">
+  
+  <!-- Encabezado de la Vista -->
+  <header class="header-section">
+    <div class="header-titles">
+      <span class="badge-cat">PORTAL DEL PACIENTE</span>
+      <h1 class="main-title">Días y Horarios de Atención</h1>
+      <p class="subtitle">
+        Consultá la disponibilidad semanal de nuestro staff médico y especialidades en Sede Central.
+      </p>
+    </div>
+
+    <!-- Panel de Filtros de Búsqueda -->
+    <div class="filter-card">
+      <div class="search-input-group">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          placeholder="Buscar por médico o subespecialidad (ej: Gómez, Arritmias)..." 
+          [(ngModel)]="busquedaGeneral"
+          (input)="filtrar()"
+        />
+      </div>
+
+      <div class="select-group">
+        <select [(ngModel)]="filtroEspecialidad" (change)="filtrar()">
+          <option value="Todas">Especialidad: Todas</option>
+          <option value="Cardiología">Cardiología</option>
+          <option value="Pediatría">Pediatría</option>
+          <option value="Traumatología">Traumatología</option>
+          <option value="Neurología">Neurología</option>
+          <option value="Ginecología">Ginecología</option>
+        </select>
+      </div>
+
+      <div class="select-group">
+        <select [(ngModel)]="filtroDia" (change)="filtrar()">
+          <option value="Todos">Día: Todos</option>
+          <option value="Lunes">Lunes</option>
+          <option value="Martes">Martes</option>
+          <option value="Miércoles">Miércoles</option>
+          <option value="Jueves">Jueves</option>
+          <option value="Viernes">Viernes</option>
+        </select>
+      </div>
+
+      <button class="btn-reset" (click)="resetearFiltros()">↺ Limpiar</button>
+    </div>
+  </header>
+
+  <!-- Lista de Tarjetas de Horarios Médicos -->
+  <section class="results-grid">
+    <div class="medico-schedule-card" *ngFor="let item of listaFiltrada">
+      
+      <!-- Lado Izquierdo: Ficha del Médico -->
+      <div class="medico-profile-col">
+        <div class="avatar-box">{{ item.fotoUrl }}</div>
+        <div class="profile-details">
+          <div class="title-row">
+            <h3>{{ item.nombre }}</h3>
+            <span class="rating">★ {{ item.calificacion }}</span>
+          </div>
+          <span class="esp-tag">{{ item.especialidad }}</span>
+          <p class="subesp-text">{{ item.subespecialidad }}</p>
+          <span class="mat-text">Mat. {{ item.matricula }}</span>
+        </div>
+      </div>
+
+      <!-- Lado Centro: Días de la Semana (Grilla visual) -->
+      <div class="week-days-col">
+        <span class="week-title">Días de consulta en sede:</span>
+        <div class="days-badges-row">
+          <div class="day-chip" [class.active]="item.diasSemana.includes('Lunes')">
+            <span class="day-name">Lun</span>
+            <span class="status-dot"></span>
+          </div>
+          <div class="day-chip" [class.active]="item.diasSemana.includes('Martes')">
+            <span class="day-name">Mar</span>
+            <span class="status-dot"></span>
+          </div>
+          <div class="day-chip" [class.active]="item.diasSemana.includes('Miércoles')">
+            <span class="day-name">Mié</span>
+            <span class="status-dot"></span>
+          </div>
+          <div class="day-chip" [class.active]="item.diasSemana.includes('Jueves')">
+            <span class="day-name">Jue</span>
+            <span class="status-dot"></span>
+          </div>
+          <div class="day-chip" [class.active]="item.diasSemana.includes('Viernes')">
+            <span class="day-name">Vie</span>
+            <span class="status-dot"></span>
+          </div>
+        </div>
+        <p class="shift-range">🕒 <strong>Franja horaria:</strong> {{ item.franjaHoraria }} • {{ item.consultorio }}</p>
+      </div>
+
+      <!-- Lado Derecho: Acción para sacar turno -->
+      <div class="action-col">
+        <span class="next-turn-badge">Próximo turno: {{ item.proximoDisponible }}</span>
+        <a 
+          [routerLink]="['/turnos/solicitar']" 
+          [queryParams]="{ medicoId: item.id }" 
+          class="btn-solicitar"
+        >
+          Sacar Turno →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Mención cuando no hay resultados -->
+    <div class="no-results" *ngIf="listaFiltrada.length === 0">
+      <span>🔎</span>
+      <p>No se encontraron médicos que coincidan con los filtros seleccionados.</p>
+    </div>
+  </section>
+
+</div>

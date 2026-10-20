@@ -1,0 +1,224 @@
+<div class="admin-view-wrapper">
+
+  <!-- Topbar administrativo superior -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">👥</span>
+        <h2 class="module-title">Gestión de Pacientes por Médico</h2>
+      </div>
+    </div>
+
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar paciente, DNI, número de historia clínica..." 
+        [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()"
+      />
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuración">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de página -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Nomina de Pacientes Citados</h1>
+        <p class="sub-heading">Consulte la agenda diaria de pacientes asignados a cada profesional médico.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-export" (click)="exportarListado()">
+          📥 Exportar Planilla (PDF/Excel)
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel de Selección de Médico y Filtros -->
+    <div class="filters-card">
+      
+      <!-- Selector de Médico -->
+      <div class="select-doctor-box">
+        <label>MÉDICO PROFESIONAL:</label>
+        <select [(ngModel)]="medicoSeleccionadoId" (change)="alCambiarMedico()">
+          <option *ngFor="let med of medicos" [value]="med.id">
+            {{ med.nombre }} — {{ med.especialidad }} ({{ med.consultorio }})
+          </option>
+        </select>
+      </div>
+
+      <!-- Selector de Fecha -->
+      <div class="date-picker-box">
+        <label>FECHA DE CITA:</label>
+        <input type="date" [(ngModel)]="fechaFiltro" (change)="aplicarFiltros()" />
+      </div>
+
+      <!-- Filtro Estado -->
+      <div class="select-status-box">
+        <label>ESTADO:</label>
+        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los estados</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="En Espera">En Espera</option>
+          <option value="Atendido">Atendido</option>
+          <option value="Ausente">Ausente</option>
+        </select>
+      </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Limpiar
+      </button>
+    </div>
+
+    <!-- Ficha Resumen del Médico Seleccionado -->
+    <div class="doctor-summary-banner" *ngIf="medicoActual">
+      <div class="doc-avatar-large">{{ medicoActual.fotoUrl }}</div>
+      <div class="doc-meta-info">
+        <div class="doc-title-line">
+          <h2>{{ medicoActual.nombre }}</h2>
+          <span class="badge-mat">Mat. {{ medicoActual.matricula }}</span>
+        </div>
+        <p class="doc-subesp">
+          {{ medicoActual.especialidad }} • {{ medicoActual.subespecialidad }}
+        </p>
+        <p class="doc-location">
+          📍 {{ medicoActual.consultorio }} — Turno Mañana (08:00 a 13:00 hs)
+        </p>
+      </div>
+
+      <div class="doc-kpi-group">
+        <div class="kpi-mini">
+          <span>TOTAL PACIENTES</span>
+          <strong>{{ pacientesFiltrados.length }}</strong>
+        </div>
+        <div class="kpi-mini green">
+          <span>CONFIRMADOS</span>
+          <strong>{{ contarPorEstado('Confirmado') + contarPorEstado('En Espera') }}</strong>
+        </div>
+        <div class="kpi-mini blue">
+          <span>ATENDIDOS</span>
+          <strong>{{ contarPorEstado('Atendido') }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de Pacientes -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>HORA</th>
+            <th>PACIENTE</th>
+            <th>DNI / HISTORIA CLINICA</th>
+            <th>COBERTURA / OS</th>
+            <th>MOTIVO CONSULTA</th>
+            <th>ESTADO</th>
+            <th class="col-actions">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of pacientesFiltrados">
+            <!-- Hora -->
+            <td>
+              <span class="time-tag">🕒 {{ p.hora }}</span>
+            </td>
+
+            <!-- Nombre Paciente -->
+            <td>
+              <div class="patient-cell">
+                <strong class="patient-name">{{ p.nombre }}</strong>
+                <span class="patient-phone">📱 {{ p.telefono }}</span>
+              </div>
+            </td>
+
+            <!-- DNI / HC -->
+            <td>
+              <div class="hc-cell">
+                <span>DNI {{ p.dni }}</span>
+                <small class="hc-num">HC: {{ p.numHistoriaClinica }}</small>
+              </div>
+            </td>
+
+            <!-- Obra Social -->
+            <td>
+              <div class="coverage-cell">
+                <strong class="os-name">{{ p.obraSocial }}</strong>
+                <small class="plan-text">{{ p.planAfiliado }}</small>
+              </div>
+            </td>
+
+            <!-- Motivo -->
+            <td>
+              <span class="motivo-text" [title]="p.motivo">{{ p.motivo || 'Control de rutina' }}</span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span 
+                class="badge-status" 
+                [ngClass]="{
+                  'status-confirmado': p.estado === 'Confirmado',
+                  'status-espera': p.estado === 'En Espera',
+                  'status-atendido': p.estado === 'Atendido',
+                  'status-ausente': p.estado === 'Ausente'
+                }"
+              >
+                ● {{ p.estado }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
+                  📄
+                </button>
+                <button class="btn-action-icon" (click)="cambiarEstado(p)" title="Cambiar Estado">
+                  ✏️
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Estado Vacío -->
+          <tr *ngIf="pacientesFiltrados.length === 0">
+            <td colspan="7" class="empty-table-row">
+              <span>🔍 No se encontraron pacientes agendados para este profesional con los filtros aplicados.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Footer Paginación -->
+      <div class="table-pagination-footer">
+        <span class="pagination-legend">
+          Mostrando {{ pacientesFiltrados.length }} pacientes citados
+        </span>
+        <div class="pages-list">
+          <button class="page-nav-btn" disabled>&lt;</button>
+          <button class="page-num-btn active">1</button>
+          <button class="page-nav-btn" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

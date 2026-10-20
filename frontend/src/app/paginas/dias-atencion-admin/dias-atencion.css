@@ -1,0 +1,309 @@
+.dias-atencion-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  width: 100%;
+}
+
+.header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.badge-cat {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #004b93;
+}
+
+.main-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  margin-top: 0.25rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #64748b;
+  max-width: 680px;
+  line-height: 1.5;
+}
+
+/* Panel de Filtros */
+.filter-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.search-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  flex: 1.8;
+}
+
+.search-input-group input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 0.88rem;
+  color: #0f172a;
+}
+
+.select-group select {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 0.85rem;
+  color: #334155;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-reset {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-reset:hover {
+  background-color: #f1f5f9;
+}
+
+/* Grilla de Médicos */
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.medico-schedule-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1.2fr 1.3fr 0.8fr;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+.medico-schedule-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 12px rgba(0, 75, 147, 0.06);
+}
+
+/* Ficha */
+.medico-profile-col {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.avatar-box {
+  width: 54px;
+  height: 54px;
+  background-color: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.title-row h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.rating {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.esp-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #004b93;
+  background-color: #f0f7ff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  margin: 0.25rem 0;
+}
+
+.subesp-text {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.mat-text {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+/* Días */
+.week-days-col {
+  border-left: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
+  padding: 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.week-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.days-badges-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.day-chip {
+  flex: 1;
+  text-align: center;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.35rem 0.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.4;
+}
+
+.day-chip.active {
+  opacity: 1;
+  background-color: #e0f2fe;
+  border-color: #bae6fd;
+}
+
+.day-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.day-chip.active .day-name {
+  color: #004b93;
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  background-color: #cbd5e1;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.day-chip.active .status-dot {
+  background-color: #004b93;
+}
+
+.shift-range {
+  font-size: 0.78rem;
+  color: #475569;
+  margin: 0.2rem 0 0;
+}
+
+/* Acción */
+.action-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.next-turn-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  background-color: #dcfce7;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+}
+
+.btn-solicitar {
+  background-color: #004b93;
+  color: #ffffff;
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.btn-solicitar:hover {
+  background-color: #00366a;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.no-results span {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .medico-schedule-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .week-days-col {
+    border: none;
+    padding: 0;
+  }
+  .action-col {
+    align-items: flex-start;
+  }
+}
