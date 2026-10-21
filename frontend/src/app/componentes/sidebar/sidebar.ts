@@ -1,14 +1,23 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
-  cerrarSesion() {
-    console.log('Sesión cerrada');
+
+  constructor(private router: Router) {}
+
+  // Maneja la salida del usuario del panel administrativo redirigiéndolo al Login
+  // Futuro con Spring Boot: Limpiará el JWT/Token del localStorage
+  cerrarSesion(): void {
+    console.log('Cerrando sesión de usuario administrador...');
+    this.router.navigate(['/login']);
   }
+
 }

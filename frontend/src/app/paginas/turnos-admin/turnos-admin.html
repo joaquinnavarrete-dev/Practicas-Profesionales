@@ -1,0 +1,231 @@
+<div class="admin-view-wrapper">
+
+  <!-- Topbar administrativo superior -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">📅</span>
+        <h2 class="module-title">Gestión de Turnos Médicos</h2>
+      </div>
+    </div>
+
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar por paciente, DNI, médico o especialidad..." 
+        [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()"
+      />
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuración">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de la vista -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Turnos Médicos Registrados</h1>
+        <p class="sub-heading">Control general, recepción de pacientes y estados de citas de la clínica.</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/turnos/solicitar" class="btn-create-modal">
+          <span class="plus-symbol">+</span> Nuevo Turno
+        </a>
+      </div>
+    </div>
+
+    <!-- Muestrario KPI Superior -->
+    <div class="stats-overview-grid">
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-blue">📋</div>
+        <div class="stat-body">
+          <span class="stat-caption">Total Agendados</span>
+          <strong class="stat-number">{{ turnos.length }} Turnos</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-amber">⏳</div>
+        <div class="stat-body">
+          <span class="stat-caption">En Espera / Confirmados</span>
+          <strong class="stat-number">{{ contarPorEstado('Confirmado') + contarPorEstado('En Espera') }} Pacientes</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-green">✓</div>
+        <div class="stat-body">
+          <span class="stat-caption">Atendidos Hoy</span>
+          <strong class="stat-number">{{ contarPorEstado('Atendido') }} Citas</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-red">✕</div>
+        <div class="stat-body">
+          <span class="stat-caption">Cancelados</span>
+          <strong class="stat-number">{{ contarPorEstado('Cancelado') }} Turnos</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de Filtros -->
+    <div class="filters-card">
+      <div class="filter-group">
+        <label>FECHA:</label>
+        <input type="date" [(ngModel)]="fechaFiltro" (change)="aplicarFiltros()" />
+      </div>
+
+      <div class="filter-group">
+        <label>ESTADO:</label>
+        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los estados</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="En Espera">En Espera</option>
+          <option value="Atendido">Atendido</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>ESPECIALIDAD:</label>
+        <select [(ngModel)]="especialidadFiltro" (change)="aplicarFiltros()">
+          <option value="Todas">Todas las especialidades</option>
+          <option value="Cardiología">Cardiología</option>
+          <option value="Pediatría">Pediatría</option>
+          <option value="Neurología">Neurología</option>
+          <option value="Traumatología">Traumatología</option>
+        </select>
+      </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- Tabla Principal de Turnos -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>HORA Y FECHA</th>
+            <th>PACIENTE</th>
+            <th>MEDICO / ESPECIALIDAD</th>
+            <th>COBERTURA</th>
+            <th>MOTIVO</th>
+            <th>ESTADO</th>
+            <th class="col-actions">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of turnosFiltrados">
+            <!-- Hora y Fecha -->
+            <td>
+              <div class="datetime-cell">
+                <strong class="time-text">🕒 {{ t.hora }}</strong>
+                <small class="date-text">{{ t.fecha }}</small>
+              </div>
+            </td>
+
+            <!-- Paciente -->
+            <td>
+              <div class="patient-cell">
+                <strong class="patient-name">{{ t.pacienteNombre }}</strong>
+                <span class="patient-sub">DNI {{ t.pacienteDni }}</span>
+              </div>
+            </td>
+
+            <!-- Médico y Especialidad -->
+            <td>
+              <div class="doctor-cell">
+                <strong class="doctor-name">{{ t.medicoNombre }}</strong>
+                <span class="esp-badge">{{ t.especialidad }}</span>
+              </div>
+            </td>
+
+            <!-- Cobertura -->
+            <td>
+              <div class="coverage-cell">
+                <strong>{{ t.obraSocial }}</strong>
+                <small>{{ t.plan }}</small>
+              </div>
+            </td>
+
+            <!-- Motivo -->
+            <td>
+              <span class="motivo-text" [title]="t.motivo">{{ t.motivo }}</span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span 
+                class="badge-status" 
+                [ngClass]="{
+                  'status-confirmado': t.estado === 'Confirmado',
+                  'status-espera': t.estado === 'En Espera',
+                  'status-atendido': t.estado === 'Atendido',
+                  'status-cancelado': t.estado === 'Cancelado'
+                }"
+              >
+                ● {{ t.estado }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button class="btn-action-icon" (click)="verDetalleTurno(t)" title="Ver Ficha Completa">
+                  👁️
+                </button>
+                <button class="btn-action-icon" (click)="cambiarEstado(t)" title="Cambiar Estado">
+                  ✏️
+                </button>
+                <button class="btn-action-icon danger" (click)="cancelarTurno(t)" title="Cancelar Turno">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Sin resultados -->
+          <tr *ngIf="turnosFiltrados.length === 0">
+            <td colspan="7" class="empty-table-row">
+              <span>🔍 No se encontraron turnos registrados con los criterios seleccionados.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <div class="table-pagination-footer">
+        <span class="pagination-legend">
+          Mostrando {{ turnosFiltrados.length }} turnos registrados
+        </span>
+        <div class="pages-list">
+          <button class="page-nav-btn" disabled>&lt;</button>
+          <button class="page-num-btn active">1</button>
+          <button class="page-nav-btn" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

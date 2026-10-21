@@ -1,0 +1,233 @@
+<div class="admin-view-wrapper">
+
+  <!-- Topbar administrativo superior -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">📊</span>
+        <h2 class="module-title">Panel de Control & Dashboard</h2>
+      </div>
+    </div>
+
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar médicos, pacientes, especialidades..." 
+      />
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuración">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de la vista -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <span class="today-badge">📅 Hoy: Miércoles 22 de Octubre</span>
+        <h1 class="main-heading">¡Hola, Dra. Mariana! 👋</h1>
+        <p class="sub-heading">Este es el resumen operativo y métricas en tiempo real de la Clínica San Gabriel.</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/turnos/solicitar" class="btn-primary-action">
+          <span class="plus-symbol">+</span> Nuevo Turno
+        </a>
+        <button class="btn-secondary-action">
+          📥 Reporte Diario
+        </button>
+      </div>
+    </div>
+
+    <!-- TARJETAS DE KPIs MTRICAS PRINCIPALES -->
+    <div class="kpi-cards-grid">
+      
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">TURNOS HOY</span>
+          <div class="kpi-icon-box icon-blue">📅</div>
+        </div>
+        <strong class="kpi-value">48</strong>
+        <div class="kpi-footer">
+          <span class="trend-up">↑ +12%</span>
+          <span class="kpi-subtext">vs. mismo día semana pasada</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">PACIENTES EN ESPERA</span>
+          <div class="kpi-icon-box icon-amber">⏳</div>
+        </div>
+        <strong class="kpi-value">8</strong>
+        <div class="kpi-footer">
+          <span class="kpi-subtext">En sala de recepción general</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">ATENDIDOS EN EL DÍA</span>
+          <div class="kpi-icon-box icon-green">✓</div>
+        </div>
+        <strong class="kpi-value">26</strong>
+        <div class="kpi-footer">
+          <span class="trend-up">54%</span>
+          <span class="kpi-subtext">del total agendado</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">MÉDICOS ACTIVOS</span>
+          <div class="kpi-icon-box icon-purple">🩺</div>
+        </div>
+        <strong class="kpi-value">14 / 18</strong>
+        <div class="kpi-footer">
+          <span class="kpi-subtext">Consultorios ocupados</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN INTERMEDIA: METRICAS Y BANNER DE ACCIONES -->
+    <div class="middle-dashboard-grid">
+      
+      <!-- Ocupación por Especialidad -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <h3>Demanda por Especialidad (Hoy)</h3>
+          <span class="badge-live">● En tiempo real</span>
+        </div>
+        
+        <div class="specialty-progress-list">
+          <div class="progress-item" *ngFor="let item of demandaEspecialidades">
+            <div class="progress-labels">
+              <span class="item-name">{{ item.nombre }}</span>
+              <span class="item-val">{{ item.turnos }} turnos ({{ item.porcentaje }}%)</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" [style.width.%]="item.porcentaje" [style.background-color]="item.color"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accesos Rápidos y Estado de Guardia -->
+      <div class="dash-card quick-actions-card">
+        <div class="dash-card-header">
+          <h3>Acceso Rápido & Gestión</h3>
+        </div>
+
+        <div class="quick-buttons-grid">
+          <a routerLink="/admin/turnos" class="quick-btn">
+            <span class="q-icon">📅</span>
+            <div>
+              <strong>Gestión de Turnos</strong>
+              <small>Ver agenda general</small>
+            </div>
+          </a>
+
+          <a routerLink="/admin/pacientes-por-medico" class="quick-btn">
+            <span class="q-icon">👥</span>
+            <div>
+              <strong>Pacientes por Médico</strong>
+              <small>Nómina de citados</small>
+            </div>
+          </a>
+
+          <a routerLink="/admin/especialidades" class="quick-btn">
+            <span class="q-icon">📐</span>
+            <div>
+              <strong>Especialidades</strong>
+              <small>Administrar catálogo</small>
+            </div>
+          </a>
+
+          <a routerLink="/dias-atencion" class="quick-btn">
+            <span class="q-icon">🕒</span>
+            <div>
+              <strong>Días de Atención</strong>
+              <small>Consultar grilla</small>
+            </div>
+          </a>
+        </div>
+
+        <!-- Banner de aviso / guardia -->
+        <div class="guard-notice-box">
+          <span class="shield-ico">🛡️</span>
+          <div>
+            <strong>Guardia Médica 24 hs Activa</strong>
+            <p>2 traumatólogos y 3 pediatras de guardia disponibles en Sede Central.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABLA DE TURNOS PRÓXIMOS EN RECEPCIÓN -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div>
+          <h3>Próximos Turnos a Atender (Recepción)</h3>
+          <p class="card-subtitle">Listado en vivo de los pacientes agendados para la próxima hora</p>
+        </div>
+        <a routerLink="/admin/turnos" class="link-see-all">Ver todos los turnos →</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>HORA</th>
+              <th>PACIENTE</th>
+              <th>DNI</th>
+              <th>PROFESIONAL</th>
+              <th>ESPECIALIDAD</th>
+              <th>COBERTURA</th>
+              <th>ESTADO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of proximosTurnos">
+              <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+              <td><strong class="patient-name">{{ t.paciente }}</strong></td>
+              <td>{{ t.dni }}</td>
+              <td>{{ t.medico }}</td>
+              <td><span class="esp-tag">{{ t.especialidad }}</span></td>
+              <td>{{ t.obraSocial }}</td>
+              <td>
+                <span 
+                  class="status-badge"
+                  [ngClass]="{
+                    'st-espera': t.estado === 'En Espera',
+                    'st-confirmado': t.estado === 'Confirmado',
+                    'st-atendido': t.estado === 'Atendido'
+                  }"
+                >
+                  ● {{ t.estado }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+</div>

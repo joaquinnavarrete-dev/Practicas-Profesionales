@@ -1,0 +1,206 @@
+<div class="admin-view-wrapper">
+
+  <!-- Topbar Administrativo -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">🛡️</span>
+        <h2 class="module-title">Gestión de Obras Sociales y Prepagas</h2>
+      </div>
+    </div>
+
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar obra social, prepaga o código..." 
+        [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()"
+      />
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuración">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cuerpo Principal -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de Página -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Convenios de Cobertura Médica</h1>
+        <p class="sub-heading">Administre las entidades, estado de convenios arancelarios y copagos requeridos.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-create-modal" (click)="abrirModalCrear()">
+          <span class="plus-symbol">+</span> Nueva Obra Social
+        </button>
+      </div>
+    </div>
+
+    <!-- Métricas KPI -->
+    <div class="stats-overview-grid">
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-blue">🛡️</div>
+        <div class="stat-body">
+          <span class="stat-caption">Total Convenios</span>
+          <strong class="stat-number">{{ obrasSociales.length }} Entidades</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-green">✓</div>
+        <div class="stat-body">
+          <span class="stat-caption">Activas con Convenio</span>
+          <strong class="stat-number">{{ contarPorEstado('Activa') }} Activas</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-amber">⏳</div>
+        <div class="stat-body">
+          <span class="stat-caption">En Negociación / Suspendidas</span>
+          <strong class="stat-number">{{ contarPorEstado('En Revisión') + contarPorEstado('Suspendida') }} Coberturas</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros de Búsqueda -->
+    <div class="filters-card">
+      <div class="filter-group">
+        <label>ESTADO CONVENIO:</label>
+        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los estados</option>
+          <option value="Activa">Activa</option>
+          <option value="En Revisión">En Revisión</option>
+          <option value="Suspendida">Suspendida</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>TIPO DE COBERTURA:</label>
+        <select [(ngModel)]="tipoFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los tipos</option>
+          <option value="Prepaga">Prepaga</option>
+          <option value="Obra Social">Obra Social Nacional/Provincial</option>
+          <option value="Sindical">Sindical</option>
+        </select>
+      </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- Tabla Principal de Obras Sociales -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ENTIDAD / SIGLA</th>
+            <th>TIPO</th>
+            <th>PLANES ADMITIDOS</th>
+            <th>COPAGO REQUERIDO</th>
+            <th>CÓDIGO RNS</th>
+            <th>ESTADO</th>
+            <th class="col-actions">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let os of obrasSocialesFiltradas">
+            <!-- Nombre y Sigla -->
+            <td>
+              <div class="entity-cell">
+                <span class="entity-logo">{{ os.logoUrl }}</span>
+                <div class="entity-info">
+                  <strong class="entity-name">{{ os.nombre }}</strong>
+                  <small class="entity-sigla">{{ os.sigla }}</small>
+                </div>
+              </div>
+            </td>
+
+            <!-- Tipo -->
+            <td>
+              <span class="tipo-tag">{{ os.tipo }}</span>
+            </td>
+
+            <!-- Planes Admitidos -->
+            <td>
+              <span class="planes-text" [title]="os.planesAdmitidos">{{ os.planesAdmitidos }}</span>
+            </td>
+
+            <!-- Copago -->
+            <td>
+              <strong class="copago-price">{{ os.copagoSugerido }}</strong>
+            </td>
+
+            <!-- Código RNS -->
+            <td>
+              <span class="rns-code">{{ os.codigoRns }}</span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span 
+                class="badge-status"
+                [ngClass]="{
+                  'status-activa': os.estado === 'Activa',
+                  'status-revision': os.estado === 'En Revisión',
+                  'status-suspendida': os.estado === 'Suspendida'
+                }"
+              >
+                ● {{ os.estado }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button class="btn-action-icon" (click)="editarObraSocial(os)" title="Editar Convenio">
+                  ✏️
+                </button>
+                <button class="btn-action-icon danger" (click)="cambiarEstadoConvenio(os)" title="Cambiar Estado">
+                  🔄
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Estado Vacío -->
+          <tr *ngIf="obrasSocialesFiltradas.length === 0">
+            <td colspan="7" class="empty-table-row">
+              <span>🔍 No se encontraron obras sociales con los filtros seleccionados.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <div class="table-pagination-footer">
+        <span class="pagination-legend">
+          Mostrando {{ obrasSocialesFiltradas.length }} entidades registradas
+        </span>
+        <div class="pages-list">
+          <button class="page-nav-btn" disabled>&lt;</button>
+          <button class="page-num-btn active">1</button>
+          <button class="page-nav-btn" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
