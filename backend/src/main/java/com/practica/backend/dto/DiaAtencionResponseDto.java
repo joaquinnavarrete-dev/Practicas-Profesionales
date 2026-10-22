@@ -19,6 +19,7 @@ public class DiaAtencionResponseDto {
     private Integer idMedico;
     private String nombreMedico;
     private String diaSemana;
+    private String nombreDia;
     private LocalTime horaInicio;
     private LocalTime horaFin;
 }
