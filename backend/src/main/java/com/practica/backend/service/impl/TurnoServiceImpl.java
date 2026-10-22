@@ -33,6 +33,7 @@ import com.practica.backend.repository.MedicoRepository;
 import com.practica.backend.repository.PacienteRepository;
 import com.practica.backend.repository.TurnoRepository;
 import com.practica.backend.service.TurnoService;
+import com.practica.backend.util.DiaSemanaUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -101,8 +102,8 @@ public class TurnoServiceImpl implements TurnoService {
         Medico medico = medicoRepository.findById(idMedico)
                 .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado con id: " + idMedico));
 
-        String diaSemana = obtenerDiaSemanaEspanol(fecha.getDayOfWeek());
-        List<DiaAtencion> franjas = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(idMedico, diaSemana);
+        String diaSemanaNumero = DiaSemanaUtil.obtenerNumeroIso(fecha.getDayOfWeek());
+        List<DiaAtencion> franjas = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(idMedico, diaSemanaNumero);
         if (franjas.isEmpty()) {
             return List.of();
         }
@@ -114,6 +115,7 @@ public class TurnoServiceImpl implements TurnoService {
 
         List<TurnoDisponibleResponseDto> disponibles = new ArrayList<>();
         String nombreCompleto = medico.getNombre() + " " + medico.getApellido();
+        String nombreDia = DiaSemanaUtil.obtenerNombreEspanol(fecha.getDayOfWeek());
 
         for (DiaAtencion franja : franjas) {
             LocalTime slot = franja.getHoraInicio();
@@ -125,7 +127,7 @@ public class TurnoServiceImpl implements TurnoService {
                                 .nombreMedico(nombreCompleto)
                                 .fecha(fecha)
                                 .hora(slot)
-                                .diaSemana(diaSemana)
+                                .diaSemana(nombreDia)
                                 .build());
                     }
                 }
@@ -156,10 +158,10 @@ public class TurnoServiceImpl implements TurnoService {
         Especialidad especialidad = especialidadRepository.findById(dto.getIdEspecialidad())
                 .orElseThrow(() -> new ResourceNotFoundException("Especialidad no encontrada con id: " + dto.getIdEspecialidad()));
 
-        String diaSemana = obtenerDiaSemanaEspanol(dto.getFecha().getDayOfWeek());
-        List<DiaAtencion> franjas = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(dto.getIdMedico(), diaSemana);
+        String diaSemanaNumero = DiaSemanaUtil.obtenerNumeroIso(dto.getFecha().getDayOfWeek());
+        List<DiaAtencion> franjas = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(dto.getIdMedico(), diaSemanaNumero);
         if (franjas.isEmpty()) {
-            throw new BadRequestException("El médico no atiende los días " + diaSemana.toLowerCase());
+            throw new BadRequestException("El médico no atiende los días " + DiaSemanaUtil.obtenerNombreEspanol(dto.getFecha().getDayOfWeek()).toLowerCase());
         }
 
         boolean dentroDeHorario = franjas.stream().anyMatch(f ->
@@ -197,10 +199,10 @@ public class TurnoServiceImpl implements TurnoService {
             throw new BadRequestException("El nuevo horario no puede ser en el pasado");
         }
 
-        String diaSemana = obtenerDiaSemanaEspanol(nuevaFecha.getDayOfWeek());
-        List<DiaAtencion> franjas = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(turno.getMedico().getIdMedico(), diaSemana);
+        String diaSemanaNumero = DiaSemanaUtil.obtenerNumeroIso(nuevaFecha.getDayOfWeek());
+        List<DiaAtencion> franjas = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(turno.getMedico().getIdMedico(), diaSemanaNumero);
         if (franjas.isEmpty()) {
-            throw new BadRequestException("El médico no atiende los días " + diaSemana.toLowerCase());
+            throw new BadRequestException("El médico no atiende los días " + DiaSemanaUtil.obtenerNombreEspanol(nuevaFecha.getDayOfWeek()).toLowerCase());
         }
 
         boolean dentroDeHorario = franjas.stream().anyMatch(f ->
@@ -226,18 +228,6 @@ public class TurnoServiceImpl implements TurnoService {
             throw new ResourceNotFoundException("Turno no encontrado con id: " + id);
         }
         turnoRepository.deleteById(id);
-    }
-
-    private String obtenerDiaSemanaEspanol(DayOfWeek dayOfWeek) {
-        return switch (dayOfWeek) {
-            case MONDAY -> "LUNES";
-            case TUESDAY -> "MARTES";
-            case WEDNESDAY -> "MIERCOLES";
-            case THURSDAY -> "JUEVES";
-            case FRIDAY -> "VIERNES";
-            case SATURDAY -> "SABADO";
-            case SUNDAY -> "DOMINGO";
-        };
     }
 
     private TurnoResponseDto mapToResponseDto(Turno entity) {
