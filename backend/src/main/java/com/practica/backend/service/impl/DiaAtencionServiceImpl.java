@@ -8,12 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.practica.backend.dto.DiaAtencionRequestDto;
 import com.practica.backend.dto.DiaAtencionResponseDto;
 import com.practica.backend.exception.BadRequestException;
+import com.practica.backend.exception.ResourceAlreadyExistsException;
 import com.practica.backend.exception.ResourceNotFoundException;
 import com.practica.backend.model.DiaAtencion;
 import com.practica.backend.model.Medico;
 import com.practica.backend.repository.DiaAtencionRepository;
 import com.practica.backend.repository.MedicoRepository;
 import com.practica.backend.service.DiaAtencionService;
+import com.practica.backend.util.DiaSemanaUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,19 +55,19 @@ public class DiaAtencionServiceImpl implements DiaAtencionService {
         Medico medico = medicoRepository.findById(dto.getIdMedico())
                 .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado con id: " + dto.getIdMedico()));
 
+        String diaNormalizado = DiaSemanaUtil.normalizar(dto.getDiaSemana());
+
         List<DiaAtencion> existentes = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(
-                dto.getIdMedico(), dto.getDiaSemana().toUpperCase());
+                dto.getIdMedico(), diaNormalizado);
 
-        boolean seSolapa = existentes.stream().anyMatch(d ->
-                dto.getHoraInicio().isBefore(d.getHoraFin()) && dto.getHoraFin().isAfter(d.getHoraInicio()));
-
-        if (seSolapa) {
-            throw new BadRequestException("El horario ingresado se superpone con un horario ya asignado para este médico");
+        if (!existentes.isEmpty()) {
+            throw new ResourceAlreadyExistsException(
+                    "El médico ya tiene registrado un horario para el día " + DiaSemanaUtil.obtenerNombre(diaNormalizado));
         }
 
         DiaAtencion diaAtencion = DiaAtencion.builder()
                 .medico(medico)
-                .diaSemana(dto.getDiaSemana().toUpperCase())
+                .diaSemana(diaNormalizado)
                 .horaInicio(dto.getHoraInicio())
                 .horaFin(dto.getHoraFin())
                 .build();
@@ -86,19 +88,19 @@ public class DiaAtencionServiceImpl implements DiaAtencionService {
         Medico medico = medicoRepository.findById(dto.getIdMedico())
                 .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado con id: " + dto.getIdMedico()));
 
+        String diaNormalizado = DiaSemanaUtil.normalizar(dto.getDiaSemana());
+
         List<DiaAtencion> existentes = diaAtencionRepository.findByMedicoIdMedicoAndDiaSemana(
-                dto.getIdMedico(), dto.getDiaSemana().toUpperCase());
+                dto.getIdMedico(), diaNormalizado);
 
-        boolean seSolapa = existentes.stream()
-                .filter(d -> !d.getIdDiaAtencion().equals(id))
-                .anyMatch(d -> dto.getHoraInicio().isBefore(d.getHoraFin()) && dto.getHoraFin().isAfter(d.getHoraInicio()));
-
-        if (seSolapa) {
-            throw new BadRequestException("El horario ingresado se superpone con un horario ya asignado para este médico");
+        boolean yaExisteOtro = existentes.stream().anyMatch(d -> !d.getIdDiaAtencion().equals(id));
+        if (yaExisteOtro) {
+            throw new ResourceAlreadyExistsException(
+                    "El médico ya tiene registrado otro horario para el día " + DiaSemanaUtil.obtenerNombre(diaNormalizado));
         }
 
         diaAtencion.setMedico(medico);
-        diaAtencion.setDiaSemana(dto.getDiaSemana().toUpperCase());
+        diaAtencion.setDiaSemana(diaNormalizado);
         diaAtencion.setHoraInicio(dto.getHoraInicio());
         diaAtencion.setHoraFin(dto.getHoraFin());
 
@@ -125,6 +127,7 @@ public class DiaAtencionServiceImpl implements DiaAtencionService {
                 .idMedico(idMedico)
                 .nombreMedico(nombreCompleto)
                 .diaSemana(entity.getDiaSemana())
+                .nombreDia(DiaSemanaUtil.obtenerNombre(entity.getDiaSemana()))
                 .horaInicio(entity.getHoraInicio())
                 .horaFin(entity.getHoraFin())
                 .build();
