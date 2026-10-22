@@ -1,0 +1,213 @@
+<div class="admin-view-wrapper">
+
+  <!-- Topbar Administrativo -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">🩺</span>
+        <h2 class="module-title">Gestión del Cuerpo Médico</h2>
+      </div>
+    </div>
+
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar por profesional, especialidad o matrícula..." 
+        [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()"
+      />
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuración">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cuerpo Principal -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de Página -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Cuerpo Médico</h1>
+        <p class="sub-heading">Administre el plantel profesional, matrículas, especialidades y asignación de consultorios.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-create-modal" (click)="abrirModalCrear()">
+          <span class="plus-symbol">+</span> Nuevo Médico
+        </button>
+      </div>
+    </div>
+
+    <!-- Métricas KPI -->
+    <div class="stats-overview-grid">
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-blue">🩺</div>
+        <div class="stat-body">
+          <span class="stat-caption">Total Profesionales</span>
+          <strong class="stat-number">{{ medicos.length }} Médicos</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-green">✓</div>
+        <div class="stat-body">
+          <span class="stat-caption">Activos en Guardia / Consulta</span>
+          <strong class="stat-number">{{ contarPorEstado('Activo') }} Profesionales</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-amber">📋</div>
+        <div class="stat-body">
+          <span class="stat-caption">En Licencia / Inactivos</span>
+          <strong class="stat-number">{{ contarPorEstado('Licencia') + contarPorEstado('Inactivo') }} Médicos</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros de Búsqueda -->
+    <div class="filters-card">
+      <div class="filter-group">
+        <label>ESPECIALIDAD:</label>
+        <select [(ngModel)]="especialidadFiltro" (change)="aplicarFiltros()">
+          <option value="Todas">Todas las especialidades</option>
+          <option value="Cardiología">Cardiología</option>
+          <option value="Neurología">Neurología</option>
+          <option value="Pediatría">Pediatría</option>
+          <option value="Traumatología">Traumatología</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>ESTADO:</label>
+        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los estados</option>
+          <option value="Activo">Activo</option>
+          <option value="Licencia">Licencia</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+      </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- Tabla Principal del Cuerpo Médico -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>PROFESIONAL</th>
+            <th>MATRÍCULA</th>
+            <th>ESPECIALIDAD / SUBESPECIALIDAD</th>
+            <th>CONSULTORIO</th>
+            <th>DÍAS DE ATENCIÓN</th>
+            <th>ESTADO</th>
+            <th class="col-actions">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of medicosFiltrados">
+            <!-- Médico Avatar / Nombre -->
+            <td>
+              <div class="doctor-cell">
+                <span class="doctor-avatar">{{ m.avatarUrl }}</span>
+                <div class="doctor-info">
+                  <strong class="doctor-name">{{ m.nombre }} {{ m.apellido }}</strong>
+                  <small class="doctor-email">{{ m.email }}</small>
+                </div>
+              </div>
+            </td>
+
+            <!-- Matrícula -->
+            <td>
+              <span class="mat-badge">{{ m.matricula }}</span>
+            </td>
+
+            <!-- Especialidad -->
+            <td>
+              <div class="esp-cell">
+                <strong class="esp-name">{{ m.especialidad }}</strong>
+                <small class="subesp-name">{{ m.subespecialidad }}</small>
+              </div>
+            </td>
+
+            <!-- Consultorio -->
+            <td>
+              <span class="room-tag">📍 {{ m.consultorio }}</span>
+            </td>
+
+            <!-- Días de Atención -->
+            <td>
+              <span class="days-text">{{ m.diasAtencion }}</span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span 
+                class="badge-status"
+                [ngClass]="{
+                  'status-activo': m.estado === 'Activo',
+                  'status-licencia': m.estado === 'Licencia',
+                  'status-inactivo': m.estado === 'Inactivo'
+                }"
+              >
+                ● {{ m.estado }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button class="btn-action-icon" (click)="verAgenda(m)" title="Ver Agenda de Turnos">
+                  📅
+                </button>
+                <button class="btn-action-icon" (click)="editarMedico(m)" title="Editar Datos">
+                  ✏️
+                </button>
+                <button class="btn-action-icon danger" (click)="cambiarEstadoMedico(m)" title="Activar/Desactivar">
+                  🔄
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Estado Vacío -->
+          <tr *ngIf="medicosFiltrados.length === 0">
+            <td colspan="7" class="empty-table-row">
+              <span>🔍 No se encontraron profesionales médicos con los filtros aplicados.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <div class="table-pagination-footer">
+        <span class="pagination-legend">
+          Mostrando {{ medicosFiltrados.length }} profesionales registrados
+        </span>
+        <div class="pages-list">
+          <button class="page-nav-btn" disabled>&lt;</button>
+          <button class="page-num-btn active">1</button>
+          <button class="page-nav-btn" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

@@ -11,6 +11,12 @@ import { PacientesPorMedicoComponent } from './paginas/pacientes-por-medico-admi
 import { TurnosAdminComponent } from './paginas/turnos-admin/turnos-admin';
 import { DashboardAdminComponent } from './paginas/dashboard-admin/dashboard-admin';
 import { ObrasSocialesAdminComponent } from './paginas/obras-sociales-admin/obras-sociales-admin';
+import { PacientesAdminComponent } from './paginas/pacientes-admin/pacientes-admin';
+import { MedicosAdminComponent } from './paginas/medicos-admin/medicos-admin';
+import { UsuariosAdminComponent } from './paginas/usuarios-admin/usuarios-admin';
+import { RolesAdminComponent } from './paginas/roles-admin/roles-admin';
+import { RegistrarPacienteComponent } from './paginas/registrar-paciente/registrar-paciente';
+import { registerAppScopedDispatcher } from '@angular/core/primitives/event-dispatch';
 
 export const routes: Routes = [
   // RUTAS PÚBLICAS
@@ -23,6 +29,7 @@ export const routes: Routes = [
       { path: 'especialidades', component: EspecialidadesPublicaComponent },
       { path: 'turnos/solicitar', component: SolicitarTurnoComponent },
       { path: 'dias-atencion', component: DiasAtencionComponent },
+      { path: 'paciente/registrar', component: RegistrarPacienteComponent}
     ]
   },
 
@@ -35,7 +42,13 @@ export const routes: Routes = [
       { path: 'especialidades', component: EspecialidadesAdminComponent },
       { path: 'pacientes-por-medico', component: PacientesPorMedicoComponent },
       { path: 'turnos', component: TurnosAdminComponent },
-      { path: 'obras-sociales', component: ObrasSocialesAdminComponent}
+      { path: 'obras-sociales', component: ObrasSocialesAdminComponent},
+      { path:'pacientes', component: PacientesAdminComponent},
+      { path: 'medicos', component: MedicosAdminComponent },
+      { path: 'usuarios', component: UsuariosAdminComponent},
+      { path: 'usuarios/roles', component: RolesAdminComponent },
+      { path: 'usuarios/roles/:id', component: RolesAdminComponent },
+      { path: 'paciente/nuevo', component: RegistrarPacienteComponent }
     ]
   },
 

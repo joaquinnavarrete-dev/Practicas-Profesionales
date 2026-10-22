@@ -1,0 +1,218 @@
+<div class="admin-view-wrapper">
+
+  <!-- Topbar Administrativo -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">👥</span>
+        <h2 class="module-title">Padrón General de Usuarios</h2>
+      </div>
+    </div>
+
+    <div class="topbar-search">
+      <span class="search-lens">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar usuario por nombre, email o DNI..." 
+        [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()"
+      />
+    </div>
+
+    <div class="topbar-right">
+      <button class="topbar-btn" title="Notificaciones">
+        🔔<span class="noti-badge"></span>
+      </button>
+      <button class="topbar-btn" title="Configuración">⚙️</button>
+
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cuerpo Principal -->
+  <section class="admin-main-body">
+
+    <!-- Encabezado de Página -->
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Gestión de Usuarios del Sistema</h1>
+        <p class="sub-heading">Administración centralizada de cuentas de acceso, roles asignados y credenciales.</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/admin/usuarios/roles" class="btn-secondary-action">
+          🔑 Gestionar Roles y Permisos
+        </a>
+        <button class="btn-create-modal" (click)="abrirModalCrearUsuario()">
+          <span class="plus-symbol">+</span> Nuevo Usuario
+        </button>
+      </div>
+    </div>
+
+    <!-- Métricas KPI -->
+    <div class="stats-overview-grid">
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-blue">👥</div>
+        <div class="stat-body">
+          <span class="stat-caption">Total Cuentas</span>
+          <strong class="stat-number">{{ usuarios.length }} Registradas</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-purple">🛡️</div>
+        <div class="stat-body">
+          <span class="stat-caption">Administradores</span>
+          <strong class="stat-number">{{ contarPorRol('Administrador') }} Admins</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-green">✓</div>
+        <div class="stat-body">
+          <span class="stat-caption">Cuentas Activas</span>
+          <strong class="stat-number">{{ contarPorEstado('Activo') }} Usuarios</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros de Búsqueda -->
+    <div class="filters-card">
+      <div class="filter-group">
+        <label>ROL DE ACCESO:</label>
+        <select [(ngModel)]="rolFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los roles</option>
+          <option value="Administrador">Administrador</option>
+          <option value="Médico">Médico</option>
+          <option value="Recepción">Recepción / Administrativo</option>
+          <option value="Paciente">Paciente</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>ESTADO DE CUENTA:</label>
+        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+          <option value="Todos">Todos los estados</option>
+          <option value="Activo">Activo</option>
+          <option value="Bloqueado">Bloqueado / Inactivo</option>
+        </select>
+      </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- Tabla Principal de Usuarios -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>USUARIO / NOMBRE</th>
+            <th>EMAIL DE ACCESO</th>
+            <th>DNI</th>
+            <th>ROL ASIGNADO</th>
+            <th>ÚLTIMO INGRESO</th>
+            <th>ESTADO</th>
+            <th class="col-actions">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of usuariosFiltrados">
+            <!-- Usuario / Nombre -->
+            <td>
+              <div class="user-cell">
+                <span class="user-avatar">{{ u.avatarUrl }}</span>
+                <div class="user-info">
+                  <strong class="user-name">{{ u.nombre }} {{ u.apellido }}</strong>
+                  <small class="user-username">@{{ u.username }}</small>
+                </div>
+              </div>
+            </td>
+
+            <!-- Email -->
+            <td>
+              <span class="email-text">{{ u.email }}</span>
+            </td>
+
+            <!-- DNI -->
+            <td>
+              <span class="dni-text">{{ u.dni }}</span>
+            </td>
+
+            <!-- Rol -->
+            <td>
+              <span 
+                class="badge-rol"
+                [ngClass]="{
+                  'rol-admin': u.rol === 'Administrador',
+                  'rol-medico': u.rol === 'Médico',
+                  'rol-recepcion': u.rol === 'Recepción',
+                  'rol-paciente': u.rol === 'Paciente'
+                }"
+              >
+                {{ u.rol }}
+              </span>
+            </td>
+
+            <!-- Último Ingreso -->
+            <td>
+              <span class="access-date">🕒 {{ u.ultimoIngreso }}</span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span 
+                class="badge-status"
+                [ngClass]="{
+                  'status-activo': u.estado === 'Activo',
+                  'status-bloqueado': u.estado === 'Bloqueado'
+                }"
+              >
+                ● {{ u.estado }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button class="btn-action-icon" (click)="editarUsuario(u)" title="Editar Usuario y Rol">
+                  ✏️
+                </button>
+                <button class="btn-action-icon danger" (click)="bloquearDesbloquear(u)" title="Bloquear/Desbloquear">
+                  🔒
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Estado Vacío -->
+          <tr *ngIf="usuariosFiltrados.length === 0">
+            <td colspan="7" class="empty-table-row">
+              <span>🔍 No se encontraron usuarios con los filtros seleccionados.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <div class="table-pagination-footer">
+        <span class="pagination-legend">
+          Mostrando {{ usuariosFiltrados.length }} usuarios registrados
+        </span>
+        <div class="pages-list">
+          <button class="page-nav-btn" disabled>&lt;</button>
+          <button class="page-num-btn active">1</button>
+          <button class="page-nav-btn" disabled>&gt;</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

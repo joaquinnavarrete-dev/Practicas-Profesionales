@@ -1,0 +1,109 @@
+<div class="register-patient-wrapper">
+
+  <!-- Cabecera de la Página -->
+  <header class="form-header-bar">
+    <div class="header-titles">
+      <span class="back-link" routerLink="..">← Volver atrás</span>
+      <h1 class="main-title">Registro de Nuevo Paciente</h1>
+      <p class="sub-title">Complete los datos personales, información de contacto y cobertura médica institucional.</p>
+    </div>
+  </header>
+
+  <!-- Formulario Principal -->
+  <main class="form-content-body">
+    <form class="patient-form-card" (ngSubmit)="guardarPaciente()">
+
+      <!-- SECCIÓN 1: DATOS PERSONALES -->
+      <div class="form-section">
+        <h3 class="section-title">1. Datos Personales del Paciente</h3>
+        
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NOMBRE(S) *</label>
+            <input type="text" [(ngModel)]="pacienteForm.nombre" name="nombre" placeholder="Ej. Juan Carlos" required />
+          </div>
+
+          <div class="form-group">
+            <label>APELLIDO(S) *</label>
+            <input type="text" [(ngModel)]="pacienteForm.apellido" name="apellido" placeholder="Ej. González" required />
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label>DNI / DOCUMENTO *</label>
+            <input type="text" [(ngModel)]="pacienteForm.dni" name="dni" placeholder="Ej. 35.401.292" required />
+          </div>
+
+          <div class="form-group">
+            <label>FECHA DE NACIMIENTO *</label>
+            <input type="date" [(ngModel)]="pacienteForm.fechaNacimiento" name="fechaNacimiento" required />
+          </div>
+
+          <div class="form-group">
+            <label>GÉNERO *</label>
+            <select [(ngModel)]="pacienteForm.genero" name="genero">
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: CONTACTO Y DOMICILIO -->
+      <div class="form-section">
+        <h3 class="section-title">2. Información de Contacto</h3>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>TELÉFONO / CELULAR *</label>
+            <input type="text" [(ngModel)]="pacienteForm.telefono" name="telefono" placeholder="Ej. +54 9 11 4567-8900" required />
+          </div>
+
+          <div class="form-group">
+            <label>CORREO ELECTRÓNICO *</label>
+            <input type="email" [(ngModel)]="pacienteForm.email" name="email" placeholder="Ej. juan.gonzalez@email.com" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>DOMICILIO ACTUAL</label>
+          <input type="text" [(ngModel)]="pacienteForm.domicilio" name="domicilio" placeholder="Calle, número, piso y depto" />
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: COBERTURA MÉDICA -->
+      <div class="form-section">
+        <h3 class="section-title">3. Cobertura Médica y Plan</h3>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>OBRA SOCIAL / PREPAGA</label>
+            <select [(ngModel)]="pacienteForm.obraSocial" name="obraSocial">
+              <option value="Particular">Particular (Sin cobertura)</option>
+              <option value="OSDE">OSDE</option>
+              <option value="Swiss Medical">Swiss Medical</option>
+              <option value="Galeno">Galeno</option>
+              <option value="PAMI">PAMI</option>
+              <option value="OSECAC">OSECAC</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>NÚMERO DE AFILIADO / PLAN</label>
+            <input type="text" [(ngModel)]="pacienteForm.planAfiliado" name="planAfiliado" placeholder="Ej. Plan 310 • N° 482109" />
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN -->
+      <div class="form-actions-footer">
+        <button type="button" class="btn-cancel" routerLink="..">Cancelar</button>
+        <button type="submit" class="btn-submit">💾 Registrar Paciente</button>
+      </div>
+
+    </form>
+  </main>
+
+</div>
