@@ -19,4 +19,6 @@ public class PacienteResponseDto {
     private String apellido;
     private String telefono;
     private ObraSocialResponseDto obraSocial;
+    private Integer idUsuario;
+    private String nombreUsuario;
 }

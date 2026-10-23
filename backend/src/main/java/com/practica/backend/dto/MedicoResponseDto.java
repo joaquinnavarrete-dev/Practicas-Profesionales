@@ -18,4 +18,6 @@ public class MedicoResponseDto {
     private String apellido;
     private String matricula;
     private EspecialidadResponseDto especialidad;
+    private Integer idUsuario;
+    private String nombreUsuario;
 }
