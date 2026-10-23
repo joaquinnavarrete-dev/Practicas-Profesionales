@@ -49,13 +49,20 @@ CREATE TABLE medico (
     apellido VARCHAR(100) NOT NULL,
     matricula VARCHAR(100) NOT NULL,
     id_especialidad INT NOT NULL,
+    id_usuario INT NULL,
     CONSTRAINT pk_medico PRIMARY KEY (id_medico),
     CONSTRAINT uq_medico_matricula UNIQUE (matricula),
+    CONSTRAINT uq_medico_usuario UNIQUE (id_usuario),
     CONSTRAINT fk_medico_especialidad 
         FOREIGN KEY (id_especialidad) 
         REFERENCES especialidad (id_especialidad) 
         ON UPDATE CASCADE 
         ON DELETE RESTRICT,
+    CONSTRAINT fk_medico_usuario
+        FOREIGN KEY (id_usuario)
+        REFERENCES usuario (id_usuario)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     INDEX idx_medico_especialidad (id_especialidad),
     INDEX idx_medico_apellido (apellido)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -67,13 +74,20 @@ CREATE TABLE paciente (
     apellido VARCHAR(100) NOT NULL,
     telefono VARCHAR(30) NOT NULL,
     id_obra_social INT NOT NULL,
+    id_usuario INT NULL,
     CONSTRAINT pk_paciente PRIMARY KEY (id_paciente),
     CONSTRAINT uq_paciente_dni UNIQUE (dni),
+    CONSTRAINT uq_paciente_usuario UNIQUE (id_usuario),
     CONSTRAINT fk_paciente_obra_social
         FOREIGN KEY (id_obra_social)
         REFERENCES obra_social (id_obra_social)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
+    CONSTRAINT fk_paciente_usuario
+        FOREIGN KEY (id_usuario)
+        REFERENCES usuario (id_usuario)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     INDEX idx_paciente_obra_social (id_obra_social),
     INDEX idx_paciente_apellido (apellido)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
