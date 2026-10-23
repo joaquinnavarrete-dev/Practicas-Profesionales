@@ -112,12 +112,17 @@ public class MedicoServiceImpl implements MedicoService {
                     .build();
         }
 
+        Integer idUsuario = entity.getUsuario() != null ? entity.getUsuario().getIdUsuario() : null;
+        String nombreUsuario = entity.getUsuario() != null ? entity.getUsuario().getNombreUsuario() : null;
+
         return MedicoResponseDto.builder()
                 .idMedico(entity.getIdMedico())
                 .nombre(entity.getNombre())
                 .apellido(entity.getApellido())
                 .matricula(entity.getMatricula())
                 .especialidad(especialidadDto)
+                .idUsuario(idUsuario)
+                .nombreUsuario(nombreUsuario)
                 .build();
     }
 }

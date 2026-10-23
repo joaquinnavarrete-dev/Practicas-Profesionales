@@ -241,6 +241,9 @@ public class TurnoServiceImpl implements TurnoService {
                         .sigla(entity.getPaciente().getObraSocial().getSigla())
                         .build();
             }
+            Integer idUsuarioPac = entity.getPaciente().getUsuario() != null ? entity.getPaciente().getUsuario().getIdUsuario() : null;
+            String nombreUsuarioPac = entity.getPaciente().getUsuario() != null ? entity.getPaciente().getUsuario().getNombreUsuario() : null;
+
             pacienteDto = PacienteResponseDto.builder()
                     .idPaciente(entity.getPaciente().getIdPaciente())
                     .dni(entity.getPaciente().getDni())
@@ -248,6 +251,8 @@ public class TurnoServiceImpl implements TurnoService {
                     .apellido(entity.getPaciente().getApellido())
                     .telefono(entity.getPaciente().getTelefono())
                     .obraSocial(obraSocialDto)
+                    .idUsuario(idUsuarioPac)
+                    .nombreUsuario(nombreUsuarioPac)
                     .build();
         }
 
@@ -260,12 +265,18 @@ public class TurnoServiceImpl implements TurnoService {
                         .nombre(entity.getMedico().getEspecialidad().getNombre())
                         .build();
             }
+
+            Integer idUsuarioMed = entity.getMedico().getUsuario() != null ? entity.getMedico().getUsuario().getIdUsuario() : null;
+            String nombreUsuarioMed = entity.getMedico().getUsuario() != null ? entity.getMedico().getUsuario().getNombreUsuario() : null;
+
             medicoDto = MedicoResponseDto.builder()
                     .idMedico(entity.getMedico().getIdMedico())
                     .nombre(entity.getMedico().getNombre())
                     .apellido(entity.getMedico().getApellido())
                     .matricula(entity.getMedico().getMatricula())
                     .especialidad(espMedDto)
+                    .idUsuario(idUsuarioMed)
+                    .nombreUsuario(nombreUsuarioMed)
                     .build();
         }
 

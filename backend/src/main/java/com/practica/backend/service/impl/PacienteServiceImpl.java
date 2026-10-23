@@ -123,6 +123,9 @@ public class PacienteServiceImpl implements PacienteService {
                     .build();
         }
 
+        Integer idUsuario = entity.getUsuario() != null ? entity.getUsuario().getIdUsuario() : null;
+        String nombreUsuario = entity.getUsuario() != null ? entity.getUsuario().getNombreUsuario() : null;
+
         return PacienteResponseDto.builder()
                 .idPaciente(entity.getIdPaciente())
                 .dni(entity.getDni())
@@ -130,6 +133,8 @@ public class PacienteServiceImpl implements PacienteService {
                 .apellido(entity.getApellido())
                 .telefono(entity.getTelefono())
                 .obraSocial(obraSocialDto)
+                .idUsuario(idUsuario)
+                .nombreUsuario(nombreUsuario)
                 .build();
     }
 }
