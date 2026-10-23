@@ -16,4 +16,8 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
     boolean existsByDni(String dni);
 
     List<Paciente> findByObraSocialIdObraSocial(Integer idObraSocial);
+
+    Optional<Paciente> findByUsuarioIdUsuario(Integer idUsuario);
+
+    Optional<Paciente> findByUsuarioNombreUsuario(String nombreUsuario);
 }

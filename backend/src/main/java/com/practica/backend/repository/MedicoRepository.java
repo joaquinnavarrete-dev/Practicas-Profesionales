@@ -16,4 +16,8 @@ public interface MedicoRepository extends JpaRepository<Medico, Integer> {
     boolean existsByMatricula(String matricula);
 
     List<Medico> findByEspecialidadIdEspecialidad(Integer idEspecialidad);
+
+    Optional<Medico> findByUsuarioIdUsuario(Integer idUsuario);
+
+    Optional<Medico> findByUsuarioNombreUsuario(String nombreUsuario);
 }
