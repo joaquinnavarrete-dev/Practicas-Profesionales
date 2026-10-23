@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router,ActivatedRoute, RouterLink } from '@angular/router';
 
 // Modelo DTO para Médico (Mapeable a MedicoEntity en Spring Boot)
 export interface MedicoAdmin {
@@ -21,7 +22,7 @@ export interface MedicoAdmin {
 @Component({
   selector: 'app-medicos-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './medicos-admin.html',
   styleUrl: './medicos-admin.css'
 })
@@ -109,11 +110,14 @@ export class MedicosAdminComponent {
 
   medicosFiltrados: MedicoAdmin[] = [...this.medicos];
 
-  constructor() {
+  // Inyección del servicio Router para manejo de navegación programática
+  constructor(private router: Router) {
     this.aplicarFiltros();
   }
 
-  // Filtra por búsqueda de texto, especialidad y estado activo/licencia/inactivo
+  /**
+   * Filtra el padrón médico cruzando texto libre, especialidad y estado actual.
+   */
   aplicarFiltros(): void {
     const q = this.busquedaGlobal.toLowerCase().trim();
 
@@ -130,12 +134,16 @@ export class MedicosAdminComponent {
     });
   }
 
-  // Cuenta profesionales según su estado
+  /**
+   * Retorna la cantidad de profesionales según su estado institucional.
+   */
   contarPorEstado(estado: string): number {
     return this.medicos.filter(m => m.estado === estado).length;
   }
 
-  // Resetea filtros a estado inicial
+  /**
+   * Resetea todos los filtros aplicados a sus valores por defecto.
+   */
   resetearFiltros(): void {
     this.busquedaGlobal = '';
     this.especialidadFiltro = 'Todas';
@@ -143,19 +151,30 @@ export class MedicosAdminComponent {
     this.aplicarFiltros();
   }
 
-  // Acciones rápidas
+  /**
+   * Redirige al formulario de alta de un nuevo profesional médico.
+   */
   abrirModalCrear(): void {
-    console.log('Abriendo modal para registrar nuevo médico...');
+    this.router.navigate(['/admin/medicos/nuevo']);
   }
 
+  /**
+   * Visualiza la agenda de turnos asignada al profesional.
+   */
   verAgenda(m: MedicoAdmin): void {
     console.log('Ver agenda de turnos para médico ID:', m.id);
   }
 
+  /**
+   * Redirige a la pantalla de edición del profesional seleccionado.
+   */
   editarMedico(m: MedicoAdmin): void {
-    console.log('Editando médico ID:', m.id);
+    this.router.navigate(['/admin/medicos/editar', m.id]);
   }
 
+  /**
+   * Alterna o modifica el estado institucional del profesional.
+   */
   cambiarEstadoMedico(m: MedicoAdmin): void {
     console.log('Cambiando estado de médico ID:', m.id);
   }

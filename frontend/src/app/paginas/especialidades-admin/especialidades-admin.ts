@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, Router } from '@angular/router';
 
 interface EspecialidadRow {
   id: number;
@@ -15,16 +16,20 @@ interface EspecialidadRow {
 
 @Component({
   selector: 'app-especialidades-admin',
-  imports: [CommonModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './especialidades-admin.html',
   styleUrl: './especialidades-admin.css'
 })
 export class EspecialidadesAdminComponent {
+  
+  // Variables de filtrado en pantalla
   terminoGlobal: string = '';
   filtroNombre: string = '';
   filtroDepto: string = 'Todos';
   filtroEstado: string = 'Todas';
 
+  // Padrón mock de especialidades médicas
   especialidades: EspecialidadRow[] = [
     {
       id: 1,
@@ -88,9 +93,18 @@ export class EspecialidadesAdminComponent {
     }
   ];
 
+  // 1️⃣ PRIMERO declaramos e inicializamos la lista filtrada antes del constructor
   listaFiltrada: EspecialidadRow[] = [...this.especialidades];
 
-  aplicarFiltros() {
+  // 2️⃣ DESPUÉS va el constructor que ya puede usar sin problema las variables de arriba
+  constructor(private router: Router) {
+    this.aplicarFiltros();
+  }
+
+  /**
+   * Filtra las especialidades según los criterios seleccionados.
+   */
+  aplicarFiltros(): void {
     this.listaFiltrada = this.especialidades.filter(item => {
       const matchNombre = item.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase());
       const matchDepto = this.filtroDepto === 'Todos' || item.departamento === this.filtroDepto;
@@ -99,22 +113,35 @@ export class EspecialidadesAdminComponent {
     });
   }
 
-  resetearFiltros() {
+  /**
+   * Resetea los filtros a su estado inicial.
+   */
+  resetearFiltros(): void {
     this.filtroNombre = '';
     this.filtroDepto = 'Todos';
     this.filtroEstado = 'Todas';
     this.listaFiltrada = [...this.especialidades];
   }
 
-  abrirModalNueva() {
-    console.log('Abrir modal para crear nueva especialidad');
+  /**
+   * Redirige al formulario de alta de una nueva especialidad médica.
+   */
+  abrirModalNueva(): void {
+    this.router.navigate(['/admin/especialidades/nuevo']);
   }
 
-  editarEspecialidad(item: EspecialidadRow) {
-    console.log('Editar:', item);
+  /**
+   * Redirige a la pantalla de edición pasando el ID de la especialidad seleccionada.
+   */
+  editarEspecialidad(e: EspecialidadRow): void {
+    this.router.navigate(['/admin/especialidades/editar', e.id]);
   }
 
-  verDetalle(item: EspecialidadRow) {
+  /**
+   * Muestra el detalle del ítem seleccionado en consola.
+   */
+  verDetalle(item: EspecialidadRow): void {
     console.log('Ver detalle:', item);
   }
+
 }

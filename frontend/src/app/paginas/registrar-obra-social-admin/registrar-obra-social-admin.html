@@ -1,0 +1,113 @@
+<!-- Contenedor principal de la vista de alta de cobertura -->
+<div class="register-os-wrapper">
+
+  <!-- Topbar Administrativo Superior -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">🛡️</span>
+        <h2 class="module-title">Gestión de Convenios y Coberturas</h2>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cabecera de la Página con Enlace de Retorno -->
+  <header class="form-header-bar">
+    <div class="header-titles">
+      <span class="back-link" routerLink="/admin/obras-sociales">← Volver al Padrón de Obras Sociales</span>
+      <h1 class="main-title">Alta de Nueva Obra Social / Prepaga</h1>
+      <p class="sub-title">Configure los datos fiscales, planes asociados y canales de contacto para la validación de turnos.</p>
+    </div>
+  </header>
+
+  <!-- Cuerpo del Formulario de Registro -->
+  <main class="form-content-body">
+    <form class="os-form-card" (ngSubmit)="guardarObraSocial()">
+
+      <!-- SECCIÓN 1: DATOS INSTITUCIONALES Y FISCALES -->
+      <div class="form-section">
+        <h3 class="section-title">1. Información Institucional y Fiscal</h3>
+        
+        <div class="form-grid-2">
+          <!-- Razón Social -->
+          <div class="form-group">
+            <label>RAZÓN SOCIAL COMPLETA *</label>
+            <input type="text" [(ngModel)]="obraSocialForm.nombre" name="nombre" placeholder="Ej. Obra Social de la Sanidad Argentina" required />
+          </div>
+
+          <!-- Siglas o Nombre Comercial -->
+          <div class="form-group">
+            <label>SIGLAS / NOMBRE COMERCIAL *</label>
+            <input type="text" [(ngModel)]="obraSocialForm.siglas" name="siglas" placeholder="Ej. OSSACRA" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- CUIT Institucional -->
+          <div class="form-group">
+            <label>CUIT DE LA INSTITUCIÓN *</label>
+            <input type="text" [(ngModel)]="obraSocialForm.cuit" name="cuit" placeholder="Ej. 30-71042918-4" required />
+            <small class="input-hint">Necesario para los reportes de facturación de la clínica.</small>
+          </div>
+
+          <!-- Estado Operativo -->
+          <div class="form-group">
+            <label>ESTADO INICIAL EN EL SISTEMA *</label>
+            <select [(ngModel)]="obraSocialForm.estado" name="estado">
+              <option value="Activa">Activa (Habilitada para turnos y cobros)</option>
+              <option value="Suspendida">Suspendida temporalmente</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: CONTACTO Y AUDITORÍA MÉDICA -->
+      <div class="form-section">
+        <h3 class="section-title">2. Canales de Contacto y Autorizaciones</h3>
+
+        <div class="form-grid-2">
+          <!-- Teléfono -->
+          <div class="form-group">
+            <label>TELÉFONO DE AUDITORÍA / MESA DE ENTRADAS</label>
+            <input type="text" [(ngModel)]="obraSocialForm.telefono" name="telefono" placeholder="Ej. 0800-555-2244" />
+          </div>
+
+          <!-- Correo Electrónico -->
+          <div class="form-group">
+            <label>CORREO ELECTRÓNICO INSTITUCIONAL</label>
+            <input type="email" [(ngModel)]="obraSocialForm.email" name="email" placeholder="auditoria@cobertura.com" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: PLANES HABILITADOS -->
+      <div class="form-section">
+        <h3 class="section-title">3. Planes Médicos Asociados</h3>
+
+        <div class="form-group">
+          <label>PLANES DISPONIBLES (SEPARADOS POR COMA O LÍNEA)</label>
+          <input type="text" [(ngModel)]="obraSocialForm.planesDisponibles" name="planesDisponibles" placeholder="Ej. Plan 210, Plan 310, Plan 400, PMO" />
+          <small class="input-hint">Estos planes aparecerán luego en las opciones cuando un paciente reserve un turno.</small>
+        </div>
+      </div>
+
+      <!-- PIE DE ACCIONES -->
+      <div class="form-actions-footer">
+        <button type="button" class="btn-cancel" routerLink="/admin/obras-sociales">Cancelar</button>
+        <button type="submit" class="btn-submit">💾 Registrar Obra Social</button>
+      </div>
+
+    </form>
+  </main>
+
+</div>

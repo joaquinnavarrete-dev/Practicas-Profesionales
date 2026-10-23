@@ -15,8 +15,13 @@ import { PacientesAdminComponent } from './paginas/pacientes-admin/pacientes-adm
 import { MedicosAdminComponent } from './paginas/medicos-admin/medicos-admin';
 import { UsuariosAdminComponent } from './paginas/usuarios-admin/usuarios-admin';
 import { RolesAdminComponent } from './paginas/roles-admin/roles-admin';
-import { RegistrarPacienteComponent } from './paginas/registrar-paciente/registrar-paciente';
-import { registerAppScopedDispatcher } from '@angular/core/primitives/event-dispatch';
+import { RegistrarUsuarioAdminComponent } from './paginas/registrar-usuario-admin/registrar-usuario-admin';
+import { RegistrarMedicoAdminComponent } from './paginas/registrar-medico-admin/registrar-medico-admin';
+import { EditarMedicoAdminComponent } from './paginas/editar-medico-admin/editar-medico-admin';
+import { RegistrarPacientePublicoComponent } from './paginas/registrar-paciente-publico/registrar-paciente-publico';
+import { RegistrarObraSocialAdminComponent } from './paginas/registrar-obra-social-admin/registrar-obra-social-admin';
+import { RegistrarEspecialidadAdminComponent } from './paginas/registrar-especialidad-admin/registrar-especialidad-admin';
+import { EditarEspecialidadAdminComponent } from './paginas/editar-especialidad-admin/editar-especialidad-admin';
 
 export const routes: Routes = [
   // RUTAS PÚBLICAS
@@ -28,8 +33,9 @@ export const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'especialidades', component: EspecialidadesPublicaComponent },
       { path: 'turnos/solicitar', component: SolicitarTurnoComponent },
-      { path: 'dias-atencion', component: DiasAtencionComponent },
-      { path: 'paciente/registrar', component: RegistrarPacienteComponent}
+      { path: 'registro', component: RegistrarPacientePublicoComponent },
+      { path: 'paciente/registrar', component: RegistrarPacientePublicoComponent }
+      
     ]
   },
 
@@ -47,8 +53,16 @@ export const routes: Routes = [
       { path: 'medicos', component: MedicosAdminComponent },
       { path: 'usuarios', component: UsuariosAdminComponent},
       { path: 'usuarios/roles', component: RolesAdminComponent },
+      { path: 'dias-atencion', component: DiasAtencionComponent },
       { path: 'usuarios/roles/:id', component: RolesAdminComponent },
-      { path: 'paciente/nuevo', component: RegistrarPacienteComponent }
+      { path: 'usuarios/nuevo', component: RegistrarUsuarioAdminComponent },
+      { path: 'medicos/nuevo', component: RegistrarMedicoAdminComponent },
+      { path: 'medicos/editar/:id',component: EditarMedicoAdminComponent },
+      { path: 'obras-sociales/nuevo', component:RegistrarObraSocialAdminComponent },
+      { path: 'especialidades/nuevo', component: RegistrarEspecialidadAdminComponent },
+      { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent },
+
+
     ]
   },
 

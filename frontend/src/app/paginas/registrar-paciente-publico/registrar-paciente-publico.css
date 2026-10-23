@@ -1,0 +1,180 @@
+/* ==========================================================
+   ESTILOS DE LA VISTA PÚBLICA DE REGISTRO DE PACIENTE
+   ========================================================== */
+
+.public-register-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
+
+/* Hero Banner Superior Público */
+.public-hero-banner {
+  background: linear-gradient(135deg, #004b93 0%, #002b55 100%);
+  color: #ffffff;
+  padding: 2.5rem 2rem 3rem;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-home-link {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #93c5fd;
+  text-decoration: none;
+  align-self: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Contenedor del Formulario */
+.public-form-container {
+  max-width: 850px;
+  width: 100%;
+  margin: -2rem auto 0; /* Efecto superposición elegante sobre el banner */
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-form-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 75, 147, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Secciones del Formulario */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1.75rem;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #004b93;
+  margin: 0;
+}
+
+.section-desc {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: -0.25rem 0 0.5rem;
+}
+
+/* Grillas de Campos */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #475569;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.7rem 0.9rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #004b93;
+  box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+}
+
+/* Pie de Formulario y Botón */
+.form-actions-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.75rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.terms-legend {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.btn-submit-public {
+  width: 100%;
+  background-color: #004b93;
+  color: #ffffff;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-submit-public:hover {
+  background-color: #00366a;
+}

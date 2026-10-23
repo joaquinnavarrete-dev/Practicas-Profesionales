@@ -1,0 +1,135 @@
+<!-- Contenedor principal de la vista pública de registro -->
+<div class="public-register-wrapper">
+
+  <!-- Cabecera de bienvenida orientada al paciente -->
+  <header class="public-hero-banner">
+    <div class="hero-content">
+      <a routerLink="/" class="back-home-link">← Volver al Portal Principal</a>
+      <h1 class="hero-title">Creá tu Cuenta en Clínica San Gabriel</h1>
+      <p class="hero-subtitle">Registrate para solicitar turnos online, ver tus recetas y gestionar tu historial médico de forma rápida y segura.</p>
+    </div>
+  </header>
+
+  <!-- Cuerpo principal que contiene el formulario de autorregistro -->
+  <main class="public-form-container">
+    <form class="auth-form-card" (ngSubmit)="registrarUsuarioPublico()">
+
+      <!-- SECCIÓN 1: CREDENCIALES DE ACCESO WEB -->
+      <div class="form-section">
+        <h3 class="section-title">1. Datos de Acceso al Portal</h3>
+        <p class="section-desc">Estas credenciales te servirán para ingresar a tu panel personal en cualquier momento.</p>
+
+        <div class="form-grid-2">
+          <!-- Campo de Correo Electrónico -->
+          <div class="form-group">
+            <label>CORREO ELECTRÓNICO (USUARIO) *</label>
+            <input type="email" [(ngModel)]="pacienteForm.email" name="email" placeholder="tucorreo@email.com" required />
+          </div>
+
+          <!-- Campo de Teléfono -->
+          <div class="form-group">
+            <label>TELÉFONO / CELULAR *</label>
+            <input type="text" [(ngModel)]="pacienteForm.telefono" name="telefono" placeholder="Ej. 11 4567-8900" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Contraseña -->
+          <div class="form-group">
+            <label>CONTRASEÑA *</label>
+            <input type="password" [(ngModel)]="pacienteForm.password" name="password" placeholder="Mínimo 8 caracteres" required />
+          </div>
+
+          <!-- Confirmar Contraseña -->
+          <div class="form-group">
+            <label>REPETIR CONTRASEÑA *</label>
+            <input type="password" [(ngModel)]="pacienteForm.confirmPassword" name="confirmPassword" placeholder="Repetí tu contraseña" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: DATOS PERSONALES -->
+      <div class="form-section">
+        <h3 class="section-title">2. Datos Personales</h3>
+        
+        <div class="form-grid-2">
+          <!-- Nombres -->
+          <div class="form-group">
+            <label>NOMBRE(S) *</label>
+            <input type="text" [(ngModel)]="pacienteForm.nombre" name="nombre" placeholder="Como figura en tu DNI" required />
+          </div>
+
+          <!-- Apellidos -->
+          <div class="form-group">
+            <label>APELLIDO(S) *</label>
+            <input type="text" [(ngModel)]="pacienteForm.apellido" name="apellido" placeholder="Como figura en tu DNI" required />
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <!-- DNI -->
+          <div class="form-group">
+            <label>DNI / DOCUMENTO *</label>
+            <input type="text" [(ngModel)]="pacienteForm.dni" name="dni" placeholder="Sin puntos" required />
+          </div>
+
+          <!-- Fecha de Nacimiento -->
+          <div class="form-group">
+            <label>FECHA DE NACIMIENTO *</label>
+            <input type="date" [(ngModel)]="pacienteForm.fechaNacimiento" name="fechaNacimiento" required />
+          </div>
+
+          <!-- Género -->
+          <div class="form-group">
+            <label>GÉNERO *</label>
+            <select [(ngModel)]="pacienteForm.genero" name="genero">
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Domicilio -->
+        <div class="form-group">
+          <label>DOMICILIO ACTUAL</label>
+          <input type="text" [(ngModel)]="pacienteForm.domicilio" name="domicilio" placeholder="Calle, número, piso, depto y localidad" />
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: COBERTURA MÉDICA -->
+      <div class="form-section">
+        <h3 class="section-title">3. Cobertura Médica (Obra Social o Prepaga)</h3>
+
+        <div class="form-grid-2">
+          <!-- Selector de Obra Social -->
+          <div class="form-group">
+            <label>OBRA SOCIAL / PREPAGA</label>
+            <select [(ngModel)]="pacienteForm.obraSocial" name="obraSocial">
+              <option value="Particular">Particular (Sin cobertura)</option>
+              <option value="OSDE">OSDE</option>
+              <option value="Swiss Medical">Swiss Medical</option>
+              <option value="Galeno">Galeno</option>
+              <option value="PAMI">PAMI</option>
+              <option value="OSECAC">OSECAC</option>
+            </select>
+          </div>
+
+          <!-- Plan o Número de Afiliado -->
+          <div class="form-group">
+            <label>NÚMERO DE AFILIADO / PLAN</label>
+            <input type="text" [(ngModel)]="pacienteForm.planAfiliado" name="planAfiliado" placeholder="Ej. Plan 310 • N° 482109" />
+          </div>
+        </div>
+      </div>
+
+      <!-- PIE DE ACCIONES Y BOTÓN DE ENVÍO -->
+      <div class="form-actions-footer">
+        <p class="terms-legend">Al registrarte, aceptás los términos y condiciones de privacidad de la Clínica San Gabriel.</p>
+        <button type="submit" class="btn-submit-public">Crear mi Cuenta de Paciente</button>
+      </div>
+
+    </form>
+  </main>
+
+</div>

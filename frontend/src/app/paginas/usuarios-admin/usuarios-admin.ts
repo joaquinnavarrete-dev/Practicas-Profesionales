@@ -103,7 +103,7 @@ export class UsuariosAdminComponent {
   }
 
   abrirModalCrearUsuario(): void {
-    this.router.navigate(['/admin/usuarios/roles']);
+    this.router.navigate(['/admin/usuarios/nuevo']);
   }
 
   // ➔ AQUÍ OCURRE LA MAGIA: Al hacer clic en el lápiz, navegamos pasando el ID del usuario

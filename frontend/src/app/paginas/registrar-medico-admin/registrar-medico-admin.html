@@ -1,0 +1,126 @@
+<div class="register-doctor-wrapper">
+
+  <!-- Topbar Administrativo -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">🩺</span>
+        <h2 class="module-title">Gestión del Cuerpo Médico</h2>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cabecera de la Página -->
+  <header class="form-header-bar">
+    <div class="header-titles">
+      <span class="back-link" routerLink="/admin/medicos">← Volver al Cuerpo Médico</span>
+      <h1 class="main-title">Alta de Nuevo Profesional Médico</h1>
+      <p class="sub-title">Registre las credenciales profesionales, especialidad principal, consultorio y grilla horaria de atención.</p>
+    </div>
+  </header>
+
+  <!-- Formulario Principal -->
+  <main class="form-content-body">
+    <form class="doctor-form-card" (ngSubmit)="guardarMedico()">
+
+      <!-- SECCIÓN 1: DATOS PERSONALES Y CONTACTO -->
+      <div class="form-section">
+        <h3 class="section-title">1. Datos Personales y de Contacto</h3>
+        
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NOMBRE(S) *</label>
+            <input type="text" [(ngModel)]="medicoForm.nombre" name="nombre" placeholder="Ej. Roberto Carlos" required />
+          </div>
+
+          <div class="form-group">
+            <label>APELLIDO(S) *</label>
+            <input type="text" [(ngModel)]="medicoForm.apellido" name="apellido" placeholder="Ej. Giménez" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>CORREO ELECTRÓNICO INSTITUCIONAL *</label>
+            <input type="email" [(ngModel)]="medicoForm.email" name="email" placeholder="Ej. roberto.gimenez@sangabriel.com" required />
+          </div>
+
+          <div class="form-group">
+            <label>TELÉFONO / CELULAR DE CONTACTO *</label>
+            <input type="text" [(ngModel)]="medicoForm.telefono" name="telefono" placeholder="Ej. +54 9 11 4402-9911" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: DATOS PROFESIONALES Y MATRÍCULA -->
+      <div class="form-section">
+        <h3 class="section-title">2. Credenciales y Especialidad Médica</h3>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NÚMERO DE MATRÍCULA (NACIONAL / PROVINCIAL) *</label>
+            <input type="text" [(ngModel)]="medicoForm.matricula" name="matricula" placeholder="Ej. M.N. 142.589" required />
+          </div>
+
+          <div class="form-group">
+            <label>ESPECIALIDAD PRINCIPAL *</label>
+            <select [(ngModel)]="medicoForm.especialidad" name="especialidad">
+              <option value="Cardiología">Cardiología</option>
+              <option value="Neurología">Neurología</option>
+              <option value="Pediatría">Pediatría</option>
+              <option value="Traumatología">Traumatología</option>
+              <option value="Clínica Médica">Clínica Médica</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>SUBESPECIALIDAD O ÁREA DE ORIENTACIÓN</label>
+          <input type="text" [(ngModel)]="medicoForm.subespecialidad" name="subespecialidad" placeholder="Ej. Ecocardiografía y Doppler / Cirugía de Rodilla" />
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: ASIGNACIÓN DE CONSULTORIO Y HORARIOS -->
+      <div class="form-section">
+        <h3 class="section-title">3. Ubicación y Días de Atención</h3>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>CONSULTORIO ASIGNADO *</label>
+            <select [(ngModel)]="medicoForm.consultorio" name="consultorio">
+              <option value="Consultorio 101 (Piso 1)">Consultorio 101 (Piso 1)</option>
+              <option value="Consultorio 102 (Piso 1)">Consultorio 102 (Piso 1)</option>
+              <option value="Consultorio 204 (Piso 2)">Consultorio 204 (Piso 2)</option>
+              <option value="Consultorio 210 (Piso 2)">Consultorio 210 (Piso 2)</option>
+              <option value="Consultorio 301 (Piso 3)">Consultorio 301 (Piso 3)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>DÍAS Y HORARIOS DE ATENCIÓN *</label>
+            <input type="text" [(ngModel)]="medicoForm.diasAtencion" name="diasAtencion" placeholder="Ej. Lun, Mié y Vie (08:00 a 13:00 hs)" required />
+            <small class="input-hint">Formato libre para visualización rápida en cartilla.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN -->
+      <div class="form-actions-footer">
+        <button type="button" class="btn-cancel" routerLink="/admin/medicos">Cancelar</button>
+        <button type="submit" class="btn-submit">💾 Registrar Profesional</button>
+      </div>
+
+    </form>
+  </main>
+
+</div>

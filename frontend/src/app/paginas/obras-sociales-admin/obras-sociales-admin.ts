@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 // Modelo DTO de Obra Social / Prepaga (Mapeable a ObraSocialEntity en Spring Boot)
 export interface ObraSocial {
@@ -18,7 +19,7 @@ export interface ObraSocial {
 @Component({
   selector: 'app-obras-sociales-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './obras-sociales-admin.html',
   styleUrl: './obras-sociales-admin.css'
 })

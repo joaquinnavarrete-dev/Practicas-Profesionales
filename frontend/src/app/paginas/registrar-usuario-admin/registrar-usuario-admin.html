@@ -1,0 +1,121 @@
+<div class="register-user-wrapper">
+
+  <!-- Topbar Administrativo -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">👥</span>
+        <h2 class="module-title">Gestión de Accesos y Cuentas</h2>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cabecera de la Página -->
+  <header class="form-header-bar">
+    <div class="header-titles">
+      <span class="back-link" routerLink="/admin/usuarios">← Volver al Padrón de Usuarios</span>
+      <h1 class="main-title">Alta de Nuevo Usuario del Sistema</h1>
+      <p class="sub-title">Cree credenciales de acceso institucional, asigne un rol de seguridad y configure permisos iniciales.</p>
+    </div>
+  </header>
+
+  <!-- Formulario Principal -->
+  <main class="form-content-body">
+    <form class="user-form-card" (ngSubmit)="guardarUsuario()">
+
+      <!-- SECCIÓN 1: DATOS DE LA CUENTA Y CREDENCIALES -->
+      <div class="form-section">
+        <h3 class="section-title">1. Credenciales de Ingreso (Spring Security)</h3>
+        
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NOMBRE DE USUARIO (USERNAME) *</label>
+            <input type="text" [(ngModel)]="usuarioForm.username" name="username" placeholder="Ej. mgomez, recepcion02" required />
+            <small class="input-hint">Será el identificador único para iniciar sesión en la clínica.</small>
+          </div>
+
+          <div class="form-group">
+            <label>CORREO ELECTRÓNICO INSTITUCIONAL *</label>
+            <input type="email" [(ngModel)]="usuarioForm.email" name="email" placeholder="Ej. usuario@sangabriel.com" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>CONTRASEÑA TEMPORAL *</label>
+            <input type="password" [(ngModel)]="usuarioForm.password" name="password" placeholder="••••••••••••" required />
+            <small class="input-hint">El usuario deberá cambiarla obligatoriamente en su primer ingreso.</small>
+          </div>
+
+          <div class="form-group">
+            <label>CONFIRMAR CONTRASEÑA *</label>
+            <input type="password" [(ngModel)]="usuarioForm.confirmPassword" name="confirmPassword" placeholder="••••••••••••" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: INFORMACIÓN PERSONAL ASOCIADA -->
+      <div class="form-section">
+        <h3 class="section-title">2. Datos Personales del Titular</h3>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NOMBRE(S) *</label>
+            <input type="text" [(ngModel)]="usuarioForm.nombre" name="nombre" placeholder="Ej. Roberto Carlos" required />
+          </div>
+
+          <div class="form-group">
+            <label>APELLIDO(S) *</label>
+            <input type="text" [(ngModel)]="usuarioForm.apellido" name="apellido" placeholder="Ej. Giménez" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>DNI / DOCUMENTO DE IDENTIDAD *</label>
+            <input type="text" [(ngModel)]="usuarioForm.dni" name="dni" placeholder="Ej. 32.109.842" required />
+          </div>
+
+          <div class="form-group">
+            <label>TELÉFONO DE CONTACTO</label>
+            <input type="text" [(ngModel)]="usuarioForm.telefono" name="telefono" placeholder="Ej. +54 9 11 3049-1122" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: ASIGNACIÓN DE ROL Y PERMISOS (RBAC) -->
+      <div class="form-section">
+        <h3 class="section-title">3. Rol de Acceso Institucional</h3>
+
+        <div class="form-group">
+          <label>SELECCIONAR ROL EN EL SISTEMA *</label>
+          <select [(ngModel)]="usuarioForm.rol" name="rol">
+            <option value="Administrador">Administrador (Acceso total a todos los módulos)</option>
+            <option value="Médico">Médico (Acceso a agenda propia e historias clínicas)</option>
+            <option value="Recepción">Recepción / Administrativo (Gestión de turnos y pacientes)</option>
+            <option value="Paciente">Paciente (Autogestión de citas web)</option>
+          </select>
+          <small class="input-hint">Esto determinará automáticamente los permisos de lectura y escritura iniciales.</small>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN -->
+      <div class="form-actions-footer">
+        <button type="button" class="btn-cancel" routerLink="/admin/usuarios">Cancelar</button>
+        <button type="submit" class="btn-submit">💾 Registrar Usuario y Asignar Rol</button>
+      </div>
+
+    </form>
+  </main>
+
+</div>

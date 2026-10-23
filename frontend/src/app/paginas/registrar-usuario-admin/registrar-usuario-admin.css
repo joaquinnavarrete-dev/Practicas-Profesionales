@@ -1,0 +1,204 @@
+.register-user-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+/* TOPBAR ADMINISTRATIVO */
+.topbar-admin {
+  height: 64px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.topbar-left { display: flex; align-items: center; }
+.module-title-box { display: flex; align-items: center; gap: 0.6rem; }
+.module-icon { font-size: 1.15rem; }
+.module-title { font-size: 0.98rem; font-weight: 700; color: #0f172a; margin: 0; }
+
+.topbar-right { display: flex; align-items: center; gap: 1.15rem; }
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 1rem;
+}
+
+.avatar-ph {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.profile-info { display: flex; flex-direction: column; }
+.profile-name { font-size: 0.82rem; font-weight: 700; color: #0f172a; }
+.profile-role { font-size: 0.7rem; color: #64748b; }
+
+/* CABECERA DEL FORMULARIO */
+.form-header-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem 2.5rem;
+}
+
+.back-link {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #004b93;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.main-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.2rem;
+}
+
+.sub-title {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* CUERPO DEL CONTENEDOR */
+.form-content-body {
+  max-width: 850px;
+  width: 100%;
+  margin: 2rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.user-form-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1.5rem;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #004b93;
+  margin: 0;
+}
+
+/* GRILLAS DE FORMULARIO */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #475569;
+  letter-spacing: 0.4px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.65rem 0.85rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #004b93;
+  box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.1);
+}
+
+.input-hint {
+  font-size: 0.73rem;
+  color: #64748b;
+  margin-top: 0.1rem;
+}
+
+/* PIE DE ACCIONES */
+.form-actions-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.btn-cancel {
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-submit {
+  background-color: #004b93;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-submit:hover {
+  background-color: #00366a;
+}

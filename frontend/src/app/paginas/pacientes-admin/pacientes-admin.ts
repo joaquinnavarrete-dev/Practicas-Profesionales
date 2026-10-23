@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {RouterLink}  from '@angular/router'
 
 // Modelo DTO de Paciente (Mapeable a PacienteEntity en Spring Boot)
 export interface Paciente {
@@ -23,7 +24,7 @@ export interface Paciente {
 @Component({
   selector: 'app-pacientes-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './pacientes-admin.html',
   styleUrl: './pacientes-admin.css'
 })

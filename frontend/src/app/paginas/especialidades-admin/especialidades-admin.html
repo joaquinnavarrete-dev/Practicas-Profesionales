@@ -46,9 +46,9 @@
         <p class="sub-heading">Catálogo de especialidades clínicas y asignación de profesionales.</p>
       </div>
 
-      <button class="btn-create-modal" (click)="abrirModalNueva()">
+      <a routerLink="/admin/especialidades/nuevo" class="btn-create-modal">
         <span class="plus-symbol">+</span> Nueva Especialidad
-      </button>
+      </a>
     </div>
 
     <!-- Barra de Filtros Rápidos -->
@@ -139,6 +139,7 @@
             <!-- Acciones -->
             <td class="col-actions">
               <div class="action-buttons-group">
+                
                 <button class="btn-action-icon" (click)="editarEspecialidad(item)" title="Editar">
                   ✏️
                 </button>

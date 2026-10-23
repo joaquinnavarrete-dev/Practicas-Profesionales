@@ -1,4 +1,4 @@
-.register-patient-wrapper {
+.register-doctor-wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -7,7 +7,52 @@
   padding-bottom: 3rem;
 }
 
-/* CABECERA */
+/* TOPBAR ADMINISTRATIVO */
+.topbar-admin {
+  height: 64px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.topbar-left { display: flex; align-items: center; }
+.module-title-box { display: flex; align-items: center; gap: 0.6rem; }
+.module-icon { font-size: 1.15rem; }
+.module-title { font-size: 0.98rem; font-weight: 700; color: #0f172a; margin: 0; }
+
+.topbar-right { display: flex; align-items: center; gap: 1.15rem; }
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 1rem;
+}
+
+.avatar-ph {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.profile-info { display: flex; flex-direction: column; }
+.profile-name { font-size: 0.82rem; font-weight: 700; color: #0f172a; }
+.profile-role { font-size: 0.7rem; color: #64748b; }
+
+/* CABECERA DEL FORMULARIO */
 .form-header-bar {
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
@@ -37,7 +82,7 @@
   margin: 0;
 }
 
-/* CUERPO */
+/* CUERPO DEL CONTENEDOR */
 .form-content-body {
   max-width: 850px;
   width: 100%;
@@ -45,7 +90,7 @@
   padding: 0 1.5rem;
 }
 
-.patient-form-card {
+.doctor-form-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -83,12 +128,6 @@
   gap: 1rem;
 }
 
-.form-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -119,6 +158,12 @@
 .form-group select:focus {
   border-color: #004b93;
   box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.1);
+}
+
+.input-hint {
+  font-size: 0.73rem;
+  color: #64748b;
+  margin-top: 0.1rem;
 }
 
 /* PIE DE ACCIONES */

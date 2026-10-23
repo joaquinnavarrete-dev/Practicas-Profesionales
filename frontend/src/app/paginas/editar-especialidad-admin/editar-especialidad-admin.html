@@ -1,0 +1,99 @@
+<!-- Contenedor principal de la vista de edición de especialidad -->
+<div class="register-esp-wrapper">
+
+  <!-- Topbar Administrativo Superior -->
+  <header class="topbar-admin">
+    <div class="topbar-left">
+      <div class="module-title-box">
+        <span class="module-icon">🏥</span>
+        <h2 class="module-title">Gestión de Cartilla y Especialidades</h2>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="profile-card">
+        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="profile-info">
+          <span class="profile-name">Dra. Mariana Gómez</span>
+          <span class="profile-role">Directora Médica ▾</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cabecera de la Página con Enlace de Retorno -->
+  <header class="form-header-bar">
+    <div class="header-titles">
+      <span class="back-link" routerLink="/admin/especialidades">← Volver al Padrón de Especialidades</span>
+      <h1 class="main-title">Modificar Especialidad Médica</h1>
+      <p class="sub-title">Actualice los datos, códigos de cartilla, duración de turnos o estado operativo del registro ID: {{ especialidadId }}.</p>
+    </div>
+  </header>
+
+  <!-- Cuerpo del Formulario de Edición -->
+  <main class="form-content-body">
+    <form class="esp-form-card" (ngSubmit)="actualizarEspecialidad()">
+
+      <!-- SECCIÓN 1: DATOS GENERALES DE LA ESPECIALIDAD -->
+      <div class="form-section">
+        <h3 class="section-title">1. Información General del Servicio</h3>
+        
+        <div class="form-grid-2">
+          <!-- Nombre de la Especialidad -->
+          <div class="form-group">
+            <label>NOMBRE DE LA ESPECIALIDAD *</label>
+            <input type="text" [(ngModel)]="especialidadForm.nombre" name="nombre" placeholder="Ej. Cardiología" required />
+          </div>
+
+          <!-- Código Interno -->
+          <div class="form-group">
+            <label>CÓDIGO INTERNO / ABREVIATURA *</label>
+            <input type="text" [(ngModel)]="especialidadForm.codigo" name="codigo" placeholder="Ej. ESP-CARD-01" required />
+            <small class="input-hint">Identificador único en cartilla.</small>
+          </div>
+        </div>
+
+        <!-- Descripción / Alcance -->
+        <div class="form-group">
+          <label>DESCRIPCIÓN Y ÁREAS DE ATENCIÓN</label>
+          <input type="text" [(ngModel)]="especialidadForm.descripcion" name="descripcion" placeholder="Ej. Patologías del corazón" />
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: CONFIGURACIÓN DE TURNOS Y ESTADO -->
+      <div class="form-section">
+        <h3 class="section-title">2. Parámetros de Agenda y Estado Institucional</h3>
+
+        <div class="form-grid-2">
+          <!-- Duración estimada del turno -->
+          <div class="form-group">
+            <label>DURACIÓN ESTIMADA POR CONSULTA *</label>
+            <select [(ngModel)]="especialidadForm.duracionTurno" name="duracionTurno">
+              <option value="15">15 minutos (Consultas breves / Control)</option>
+              <option value="20">20 minutos (Estándar clínico)</option>
+              <option value="30">30 minutos (Primera vez / Especializado)</option>
+              <option value="45">45 minutos (Estudios complejos / Diagnóstico)</option>
+            </select>
+          </div>
+
+          <!-- Estado Operativo -->
+          <div class="form-group">
+            <label>ESTADO EN LA CARTILLA WEB *</label>
+            <select [(ngModel)]="especialidadForm.estado" name="estado">
+              <option value="Activa">Activa (Visible para asignación de turnos)</option>
+              <option value="Inactiva">Inactiva (Oculta temporalmente)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIE DE ACCIONES -->
+      <div class="form-actions-footer">
+        <button type="button" class="btn-cancel" routerLink="/admin/especialidades">Cancelar</button>
+        <button type="submit" class="btn-submit">💾 Guardar Modificaciones</button>
+      </div>
+
+    </form>
+  </main>
+
+</div>
