@@ -2,6 +2,7 @@ package com.practica.backend.service.impl;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -72,7 +74,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         Usuario usuario = Usuario.builder()
                 .nombreUsuario(dto.getNombreUsuario())
-                .contrasena(dto.getContrasena())
+                .contrasena(passwordEncoder.encode(dto.getContrasena()))
                 .rol(rol)
                 .activo(dto.getActivo() != null ? dto.getActivo() : true)
                 .build();
@@ -96,7 +98,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         usuario.setNombreUsuario(dto.getNombreUsuario());
         if (dto.getContrasena() != null && !dto.getContrasena().isBlank()) {
-            usuario.setContrasena(dto.getContrasena());
+            usuario.setContrasena(passwordEncoder.encode(dto.getContrasena()));
         }
         usuario.setRol(rol);
         if (dto.getActivo() != null) {
