@@ -75,12 +75,12 @@ public class JwtService {
     }
 
     private SecretKey getSignInKey() {
-        byte[] keyBytes;
         try {
-            keyBytes = Decoders.BASE64.decode(secretKey);
-        } catch (Exception e) {
-            keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+            java.security.MessageDigest sha = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] keyBytes = sha.digest(secretKey.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error inicializando clave de firma JWT", e);
         }
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
