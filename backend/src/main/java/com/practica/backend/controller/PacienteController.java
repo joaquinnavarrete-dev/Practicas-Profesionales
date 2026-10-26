@@ -30,6 +30,21 @@ public class PacienteController {
 
     private final PacienteService pacienteService;
 
+    @GetMapping("/mi-perfil")
+    @Operation(summary = "Obtener el perfil del paciente autenticado")
+    public ResponseEntity<PacienteResponseDto> obtenerMiPerfil(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        return ResponseEntity.ok(pacienteService.obtenerMiPerfil(userDetails.getUsername()));
+    }
+
+    @PutMapping("/mi-perfil")
+    @Operation(summary = "Actualizar el perfil del paciente autenticado")
+    public ResponseEntity<PacienteResponseDto> actualizarMiPerfil(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails,
+            @Valid @RequestBody com.practica.backend.dto.ActualizarPerfilPacienteRequestDto dto) {
+        return ResponseEntity.ok(pacienteService.actualizarMiPerfil(userDetails.getUsername(), dto));
+    }
+
     @GetMapping
     @Operation(summary = "Listar todos los pacientes")
     public ResponseEntity<List<PacienteResponseDto>> listarTodos() {

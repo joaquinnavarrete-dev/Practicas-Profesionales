@@ -35,6 +35,30 @@ public class TurnoController {
 
     private final TurnoService turnoService;
 
+    @GetMapping("/mis-turnos")
+    @Operation(summary = "Listar los turnos del paciente actualmente autenticado")
+    public ResponseEntity<List<TurnoResponseDto>> listarMisTurnos(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        return ResponseEntity.ok(turnoService.listarMisTurnos(userDetails.getUsername()));
+    }
+
+    @PostMapping("/solicitar")
+    @Operation(summary = "Solicitar y reservar un nuevo turno para el paciente autenticado")
+    public ResponseEntity<TurnoResponseDto> solicitarTurno(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails,
+            @Valid @RequestBody com.practica.backend.dto.SolicitarTurnoRequestDto dto) {
+        return new ResponseEntity<>(turnoService.solicitarTurno(userDetails.getUsername(), dto), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/mis-turnos/{id}")
+    @Operation(summary = "Cancelar un turno perteneciente al paciente autenticado")
+    public ResponseEntity<Void> cancelarMiTurno(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails,
+            @PathVariable Integer id) {
+        turnoService.cancelarMiTurno(userDetails.getUsername(), id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     @Operation(summary = "Listar todos los turnos")
     public ResponseEntity<List<TurnoResponseDto>> listarTodos() {
