@@ -113,6 +113,31 @@ public class PacienteServiceImpl implements PacienteService {
         pacienteRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PacienteResponseDto obtenerMiPerfil(String nombreUsuario) {
+        Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
+        return mapToResponseDto(paciente);
+    }
+
+    @Override
+    @Transactional
+    public PacienteResponseDto actualizarMiPerfil(String nombreUsuario, com.practica.backend.dto.ActualizarPerfilPacienteRequestDto dto) {
+        Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
+
+        ObraSocial obraSocial = obraSocialRepository.findById(dto.getIdObraSocial())
+                .orElseThrow(() -> new ResourceNotFoundException("Obra social no encontrada con id: " + dto.getIdObraSocial()));
+
+        paciente.setNombre(dto.getNombre().trim());
+        paciente.setApellido(dto.getApellido().trim());
+        paciente.setTelefono(dto.getTelefono().trim());
+        paciente.setObraSocial(obraSocial);
+
+        return mapToResponseDto(pacienteRepository.save(paciente));
+    }
+
     private PacienteResponseDto mapToResponseDto(Paciente entity) {
         ObraSocialResponseDto obraSocialDto = null;
         if (entity.getObraSocial() != null) {
