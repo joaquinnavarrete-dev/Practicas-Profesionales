@@ -230,6 +230,47 @@ public class TurnoServiceImpl implements TurnoService {
         turnoRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> listarMisTurnos(String nombreUsuario) {
+        Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
+        return listarPorPaciente(paciente.getIdPaciente());
+    }
+
+    @Override
+    @Transactional
+    public TurnoResponseDto solicitarTurno(String nombreUsuario, com.practica.backend.dto.SolicitarTurnoRequestDto dto) {
+        Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
+
+        TurnoRequestDto turnoRequestDto = TurnoRequestDto.builder()
+                .idPaciente(paciente.getIdPaciente())
+                .idMedico(dto.getIdMedico())
+                .idEspecialidad(dto.getIdEspecialidad())
+                .fecha(dto.getFecha())
+                .hora(dto.getHora())
+                .build();
+
+        return reservarTurno(turnoRequestDto);
+    }
+
+    @Override
+    @Transactional
+    public void cancelarMiTurno(String nombreUsuario, Integer idTurno) {
+        Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
+
+        Turno turno = turnoRepository.findById(idTurno)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con id: " + idTurno));
+
+        if (!turno.getPaciente().getIdPaciente().equals(paciente.getIdPaciente())) {
+            throw new BadRequestException("No tiene permisos para cancelar este turno porque pertenece a otro paciente");
+        }
+
+        turnoRepository.delete(turno);
+    }
+
     private TurnoResponseDto mapToResponseDto(Turno entity) {
         PacienteResponseDto pacienteDto = null;
         if (entity.getPaciente() != null) {
