@@ -94,8 +94,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/obras-sociales/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/turnos/disponibles/**").permitAll()
 
-                .requestMatchers("/api/pacientes/mi-perfil/**").hasRole("PACIENTE")
-                .requestMatchers("/api/turnos/mis-turnos/**", "/api/turnos/solicitar/**").hasRole("PACIENTE")
+                .requestMatchers("/api/pacientes/mi-perfil", "/api/pacientes/mi-perfil/**").hasRole("PACIENTE")
+                .requestMatchers(
+                    "/api/turnos/mis-turnos",
+                    "/api/turnos/mis-turnos/**",
+                    "/api/turnos/solicitar",
+                    "/api/turnos/solicitar/**"
+                ).hasRole("PACIENTE")
 
                 .requestMatchers("/api/usuarios/**").hasRole("ADMINISTRADOR")
                 .requestMatchers("/api/roles/**").hasRole("ADMINISTRADOR")
