@@ -24,6 +24,7 @@ public class MedicoServiceImpl implements MedicoService {
 
     private final MedicoRepository medicoRepository;
     private final EspecialidadRepository especialidadRepository;
+    private final com.practica.backend.repository.UsuarioRepository usuarioRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -62,11 +63,22 @@ public class MedicoServiceImpl implements MedicoService {
         Especialidad especialidad = especialidadRepository.findById(dto.getIdEspecialidad())
                 .orElseThrow(() -> new ResourceNotFoundException("Especialidad no encontrada con id: " + dto.getIdEspecialidad()));
 
+        com.practica.backend.model.Usuario usuario = null;
+        if (dto.getIdUsuario() != null) {
+            usuario = usuarioRepository.findById(dto.getIdUsuario())
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + dto.getIdUsuario()));
+
+            if (medicoRepository.findByUsuarioIdUsuario(dto.getIdUsuario()).isPresent()) {
+                throw new ResourceAlreadyExistsException("El usuario ya se encuentra vinculado a otro médico");
+            }
+        }
+
         Medico medico = Medico.builder()
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
                 .matricula(dto.getMatricula())
                 .especialidad(especialidad)
+                .usuario(usuario)
                 .build();
 
         return mapToResponseDto(medicoRepository.save(medico));
@@ -85,6 +97,21 @@ public class MedicoServiceImpl implements MedicoService {
 
         Especialidad especialidad = especialidadRepository.findById(dto.getIdEspecialidad())
                 .orElseThrow(() -> new ResourceNotFoundException("Especialidad no encontrada con id: " + dto.getIdEspecialidad()));
+
+        if (dto.getIdUsuario() != null) {
+            com.practica.backend.model.Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + dto.getIdUsuario()));
+
+            medicoRepository.findByUsuarioIdUsuario(dto.getIdUsuario())
+                    .filter(otro -> !otro.getIdMedico().equals(id))
+                    .ifPresent(otro -> {
+                        throw new ResourceAlreadyExistsException("El usuario ya se encuentra vinculado a otro médico");
+                    });
+
+            medico.setUsuario(usuario);
+        } else {
+            medico.setUsuario(null);
+        }
 
         medico.setNombre(dto.getNombre());
         medico.setApellido(dto.getApellido());
