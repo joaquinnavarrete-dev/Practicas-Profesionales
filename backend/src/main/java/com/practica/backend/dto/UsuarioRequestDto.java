@@ -21,7 +21,7 @@ public class UsuarioRequestDto {
     private String nombreUsuario;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 4, max = 255, message = "La contraseña debe tener entre 4 y 255 caracteres")
+    @Size(min = 6, max = 255, message = "La contraseña debe tener entre 6 y 255 caracteres")
     private String contrasena;
 
     @NotNull(message = "El id de rol es obligatorio")
