@@ -223,6 +223,12 @@ public class TurnoServiceImpl implements TurnoService {
 
     @Override
     @Transactional
+    public TurnoResponseDto reprogramarTurno(Integer id, com.practica.backend.dto.ReprogramarTurnoRequestDto dto) {
+        return reprogramarTurno(id, dto.getNuevaFecha(), dto.getNuevaHora());
+    }
+
+    @Override
+    @Transactional
     public void cancelarTurno(Integer id) {
         if (!turnoRepository.existsById(id)) {
             throw new ResourceNotFoundException("Turno no encontrado con id: " + id);

@@ -27,6 +27,8 @@ public interface TurnoService {
 
     TurnoResponseDto reprogramarTurno(Integer id, LocalDate nuevaFecha, LocalTime nuevaHora);
 
+    TurnoResponseDto reprogramarTurno(Integer id, com.practica.backend.dto.ReprogramarTurnoRequestDto dto);
+
     void cancelarTurno(Integer id);
 
     List<TurnoResponseDto> listarMisTurnos(String nombreUsuario);
