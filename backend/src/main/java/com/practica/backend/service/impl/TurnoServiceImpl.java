@@ -19,6 +19,8 @@ import com.practica.backend.dto.PacienteResponseDto;
 import com.practica.backend.dto.TurnoDisponibleResponseDto;
 import com.practica.backend.dto.TurnoRequestDto;
 import com.practica.backend.dto.TurnoResponseDto;
+import com.practica.backend.dto.ReprogramarTurnoRequestDto;
+import com.practica.backend.dto.SolicitarTurnoRequestDto;
 import com.practica.backend.exception.BadRequestException;
 import com.practica.backend.exception.ResourceAlreadyExistsException;
 import com.practica.backend.exception.ResourceNotFoundException;
@@ -223,7 +225,7 @@ public class TurnoServiceImpl implements TurnoService {
 
     @Override
     @Transactional
-    public TurnoResponseDto reprogramarTurno(Integer id, com.practica.backend.dto.ReprogramarTurnoRequestDto dto) {
+    public TurnoResponseDto reprogramarTurno(Integer id, ReprogramarTurnoRequestDto dto) {
         return reprogramarTurno(id, dto.getNuevaFecha(), dto.getNuevaHora());
     }
 
@@ -246,7 +248,7 @@ public class TurnoServiceImpl implements TurnoService {
 
     @Override
     @Transactional
-    public TurnoResponseDto solicitarTurno(String nombreUsuario, com.practica.backend.dto.SolicitarTurnoRequestDto dto) {
+    public TurnoResponseDto solicitarTurno(String nombreUsuario, SolicitarTurnoRequestDto dto) {
         Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
 

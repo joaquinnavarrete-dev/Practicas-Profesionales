@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.practica.backend.dto.PacienteRequestDto;
 import com.practica.backend.dto.PacienteResponseDto;
 import com.practica.backend.service.PacienteService;
+import com.practica.backend.dto.ActualizarPerfilPacienteRequestDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +42,7 @@ public class PacienteController {
     @Operation(summary = "Actualizar el perfil del paciente autenticado")
     public ResponseEntity<PacienteResponseDto> actualizarMiPerfil(
             @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails,
-            @Valid @RequestBody com.practica.backend.dto.ActualizarPerfilPacienteRequestDto dto) {
+            @Valid @RequestBody ActualizarPerfilPacienteRequestDto dto) {
         return ResponseEntity.ok(pacienteService.actualizarMiPerfil(userDetails.getUsername(), dto));
     }
 

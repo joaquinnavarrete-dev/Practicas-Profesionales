@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.practica.backend.dto.SolicitarTurnoRequestDto;
+import com.practica.backend.dto.ReprogramarTurnoRequestDto;
 import com.practica.backend.dto.TurnoDisponibleResponseDto;
 import com.practica.backend.dto.TurnoRequestDto;
 import com.practica.backend.dto.TurnoResponseDto;
@@ -27,7 +28,7 @@ public interface TurnoService {
 
     TurnoResponseDto reprogramarTurno(Integer id, LocalDate nuevaFecha, LocalTime nuevaHora);
 
-    TurnoResponseDto reprogramarTurno(Integer id, com.practica.backend.dto.ReprogramarTurnoRequestDto dto);
+    TurnoResponseDto reprogramarTurno(Integer id, ReprogramarTurnoRequestDto dto);
 
     void cancelarTurno(Integer id);
 

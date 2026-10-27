@@ -12,8 +12,10 @@ import com.practica.backend.exception.ResourceAlreadyExistsException;
 import com.practica.backend.exception.ResourceNotFoundException;
 import com.practica.backend.model.Especialidad;
 import com.practica.backend.model.Medico;
+import com.practica.backend.model.Usuario;
 import com.practica.backend.repository.EspecialidadRepository;
 import com.practica.backend.repository.MedicoRepository;
+import com.practica.backend.repository.UsuarioRepository;
 import com.practica.backend.service.MedicoService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class MedicoServiceImpl implements MedicoService {
 
     private final MedicoRepository medicoRepository;
     private final EspecialidadRepository especialidadRepository;
-    private final com.practica.backend.repository.UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -63,7 +65,7 @@ public class MedicoServiceImpl implements MedicoService {
         Especialidad especialidad = especialidadRepository.findById(dto.getIdEspecialidad())
                 .orElseThrow(() -> new ResourceNotFoundException("Especialidad no encontrada con id: " + dto.getIdEspecialidad()));
 
-        com.practica.backend.model.Usuario usuario = null;
+        Usuario usuario = null;
         if (dto.getIdUsuario() != null) {
             usuario = usuarioRepository.findById(dto.getIdUsuario())
                     .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + dto.getIdUsuario()));
@@ -99,7 +101,7 @@ public class MedicoServiceImpl implements MedicoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Especialidad no encontrada con id: " + dto.getIdEspecialidad()));
 
         if (dto.getIdUsuario() != null) {
-            com.practica.backend.model.Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
+            Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
                     .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + dto.getIdUsuario()));
 
             medicoRepository.findByUsuarioIdUsuario(dto.getIdUsuario())

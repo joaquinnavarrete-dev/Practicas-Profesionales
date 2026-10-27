@@ -21,6 +21,10 @@ import com.practica.backend.dto.TurnoDisponibleResponseDto;
 import com.practica.backend.dto.TurnoRequestDto;
 import com.practica.backend.dto.TurnoResponseDto;
 import com.practica.backend.service.TurnoService;
+import com.practica.backend.dto.SolicitarTurnoRequestDto;
+import com.practica.backend.dto.ReprogramarTurnoRequestDto;
+
+import com.practica.backend.exception.BadRequestException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,7 +50,7 @@ public class TurnoController {
     @Operation(summary = "Solicitar y reservar un nuevo turno para el paciente autenticado")
     public ResponseEntity<TurnoResponseDto> solicitarTurno(
             @org.springframework.security.core.annotation.AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails,
-            @Valid @RequestBody com.practica.backend.dto.SolicitarTurnoRequestDto dto) {
+            @Valid @RequestBody SolicitarTurnoRequestDto dto) {
         return new ResponseEntity<>(turnoService.solicitarTurno(userDetails.getUsername(), dto), HttpStatus.CREATED);
     }
 
@@ -103,7 +107,7 @@ public class TurnoController {
     @Operation(summary = "Reprogramar un turno existente enviando nueva fecha y hora")
     public ResponseEntity<TurnoResponseDto> reprogramar(
             @PathVariable Integer id,
-            @Valid @RequestBody(required = false) com.practica.backend.dto.ReprogramarTurnoRequestDto dto,
+            @Valid @RequestBody(required = false) ReprogramarTurnoRequestDto dto,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nuevaFecha,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime nuevaHora) {
         if (dto != null) {
@@ -112,7 +116,7 @@ public class TurnoController {
         if (nuevaFecha != null && nuevaHora != null) {
             return ResponseEntity.ok(turnoService.reprogramarTurno(id, nuevaFecha, nuevaHora));
         }
-        throw new com.practica.backend.exception.BadRequestException("Debe proporcionar la nueva fecha y hora para reprogramar el turno");
+        throw new BadRequestException("Debe proporcionar la nueva fecha y hora para reprogramar el turno");
     }
 
     @DeleteMapping("/{id}")

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.practica.backend.dto.ObraSocialResponseDto;
 import com.practica.backend.dto.PacienteRequestDto;
 import com.practica.backend.dto.PacienteResponseDto;
+import com.practica.backend.dto.ActualizarPerfilPacienteRequestDto;
 import com.practica.backend.exception.ResourceAlreadyExistsException;
 import com.practica.backend.exception.ResourceNotFoundException;
 import com.practica.backend.model.ObraSocial;
@@ -123,7 +124,7 @@ public class PacienteServiceImpl implements PacienteService {
 
     @Override
     @Transactional
-    public PacienteResponseDto actualizarMiPerfil(String nombreUsuario, com.practica.backend.dto.ActualizarPerfilPacienteRequestDto dto) {
+    public PacienteResponseDto actualizarMiPerfil(String nombreUsuario, ActualizarPerfilPacienteRequestDto dto) {
         Paciente paciente = pacienteRepository.findByUsuarioNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un perfil de paciente para el usuario: " + nombreUsuario));
 
