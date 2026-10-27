@@ -100,12 +100,19 @@ public class TurnoController {
     }
 
     @PutMapping("/{id}/reprogramar")
-    @Operation(summary = "Reprogramar un turno existente")
+    @Operation(summary = "Reprogramar un turno existente enviando nueva fecha y hora")
     public ResponseEntity<TurnoResponseDto> reprogramar(
             @PathVariable Integer id,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nuevaFecha,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime nuevaHora) {
-        return ResponseEntity.ok(turnoService.reprogramarTurno(id, nuevaFecha, nuevaHora));
+            @Valid @RequestBody(required = false) com.practica.backend.dto.ReprogramarTurnoRequestDto dto,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate nuevaFecha,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime nuevaHora) {
+        if (dto != null) {
+            return ResponseEntity.ok(turnoService.reprogramarTurno(id, dto));
+        }
+        if (nuevaFecha != null && nuevaHora != null) {
+            return ResponseEntity.ok(turnoService.reprogramarTurno(id, nuevaFecha, nuevaHora));
+        }
+        throw new com.practica.backend.exception.BadRequestException("Debe proporcionar la nueva fecha y hora para reprogramar el turno");
     }
 
     @DeleteMapping("/{id}")
