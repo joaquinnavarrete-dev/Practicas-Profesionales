@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard, adminGuard } from './guards';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout';
 import { AdminLayout } from './layouts/admin-layout/admin-layout';
 import { InicioComponent } from './paginas/inicio/inicio';
@@ -24,7 +25,6 @@ import { RegistrarEspecialidadAdminComponent } from './paginas/registrar-especia
 import { EditarEspecialidadAdminComponent } from './paginas/editar-especialidad-admin/editar-especialidad-admin';
 
 export const routes: Routes = [
-  // RUTAS PÚBLICAS
   {
     path: '',
     component: PublicLayoutComponent,
@@ -35,34 +35,32 @@ export const routes: Routes = [
       { path: 'turnos/solicitar', component: SolicitarTurnoComponent },
       { path: 'registro', component: RegistrarPacientePublicoComponent },
       { path: 'paciente/registrar', component: RegistrarPacientePublicoComponent }
-      
     ]
   },
 
-  // RUTAS ADMINISTRATIVAS (Todas las que el Sidebar busca bajo /admin)
   {
     path: 'admin',
     component: AdminLayout,
+    canActivate: [authGuard, adminGuard],
     children: [
       { path: '', component: DashboardAdminComponent },
+      { path: 'dashboard', redirectTo: '', pathMatch: 'full' },
       { path: 'especialidades', component: EspecialidadesAdminComponent },
       { path: 'pacientes-por-medico', component: PacientesPorMedicoComponent },
       { path: 'turnos', component: TurnosAdminComponent },
-      { path: 'obras-sociales', component: ObrasSocialesAdminComponent},
-      { path:'pacientes', component: PacientesAdminComponent},
+      { path: 'obras-sociales', component: ObrasSocialesAdminComponent },
+      { path: 'pacientes', component: PacientesAdminComponent },
       { path: 'medicos', component: MedicosAdminComponent },
-      { path: 'usuarios', component: UsuariosAdminComponent},
+      { path: 'usuarios', component: UsuariosAdminComponent },
       { path: 'usuarios/roles', component: RolesAdminComponent },
       { path: 'dias-atencion', component: DiasAtencionComponent },
       { path: 'usuarios/roles/:id', component: RolesAdminComponent },
       { path: 'usuarios/nuevo', component: RegistrarUsuarioAdminComponent },
       { path: 'medicos/nuevo', component: RegistrarMedicoAdminComponent },
-      { path: 'medicos/editar/:id',component: EditarMedicoAdminComponent },
-      { path: 'obras-sociales/nuevo', component:RegistrarObraSocialAdminComponent },
+      { path: 'medicos/editar/:id', component: EditarMedicoAdminComponent },
+      { path: 'obras-sociales/nuevo', component: RegistrarObraSocialAdminComponent },
       { path: 'especialidades/nuevo', component: RegistrarEspecialidadAdminComponent },
-      { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent },
-
-
+      { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent }
     ]
   },
 
