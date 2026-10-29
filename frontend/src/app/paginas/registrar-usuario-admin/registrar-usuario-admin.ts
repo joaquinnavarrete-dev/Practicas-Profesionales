@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { UsuarioService } from '../../services';
 
 @Component({
   selector: 'app-registrar-usuario-admin',
@@ -12,7 +13,8 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class RegistrarUsuarioAdminComponent {
 
-  // Objeto DTO que mapea el payload para enviar a Spring Boot (POST /api/usuarios)
+  guardando: boolean = false;
+
   usuarioForm = {
     username: '',
     email: '',
@@ -25,20 +27,48 @@ export class RegistrarUsuarioAdminComponent {
     rol: 'Recepción'
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private usuarioService: UsuarioService
+  ) { }
 
-  // Lógica de guardado y alta de usuario
   guardarUsuario(): void {
+    if (!this.usuarioForm.username.trim() || !this.usuarioForm.password) {
+      alert('Por favor, complete el nombre de usuario y la contraseña.');
+      return;
+    }
+
     if (this.usuarioForm.password !== this.usuarioForm.confirmPassword) {
       alert('Las contraseñas ingresadas no coinciden.');
       return;
     }
 
-    console.log('Enviando nuevo usuario al backend de Spring Boot:', this.usuarioForm);
-    alert('¡Usuario del sistema registrado correctamente!');
-    
-    // Redirige de regreso al padrón general de usuarios
-    this.router.navigate(['/admin/usuarios']);
+    this.guardando = true;
+
+    let idRol = 3;
+    if (this.usuarioForm.rol === 'Administrador') {
+      idRol = 1;
+    } else if (this.usuarioForm.rol === 'Médico') {
+      idRol = 2;
+    }
+
+    this.usuarioService.crear({
+      nombreUsuario: this.usuarioForm.username.trim(),
+      password: this.usuarioForm.password,
+      idRol: idRol,
+      estado: true
+    }).subscribe({
+      next: (nuevoUsuario) => {
+        this.guardando = false;
+        alert(`¡Usuario @${nuevoUsuario.nombreUsuario} registrado exitosamente en el sistema!`);
+        this.router.navigate(['/admin/usuarios']);
+      },
+      error: (err) => {
+        this.guardando = false;
+        console.error('Error al registrar usuario en Spring Boot:', err);
+        alert(err?.error?.message || 'Error al comunicarse con el servidor para registrar el usuario.');
+      }
+    });
   }
 
 }
