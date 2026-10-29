@@ -18,7 +18,11 @@ export class AuthService {
   readonly userRole = computed(() => this.currentUser()?.rol ?? null);
 
   login(credenciales: AuthRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credenciales).pipe(
+    const payload = {
+      nombreUsuario: credenciales.nombreUsuario,
+      contrasena: credenciales.contrasena || credenciales.password
+    };
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload).pipe(
       tap((res) => this.guardarSesion(res))
     );
   }

@@ -23,11 +23,23 @@ export class UsuarioService {
   }
 
   crear(dto: UsuarioRequest): Observable<Usuario> {
-    return this.http.post<Usuario>(this.apiUrl, dto);
+    const payload = {
+      nombreUsuario: dto.nombreUsuario,
+      contrasena: dto.contrasena || dto.password || 'temp1234',
+      idRol: dto.idRol,
+      activo: dto.activo !== undefined ? dto.activo : (dto.estado !== undefined ? dto.estado : true)
+    };
+    return this.http.post<Usuario>(this.apiUrl, payload);
   }
 
   actualizar(id: number, dto: UsuarioRequest): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.apiUrl}/${id}`, dto);
+    const payload = {
+      nombreUsuario: dto.nombreUsuario,
+      contrasena: dto.contrasena || dto.password || 'temp1234',
+      idRol: dto.idRol,
+      activo: dto.activo !== undefined ? dto.activo : (dto.estado !== undefined ? dto.estado : true)
+    };
+    return this.http.put<Usuario>(`${this.apiUrl}/${id}`, payload);
   }
 
   cambiarEstado(id: number, estado: boolean): Observable<Usuario> {
@@ -53,4 +65,3 @@ export class UsuarioService {
     return this.http.post<Rol>(this.rolesUrl, dto);
   }
 }
-
