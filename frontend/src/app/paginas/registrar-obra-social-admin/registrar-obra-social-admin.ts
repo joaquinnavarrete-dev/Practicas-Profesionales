@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { ObraSocialService } from '../../services';
+import { ObraSocialService, NotificationService } from '../../services';
 
 @Component({
   selector: 'app-registrar-obra-social-admin',
@@ -12,6 +12,9 @@ import { ObraSocialService } from '../../services';
   styleUrl: './registrar-obra-social-admin.css'
 })
 export class RegistrarObraSocialAdminComponent {
+  private readonly router = inject(Router);
+  private readonly obraSocialService = inject(ObraSocialService);
+  private readonly notify = inject(NotificationService);
 
   guardando: boolean = false;
 
@@ -25,14 +28,9 @@ export class RegistrarObraSocialAdminComponent {
     estado: 'Activa'
   };
 
-  constructor(
-    private router: Router,
-    private obraSocialService: ObraSocialService
-  ) { }
-
   guardarObraSocial(): void {
     if (!this.obraSocialForm.nombre.trim()) {
-      alert('Por favor, ingrese el nombre de la obra social.');
+      this.notify.warning('Por favor, ingrese el nombre de la obra social.');
       return;
     }
 
@@ -42,13 +40,13 @@ export class RegistrarObraSocialAdminComponent {
     }).subscribe({
       next: (nuevaOS) => {
         this.guardando = false;
-        alert(`¡Obra social "${nuevaOS.nombre}" registrada con éxito en el sistema!`);
+        this.notify.success(`¡Obra social "${nuevaOS.nombre}" registrada con éxito en el sistema!`);
         this.router.navigate(['/admin/obras-sociales']);
       },
       error: (err) => {
         this.guardando = false;
         console.error('Error al registrar obra social:', err);
-        alert(err?.error?.message || 'Error al comunicarse con el servidor para registrar la obra social.');
+        this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para registrar la obra social.');
       }
     });
   }

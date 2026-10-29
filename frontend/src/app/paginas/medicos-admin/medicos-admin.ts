@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MedicoService } from '../../services/medico.service';
 import { EspecialidadService } from '../../services/especialidad.service';
+import { NotificationService } from '../../services/notification.service';
+import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Medico, Especialidad } from '../../models';
 
 @Component({
@@ -16,6 +18,8 @@ import { Medico, Especialidad } from '../../models';
 export class MedicosAdminComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly especialidadService = inject(EspecialidadService);
+  private readonly notify = inject(NotificationService);
+  private readonly confirmModal = inject(ConfirmModalService);
   private readonly router = inject(Router);
 
   busquedaGlobal: string = '';
@@ -95,17 +99,25 @@ export class MedicosAdminComponent implements OnInit {
     this.router.navigate(['/admin/medicos/editar', m.idMedico]);
   }
 
-  eliminarMedico(m: Medico): void {
-    if (confirm(`¿Está seguro de eliminar al profesional Dr(a). ${m.nombre} ${m.apellido}?`)) {
-      this.medicoService.eliminar(m.idMedico).subscribe({
-        next: () => {
-          this.cargarMedicos();
-        },
-        error: (err) => {
-          console.error('Error al eliminar médico:', err);
-          alert(err.error?.message || 'No se puede eliminar el médico si tiene turnos o agendas activas.');
-        }
-      });
-    }
+  async eliminarMedico(m: Medico): Promise<void> {
+    const confirmado = await this.confirmModal.confirm({
+      titulo: '¿Eliminar Médico?',
+      mensaje: `¿Confirma que desea dar de baja al profesional Dr(a). ${m.nombre} ${m.apellido}? Esta acción no se puede deshacer.`,
+      textoConfirmar: 'Eliminar Médico',
+      tipo: 'danger'
+    });
+
+    if (!confirmado) return;
+
+    this.medicoService.eliminar(m.idMedico).subscribe({
+      next: () => {
+        this.notify.success(`El Dr(a). ${m.nombre} ${m.apellido} fue eliminado correctamente.`);
+        this.cargarMedicos();
+      },
+      error: (err) => {
+        console.error('Error al eliminar médico:', err);
+        this.notify.error(err.error?.message || 'No se puede eliminar el médico si tiene turnos o agendas activas.');
+      }
+    });
   }
 }

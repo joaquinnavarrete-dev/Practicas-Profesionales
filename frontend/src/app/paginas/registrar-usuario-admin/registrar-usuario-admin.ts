@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UsuarioService } from '../../services';
+import { UsuarioService, NotificationService } from '../../services';
 
 @Component({
   selector: 'app-registrar-usuario-admin',
@@ -12,6 +12,9 @@ import { UsuarioService } from '../../services';
   styleUrl: './registrar-usuario-admin.css'
 })
 export class RegistrarUsuarioAdminComponent {
+  private readonly router = inject(Router);
+  private readonly usuarioService = inject(UsuarioService);
+  private readonly notify = inject(NotificationService);
 
   guardando: boolean = false;
 
@@ -27,19 +30,14 @@ export class RegistrarUsuarioAdminComponent {
     rol: 'Recepción'
   };
 
-  constructor(
-    private router: Router,
-    private usuarioService: UsuarioService
-  ) { }
-
   guardarUsuario(): void {
     if (!this.usuarioForm.username.trim() || !this.usuarioForm.password) {
-      alert('Por favor, complete el nombre de usuario y la contraseña.');
+      this.notify.warning('Por favor, complete el nombre de usuario y la contraseña.');
       return;
     }
 
     if (this.usuarioForm.password !== this.usuarioForm.confirmPassword) {
-      alert('Las contraseñas ingresadas no coinciden.');
+      this.notify.warning('Las contraseñas ingresadas no coinciden.');
       return;
     }
 
@@ -60,13 +58,13 @@ export class RegistrarUsuarioAdminComponent {
     }).subscribe({
       next: (nuevoUsuario) => {
         this.guardando = false;
-        alert(`¡Usuario @${nuevoUsuario.nombreUsuario} registrado exitosamente en el sistema!`);
+        this.notify.success(`¡Usuario @${nuevoUsuario.nombreUsuario} registrado exitosamente en el sistema!`);
         this.router.navigate(['/admin/usuarios']);
       },
       error: (err) => {
         this.guardando = false;
         console.error('Error al registrar usuario en Spring Boot:', err);
-        alert(err?.error?.message || 'Error al comunicarse con el servidor para registrar el usuario.');
+        this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para registrar el usuario.');
       }
     });
   }

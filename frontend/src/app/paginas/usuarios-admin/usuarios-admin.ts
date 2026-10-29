@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-import { UsuarioService } from '../../services';
+import { UsuarioService, NotificationService, ConfirmModalService } from '../../services';
 import { Usuario } from '../../models';
 
 export interface UsuarioSistema {
@@ -26,6 +26,10 @@ export interface UsuarioSistema {
   styleUrl: './usuarios-admin.css'
 })
 export class UsuariosAdminComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly usuarioService = inject(UsuarioService);
+  private readonly notify = inject(NotificationService);
+  private readonly confirmModal = inject(ConfirmModalService);
 
   busquedaGlobal: string = '';
   rolFiltro: string = 'Todos';
@@ -34,11 +38,6 @@ export class UsuariosAdminComponent implements OnInit {
 
   usuarios: UsuarioSistema[] = [];
   usuariosFiltrados: UsuarioSistema[] = [];
-
-  constructor(
-    private router: Router,
-    private usuarioService: UsuarioService
-  ) {}
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -140,27 +139,35 @@ export class UsuariosAdminComponent implements OnInit {
       next: () => {
         u.estado = nuevoEstado ? 'Activo' : 'Bloqueado';
         this.aplicarFiltros();
+        this.notify.info(`Cuenta de @${u.username} ahora está: ${u.estado}`);
       },
       error: (err) => {
         console.error('Error al cambiar estado del usuario:', err);
-        alert(err?.error?.message || 'No se pudo cambiar el estado del usuario.');
+        this.notify.error(err?.error?.message || 'No se pudo cambiar el estado del usuario.');
       }
     });
   }
 
-  eliminarUsuario(u: UsuarioSistema): void {
-    if (confirm(`¿Confirma eliminar definitivamente la cuenta @${u.username}?`)) {
-      this.usuarioService.eliminar(u.id).subscribe({
-        next: () => {
-          alert(`Usuario @${u.username} eliminado correctamente.`);
-          this.cargarDatos();
-        },
-        error: (err) => {
-          console.error('Error al eliminar usuario:', err);
-          alert(err?.error?.message || 'No se pudo eliminar el usuario.');
-        }
-      });
-    }
+  async eliminarUsuario(u: UsuarioSistema): Promise<void> {
+    const confirmado = await this.confirmModal.confirm({
+      titulo: '¿Eliminar Usuario?',
+      mensaje: `¿Confirma eliminar definitivamente la cuenta de acceso @${u.username}?`,
+      textoConfirmar: 'Eliminar Cuenta',
+      tipo: 'danger'
+    });
+
+    if (!confirmado) return;
+
+    this.usuarioService.eliminar(u.id).subscribe({
+      next: () => {
+        this.notify.success(`Usuario @${u.username} eliminado correctamente.`);
+        this.cargarDatos();
+      },
+      error: (err) => {
+        console.error('Error al eliminar usuario:', err);
+        this.notify.error(err?.error?.message || 'No se pudo eliminar el usuario.');
+      }
+    });
   }
 
 }

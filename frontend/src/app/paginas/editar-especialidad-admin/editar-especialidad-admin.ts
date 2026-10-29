@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { EspecialidadService } from '../../services';
+import { EspecialidadService, NotificationService } from '../../services';
 import { Especialidad } from '../../models';
 
 @Component({
@@ -13,6 +13,10 @@ import { Especialidad } from '../../models';
   styleUrl: './editar-especialidad-admin.css'
 })
 export class EditarEspecialidadAdminComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly especialidadService = inject(EspecialidadService);
+  private readonly notify = inject(NotificationService);
 
   especialidadId: string | null = null;
   cargando: boolean = false;
@@ -25,12 +29,6 @@ export class EditarEspecialidadAdminComponent implements OnInit {
     duracionTurno: '30',
     estado: 'Activa'
   };
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private especialidadService: EspecialidadService
-  ) { }
 
   ngOnInit(): void {
     this.especialidadId = this.route.snapshot.paramMap.get('id');
@@ -52,7 +50,7 @@ export class EditarEspecialidadAdminComponent implements OnInit {
         error: (err: any) => {
           this.cargando = false;
           console.error('Error al obtener especialidad de Spring Boot:', err);
-          alert('No se pudo encontrar la especialidad solicitada.');
+          this.notify.error('No se pudo encontrar la especialidad solicitada.');
           this.router.navigate(['/admin/especialidades']);
         }
       });
@@ -61,7 +59,7 @@ export class EditarEspecialidadAdminComponent implements OnInit {
 
   actualizarEspecialidad(): void {
     if (!this.especialidadForm.nombre.trim()) {
-      alert('Por favor, ingrese el nombre de la especialidad.');
+      this.notify.warning('Por favor, ingrese el nombre de la especialidad.');
       return;
     }
 
@@ -75,13 +73,13 @@ export class EditarEspecialidadAdminComponent implements OnInit {
     }).subscribe({
       next: (espActualizada: Especialidad) => {
         this.guardando = false;
-        alert(`¡Especialidad "${espActualizada.nombre}" actualizada con éxito!`);
+        this.notify.success(`¡Especialidad "${espActualizada.nombre}" actualizada con éxito!`);
         this.router.navigate(['/admin/especialidades']);
       },
       error: (err: any) => {
         this.guardando = false;
         console.error('Error al actualizar especialidad:', err);
-        alert(err?.error?.message || 'Error al comunicarse con el servidor para actualizar la especialidad.');
+        this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para actualizar la especialidad.');
       }
     });
   }

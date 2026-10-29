@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
 import { ObraSocialService } from '../../services/obra-social.service';
+import { NotificationService } from '../../services/notification.service';
+import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Paciente, ObraSocial } from '../../models';
 
 @Component({
@@ -16,6 +18,8 @@ import { Paciente, ObraSocial } from '../../models';
 export class PacientesAdminComponent implements OnInit {
   private readonly pacienteService = inject(PacienteService);
   private readonly obraSocialService = inject(ObraSocialService);
+  private readonly notify = inject(NotificationService);
+  private readonly confirmModal = inject(ConfirmModalService);
   private readonly router = inject(Router);
 
   busquedaGlobal: string = '';
@@ -85,18 +89,26 @@ export class PacientesAdminComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-  eliminarPaciente(p: Paciente): void {
-    if (confirm(`¿Está seguro de eliminar al paciente ${p.nombre} ${p.apellido} (DNI ${p.dni})?`)) {
-      this.pacienteService.eliminar(p.idPaciente).subscribe({
-        next: () => {
-          this.pacientes = this.pacientes.filter(item => item.idPaciente !== p.idPaciente);
-          this.aplicarFiltros();
-        },
-        error: (err) => {
-          console.error('Error al eliminar paciente:', err);
-          alert(err.error?.message || 'No se puede eliminar el paciente si tiene turnos registrados.');
-        }
-      });
-    }
+  async eliminarPaciente(p: Paciente): Promise<void> {
+    const confirmado = await this.confirmModal.confirm({
+      titulo: '¿Eliminar Paciente?',
+      mensaje: `¿Confirma que desea eliminar la ficha del paciente ${p.nombre} ${p.apellido} (DNI ${p.dni})?`,
+      textoConfirmar: 'Eliminar Paciente',
+      tipo: 'danger'
+    });
+
+    if (!confirmado) return;
+
+    this.pacienteService.eliminar(p.idPaciente).subscribe({
+      next: () => {
+        this.pacientes = this.pacientes.filter(item => item.idPaciente !== p.idPaciente);
+        this.aplicarFiltros();
+        this.notify.success(`El paciente ${p.nombre} ${p.apellido} fue eliminado correctamente.`);
+      },
+      error: (err) => {
+        console.error('Error al eliminar paciente:', err);
+        this.notify.error(err.error?.message || 'No se puede eliminar el paciente si posee turnos registrados.');
+      }
+    });
   }
 }

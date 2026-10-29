@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ObraSocialService } from '../../services';
+import { ObraSocialService, NotificationService, ConfirmModalService } from '../../services';
 import { ObraSocial as ObraSocialModel } from '../../models';
 
 export interface ObraSocialItem {
@@ -25,6 +25,9 @@ export interface ObraSocialItem {
   styleUrl: './obras-sociales-admin.css'
 })
 export class ObrasSocialesAdminComponent implements OnInit {
+  private readonly obraSocialService = inject(ObraSocialService);
+  private readonly notify = inject(NotificationService);
+  private readonly confirmModal = inject(ConfirmModalService);
 
   busquedaGlobal: string = '';
   estadoFiltro: string = 'Todos';
@@ -33,8 +36,6 @@ export class ObrasSocialesAdminComponent implements OnInit {
   cargando: boolean = false;
   obrasSociales: ObraSocialItem[] = [];
   obrasSocialesFiltradas: ObraSocialItem[] = [];
-
-  constructor(private obraSocialService: ObraSocialService) { }
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -101,9 +102,9 @@ export class ObrasSocialesAdminComponent implements OnInit {
       const matchEstado = this.estadoFiltro === 'Todos' || os.estado === this.estadoFiltro;
       const matchTipo = this.tipoFiltro === 'Todos' || os.tipo === this.tipoFiltro;
       const matchQuery = !q ||
-        os.nombre.toLowerCase().includes(q) ||
-        os.sigla.toLowerCase().includes(q) ||
-        os.codigoRns.includes(q);
+                         os.nombre.toLowerCase().includes(q) ||
+                         os.sigla.toLowerCase().includes(q) ||
+                         os.codigoRns.includes(q);
 
       return matchEstado && matchTipo && matchQuery;
     });
@@ -120,19 +121,26 @@ export class ObrasSocialesAdminComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-  eliminarObraSocial(os: ObraSocialItem): void {
-    if (confirm(`¿Está seguro de que desea eliminar la cobertura "${os.nombre}"?`)) {
-      this.obraSocialService.eliminar(os.id).subscribe({
-        next: () => {
-          alert(`Obra social "${os.nombre}" eliminada exitosamente.`);
-          this.cargarDatos();
-        },
-        error: (err) => {
-          console.error('Error al eliminar obra social:', err);
-          alert(err?.error?.message || 'No se pudo eliminar la obra social. Verifique que no posea pacientes afiliados registrados.');
-        }
-      });
-    }
+  async eliminarObraSocial(os: ObraSocialItem): Promise<void> {
+    const confirmado = await this.confirmModal.confirm({
+      titulo: '¿Eliminar Obra Social?',
+      mensaje: `¿Confirma la eliminación del convenio con "${os.nombre}"?`,
+      textoConfirmar: 'Eliminar Obra Social',
+      tipo: 'danger'
+    });
+
+    if (!confirmado) return;
+
+    this.obraSocialService.eliminar(os.id).subscribe({
+      next: () => {
+        this.notify.success(`Obra social "${os.nombre}" eliminada exitosamente.`);
+        this.cargarDatos();
+      },
+      error: (err) => {
+        console.error('Error al eliminar obra social:', err);
+        this.notify.error(err?.error?.message || 'No se pudo eliminar la obra social. Verifique que no posea pacientes afiliados registrados.');
+      }
+    });
   }
 
   cambiarEstadoConvenio(os: ObraSocialItem): void {
@@ -143,6 +151,7 @@ export class ObrasSocialesAdminComponent implements OnInit {
     } else {
       os.estado = 'Activa';
     }
+    this.notify.info(`Estado de "${os.sigla}" cambiado a: ${os.estado}`);
     this.aplicarFiltros();
   }
 

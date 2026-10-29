@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MedicoService } from '../../services/medico.service';
 import { EspecialidadService } from '../../services/especialidad.service';
+import { NotificationService } from '../../services/notification.service';
 import { Especialidad, MedicoRequest } from '../../models';
 
 @Component({
@@ -16,6 +17,7 @@ import { Especialidad, MedicoRequest } from '../../models';
 export class RegistrarMedicoAdminComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly especialidadService = inject(EspecialidadService);
+  private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
 
   especialidades: Especialidad[] = [];
@@ -61,6 +63,7 @@ export class RegistrarMedicoAdminComponent implements OnInit {
         !this.medicoForm.telefono.trim() ||
         !this.medicoForm.idEspecialidad) {
       this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
+      this.notify.warning('Complete todos los campos obligatorios antes de continuar.');
       return;
     }
 
@@ -77,7 +80,7 @@ export class RegistrarMedicoAdminComponent implements OnInit {
     this.medicoService.crear(payload).subscribe({
       next: () => {
         this.guardando = false;
-        alert('¡Profesional médico registrado con éxito!');
+        this.notify.success('¡Profesional médico registrado con éxito en el sistema!');
         this.router.navigate(['/admin/medicos']);
       },
       error: (err) => {
@@ -88,6 +91,7 @@ export class RegistrarMedicoAdminComponent implements OnInit {
         } else {
           this.errorMessage = err.error?.message || 'Error al guardar el profesional. Intente nuevamente.';
         }
+        this.notify.error(this.errorMessage);
       }
     });
   }

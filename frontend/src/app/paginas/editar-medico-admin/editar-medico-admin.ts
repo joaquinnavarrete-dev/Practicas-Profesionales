@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { MedicoService } from '../../services/medico.service';
 import { EspecialidadService } from '../../services/especialidad.service';
+import { NotificationService } from '../../services/notification.service';
 import { Especialidad, MedicoRequest } from '../../models';
 
 @Component({
@@ -16,6 +17,7 @@ import { Especialidad, MedicoRequest } from '../../models';
 export class EditarMedicoAdminComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly especialidadService = inject(EspecialidadService);
+  private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -66,6 +68,7 @@ export class EditarMedicoAdminComponent implements OnInit {
             this.cargando = false;
             console.error('Error al cargar datos del médico:', err);
             this.errorMessage = 'No se encontró el profesional médico solicitado.';
+            this.notify.error('No se encontró el profesional médico solicitado.');
           }
         });
       },
@@ -87,6 +90,7 @@ export class EditarMedicoAdminComponent implements OnInit {
       !this.medicoForm.telefono.trim() ||
       !this.medicoForm.idEspecialidad) {
       this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
+      this.notify.warning('Complete todos los campos obligatorios antes de continuar.');
       return;
     }
 
@@ -103,7 +107,7 @@ export class EditarMedicoAdminComponent implements OnInit {
     this.medicoService.actualizar(this.medicoId, payload).subscribe({
       next: () => {
         this.guardando = false;
-        alert('¡Datos del profesional médico actualizados con éxito!');
+        this.notify.success('¡Datos del profesional médico actualizados con éxito!');
         this.router.navigate(['/admin/medicos']);
       },
       error: (err) => {
@@ -114,6 +118,7 @@ export class EditarMedicoAdminComponent implements OnInit {
         } else {
           this.errorMessage = err.error?.message || 'Error al actualizar el profesional. Intente nuevamente.';
         }
+        this.notify.error(this.errorMessage);
       }
     });
   }

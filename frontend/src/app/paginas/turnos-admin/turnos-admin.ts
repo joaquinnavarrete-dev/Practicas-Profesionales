@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { TurnoService } from '../../services/turno.service';
 import { EspecialidadService } from '../../services/especialidad.service';
+import { NotificationService } from '../../services/notification.service';
+import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Turno, Especialidad } from '../../models';
 
 @Component({
@@ -16,6 +18,8 @@ import { Turno, Especialidad } from '../../models';
 export class TurnosAdminComponent implements OnInit {
   private readonly turnoService = inject(TurnoService);
   private readonly especialidadService = inject(EspecialidadService);
+  private readonly notify = inject(NotificationService);
+  private readonly confirmModal = inject(ConfirmModalService);
   private readonly route = inject(ActivatedRoute);
 
   busquedaGlobal: string = '';
@@ -95,18 +99,26 @@ export class TurnosAdminComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-  cancelarTurno(t: Turno): void {
-    if (confirm(`¿Confirma la cancelación del turno del paciente ${t.paciente.nombre} ${t.paciente.apellido} para el ${t.fecha} a las ${t.hora} hs?`)) {
-      this.turnoService.cancelar(t.idTurno).subscribe({
-        next: () => {
-          this.turnos = this.turnos.filter(item => item.idTurno !== t.idTurno);
-          this.aplicarFiltros();
-        },
-        error: (err) => {
-          console.error('Error al cancelar turno:', err);
-          alert(err.error?.message || 'No se pudo cancelar el turno.');
-        }
-      });
-    }
+  async cancelarTurno(t: Turno): Promise<void> {
+    const confirmado = await this.confirmModal.confirm({
+      titulo: '¿Cancelar Turno?',
+      mensaje: `¿Confirma la cancelación del turno del paciente ${t.paciente.nombre} ${t.paciente.apellido} agendado para el ${t.fecha} a las ${t.hora} hs?`,
+      textoConfirmar: 'Sí, Cancelar Turno',
+      tipo: 'danger'
+    });
+
+    if (!confirmado) return;
+
+    this.turnoService.cancelar(t.idTurno).subscribe({
+      next: () => {
+        this.turnos = this.turnos.filter(item => item.idTurno !== t.idTurno);
+        this.aplicarFiltros();
+        this.notify.success(`El turno de ${t.paciente.nombre} ${t.paciente.apellido} ha sido cancelado.`);
+      },
+      error: (err) => {
+        console.error('Error al cancelar turno:', err);
+        this.notify.error(err.error?.message || 'No se pudo cancelar el turno.');
+      }
+    });
   }
 }

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { UsuarioService } from '../../services';
+import { UsuarioService, NotificationService } from '../../services';
 import { Usuario } from '../../models';
 
 export interface PermisoModulo {
@@ -42,6 +42,10 @@ export interface UsuarioDetalle {
   styleUrl: './roles-admin.css'
 })
 export class RolesAdminComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly usuarioService = inject(UsuarioService);
+  private readonly notify = inject(NotificationService);
 
   usuarioEnEdicion: UsuarioDetalle | null = null;
   guardando: boolean = false;
@@ -111,12 +115,6 @@ export class RolesAdminComponent implements OnInit {
 
   rolSeleccionado: RolPerfil = this.roles[0];
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private usuarioService: UsuarioService
-  ) {}
-
   ngOnInit(): void {
     const paramId = this.route.snapshot.paramMap.get('id');
 
@@ -143,6 +141,7 @@ export class RolesAdminComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al obtener usuario en roles:', err);
+          this.notify.error('No se pudo cargar la información del usuario.');
         }
       });
     }
@@ -172,17 +171,17 @@ export class RolesAdminComponent implements OnInit {
       }).subscribe({
         next: () => {
           this.guardando = false;
-          alert(`¡Rol actualizado exitosamente para @${this.usuarioEnEdicion?.username}!`);
+          this.notify.success(`¡Rol de acceso actualizado exitosamente para @${this.usuarioEnEdicion?.username}!`);
           this.router.navigate(['/admin/usuarios']);
         },
         error: (err) => {
           this.guardando = false;
           console.error('Error al actualizar rol de usuario:', err);
-          alert(err?.error?.message || 'Error al comunicarse con el servidor para actualizar el rol.');
+          this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para actualizar el rol.');
         }
       });
     } else {
-      alert('Matriz de roles y privilegios globales validada.');
+      this.notify.info('Matriz global de roles y privilegios RBAC verificada correctamente.');
     }
   }
 

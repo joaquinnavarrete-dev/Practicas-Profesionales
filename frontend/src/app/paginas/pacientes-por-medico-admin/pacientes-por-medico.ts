@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MedicoService, TurnoService } from '../../services';
+import { MedicoService, TurnoService, NotificationService } from '../../services';
 import { Medico, Turno } from '../../models';
 
 export interface MedicoInfo {
@@ -37,6 +37,9 @@ export interface PacienteCita {
   styleUrl: './pacientes-por-medico.css'
 })
 export class PacientesPorMedicoComponent implements OnInit {
+  private readonly medicoService = inject(MedicoService);
+  private readonly turnoService = inject(TurnoService);
+  private readonly notify = inject(NotificationService);
 
   busquedaGlobal: string = '';
   medicoSeleccionadoId: number = 0;
@@ -49,12 +52,8 @@ export class PacientesPorMedicoComponent implements OnInit {
   medicoActual: MedicoInfo | undefined;
   pacientesFiltrados: PacienteCita[] = [];
 
-  constructor(
-    private medicoService: MedicoService,
-    private turnoService: TurnoService
-  ) { }
-
   ngOnInit(): void {
+    // Establecer fecha de hoy como filtro predeterminado
     this.fechaFiltro = new Date().toISOString().split('T')[0];
     this.cargarMedicos();
   }
@@ -166,7 +165,7 @@ export class PacientesPorMedicoComponent implements OnInit {
   }
 
   verHistoriaClinica(p: PacienteCita): void {
-    alert(`Historia Clínica del Paciente:\nNombre: ${p.nombre}\nDNI: ${p.dni}\nHC: ${p.numHistoriaClinica}\nCobertura: ${p.obraSocial}\nTeléfono: ${p.telefono}`);
+    this.notify.info(`HC: ${p.numHistoriaClinica} • DNI: ${p.dni} • ${p.obraSocial}`, p.nombre);
   }
 
   cambiarEstado(p: PacienteCita): void {
@@ -174,6 +173,7 @@ export class PacientesPorMedicoComponent implements OnInit {
     else if (p.estado === 'En Espera') p.estado = 'Atendido';
     else if (p.estado === 'Atendido') p.estado = 'Ausente';
     else p.estado = 'Confirmado';
+    this.notify.info(`Estado del turno actualizado a: ${p.estado}`, p.nombre);
   }
 
 }

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-import { EspecialidadService, MedicoService } from '../../services';
+import { EspecialidadService, MedicoService, NotificationService, ConfirmModalService } from '../../services';
 import { Especialidad, Medico } from '../../models';
 
 export interface EspecialidadRow {
@@ -24,6 +24,11 @@ export interface EspecialidadRow {
   styleUrl: './especialidades-admin.css'
 })
 export class EspecialidadesAdminComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly especialidadService = inject(EspecialidadService);
+  private readonly medicoService = inject(MedicoService);
+  private readonly notify = inject(NotificationService);
+  private readonly confirmModal = inject(ConfirmModalService);
 
   terminoGlobal: string = '';
   filtroNombre: string = '';
@@ -34,12 +39,6 @@ export class EspecialidadesAdminComponent implements OnInit {
   especialidades: EspecialidadRow[] = [];
   listaFiltrada: EspecialidadRow[] = [];
   totalMedicosRegistrados: number = 0;
-
-  constructor(
-    private router: Router,
-    private especialidadService: EspecialidadService,
-    private medicoService: MedicoService
-  ) { }
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -123,23 +122,30 @@ export class EspecialidadesAdminComponent implements OnInit {
     this.router.navigate(['/admin/especialidades/editar', e.id]);
   }
 
-  eliminarEspecialidad(e: EspecialidadRow): void {
-    if (confirm(`¿Confirma que desea eliminar la especialidad "${e.nombre}"?`)) {
-      this.especialidadService.eliminar(e.id).subscribe({
-        next: () => {
-          alert(`Especialidad "${e.nombre}" eliminada exitosamente.`);
-          this.cargarDatos();
-        },
-        error: (err) => {
-          console.error('Error al eliminar especialidad:', err);
-          alert(err?.error?.message || 'No se pudo eliminar la especialidad. Verifique que no posea médicos asociados.');
-        }
-      });
-    }
+  async eliminarEspecialidad(e: EspecialidadRow): Promise<void> {
+    const confirmado = await this.confirmModal.confirm({
+      titulo: '¿Eliminar Especialidad?',
+      mensaje: `¿Confirma que desea eliminar la especialidad "${e.nombre}" del catálogo médico?`,
+      textoConfirmar: 'Eliminar Especialidad',
+      tipo: 'danger'
+    });
+
+    if (!confirmado) return;
+
+    this.especialidadService.eliminar(e.id).subscribe({
+      next: () => {
+        this.notify.success(`Especialidad "${e.nombre}" eliminada exitosamente.`);
+        this.cargarDatos();
+      },
+      error: (err) => {
+        console.error('Error al eliminar especialidad:', err);
+        this.notify.error(err?.error?.message || 'No se pudo eliminar la especialidad. Verifique que no posea médicos asociados.');
+      }
+    });
   }
 
   verDetalle(item: EspecialidadRow): void {
-    alert(`Especialidad: ${item.nombre}\nDepartamento: ${item.departamento}\nMédicos asignados: ${item.medicos}\nDuración promedio: ${item.duracion} min`);
+    this.notify.info(`Departamento: ${item.departamento} • ${item.medicos} médicos asignados`, item.nombre);
   }
 
   private inferirDepartamento(nombre: string): string {
