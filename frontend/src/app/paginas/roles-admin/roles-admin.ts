@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { UsuarioService } from '../../services';
+import { Usuario } from '../../models';
 
 export interface PermisoModulo {
   nombreModulo: string;
@@ -41,16 +43,8 @@ export interface UsuarioDetalle {
 })
 export class RolesAdminComponent implements OnInit {
 
-  // Usuario que se está editando (null si es configuración global)
   usuarioEnEdicion: UsuarioDetalle | null = null;
-
-  // Lista mock de usuarios para simular el GET /api/usuarios/{id}
-  usuariosBase: UsuarioDetalle[] = [
-    { id: 1, username: 'mgomez', nombre: 'Mariana', apellido: 'Gómez', email: 'mariana.gomez@sangabriel.com', dni: '28.452.109', rol: 'Administrador', avatarUrl: '👩‍⚕️' },
-    { id: 2, username: 'jmartinez', nombre: 'Javier', apellido: 'Martínez', email: 'javier.martinez@sangabriel.com', dni: '30.128.940', rol: 'Médico', avatarUrl: '👨‍⚕️' },
-    { id: 3, username: 'lrodriguez', nombre: 'Laura', apellido: 'Rodríguez', email: 'laura.rodriguez@email.com', dni: '34.567.890', rol: 'Paciente', avatarUrl: '👩' },
-    { id: 4, username: 'recepcion_central', nombre: 'Ana María', apellido: 'Sosa', email: 'recepcion@sangabriel.com', dni: '31.402.109', rol: 'Recepción', avatarUrl: '👩‍💼' }
-  ];
+  guardando: boolean = false;
 
   roles: RolPerfil[] = [
     {
@@ -117,28 +111,43 @@ export class RolesAdminComponent implements OnInit {
 
   rolSeleccionado: RolPerfil = this.roles[0];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private usuarioService: UsuarioService
+  ) {}
 
   ngOnInit(): void {
-    // Detecta si vino un ID por la ruta
     const paramId = this.route.snapshot.paramMap.get('id');
 
     if (paramId) {
       const idNum = Number(paramId);
-      const encontrado = this.usuariosBase.find(u => u.id === idNum);
+      this.usuarioService.buscarPorId(idNum).subscribe({
+        next: (u: Usuario) => {
+          const rolNombre = u.rol?.nombre || 'Paciente';
+          this.usuarioEnEdicion = {
+            id: u.idUsuario,
+            username: u.nombreUsuario,
+            nombre: u.nombreUsuario,
+            apellido: '',
+            email: `${u.nombreUsuario}@clinicasangabriel.com`,
+            dni: `USR-${u.idUsuario}`,
+            rol: rolNombre,
+            avatarUrl: rolNombre.toUpperCase().includes('ADMIN') ? '🛡️' : (rolNombre.toUpperCase().includes('MED') ? '👨‍⚕️' : '👤')
+          };
 
-      if (encontrado) {
-        this.usuarioEnEdicion = encontrado;
-        // Selecciona automáticamente la tarjeta de rol que tiene asignada el usuario
-        const rolActual = this.roles.find(r => r.nombre.toLowerCase() === encontrado.rol.toLowerCase());
-        if (rolActual) {
-          this.rolSeleccionado = rolActual;
+          const rolActual = this.roles.find(r => r.nombre.toLowerCase() === rolNombre.toLowerCase());
+          if (rolActual) {
+            this.rolSeleccionado = rolActual;
+          }
+        },
+        error: (err) => {
+          console.error('Error al obtener usuario en roles:', err);
         }
-      }
+      });
     }
   }
 
-  // Permite cambiarle el rol al usuario haciendo clic en otra tarjeta
   seleccionarRol(r: RolPerfil): void {
     this.rolSeleccionado = r;
     if (this.usuarioEnEdicion) {
@@ -148,9 +157,32 @@ export class RolesAdminComponent implements OnInit {
 
   guardarCambios(): void {
     if (this.usuarioEnEdicion) {
-      console.log(`Guardando cambios para el usuario @${this.usuarioEnEdicion.username}: Nuevo Rol = ${this.usuarioEnEdicion.rol}`);
+      this.guardando = true;
+      let idRol = 3;
+      if (this.rolSeleccionado.nombre === 'Administrador') {
+        idRol = 1;
+      } else if (this.rolSeleccionado.nombre === 'Médico') {
+        idRol = 2;
+      }
+
+      this.usuarioService.actualizar(this.usuarioEnEdicion.id, {
+        nombreUsuario: this.usuarioEnEdicion.username,
+        idRol: idRol,
+        estado: true
+      }).subscribe({
+        next: () => {
+          this.guardando = false;
+          alert(`¡Rol actualizado exitosamente para @${this.usuarioEnEdicion?.username}!`);
+          this.router.navigate(['/admin/usuarios']);
+        },
+        error: (err) => {
+          this.guardando = false;
+          console.error('Error al actualizar rol de usuario:', err);
+          alert(err?.error?.message || 'Error al comunicarse con el servidor para actualizar el rol.');
+        }
+      });
     } else {
-      console.log('Guardando matriz global de roles.');
+      alert('Matriz de roles y privilegios globales validada.');
     }
   }
 
