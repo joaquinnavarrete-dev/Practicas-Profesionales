@@ -2,11 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { ObraSocialService } from '../../services';
 
-/**
- * Componente Standalone para el Registro y Alta de Obras Sociales / Prepagas.
- * Accesible únicamente desde el panel administrativo de la clínica.
- */
 @Component({
   selector: 'app-registrar-obra-social-admin',
   standalone: true,
@@ -16,45 +13,44 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class RegistrarObraSocialAdminComponent {
 
-  /**
-   * Objeto DTO que almacena los campos del formulario.
-   * Estructurado para ser consumido por el backend mediante un POST (ej: /api/obras-sociales).
-   */
+  guardando: boolean = false;
+
   obraSocialForm = {
-    nombre: '',          // Razón social completa (Ej. Obra Social de Empleados de Comercio)
-    siglas: '',          // Siglas o nombre comercial corto (Ej. OSECAC)
-    cuit: '',            // CUIT de la institución para facturación
-    telefono: '',        // Teléfono de auditoría médica / mesa de entradas
-    email: '',           // Correo electrónico institucional para validación
-    planesDisponibles: '', // Planes que cubre (Ej. Plan 100, Plan 200, Plan V)
-    estado: 'Activa'     // Estado inicial en el sistema ('Activa' o 'Suspendida')
+    nombre: '',
+    siglas: '',
+    cuit: '',
+    telefono: '',
+    email: '',
+    planesDisponibles: '',
+    estado: 'Activa'
   };
 
-  /**
-   * Constructor del componente.
-   * @param router Servicio de navegación para redirigir al listado tras guardar.
-   */
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private obraSocialService: ObraSocialService
+  ) { }
 
-  /**
-   * Método que procesa el alta de la obra social.
-   * Simula el envío de datos al servidor y retorna al padrón de coberturas.
-   */
   guardarObraSocial(): void {
-    // Validación rápida de campos obligatorios
-    if (!this.obraSocialForm.nombre || !this.obraSocialForm.siglas || !this.obraSocialForm.cuit) {
-      alert('Por favor, complete los campos obligatorios (Nombre, Siglas y CUIT).');
+    if (!this.obraSocialForm.nombre.trim()) {
+      alert('Por favor, ingrese el nombre de la obra social.');
       return;
     }
 
-    // Registro en consola simulando el payload hacia Spring Boot (POST /api/obras-sociales)
-    console.log('Enviando nueva Obra Social a Spring Boot:', this.obraSocialForm);
-
-    // Mensaje de éxito institucional
-    alert('¡Obra social y planes registrados con éxito en el sistema!');
-
-    // Redirección automática al listado administrativo de obras sociales
-    this.router.navigate(['/admin/obras-sociales']);
+    this.guardando = true;
+    this.obraSocialService.crear({
+      nombre: this.obraSocialForm.nombre.trim()
+    }).subscribe({
+      next: (nuevaOS) => {
+        this.guardando = false;
+        alert(`¡Obra social "${nuevaOS.nombre}" registrada con éxito en el sistema!`);
+        this.router.navigate(['/admin/obras-sociales']);
+      },
+      error: (err) => {
+        this.guardando = false;
+        console.error('Error al registrar obra social:', err);
+        alert(err?.error?.message || 'Error al comunicarse con el servidor para registrar la obra social.');
+      }
+    });
   }
 
 }
