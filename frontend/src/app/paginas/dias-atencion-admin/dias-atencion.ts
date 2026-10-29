@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { MedicoService, DiaAtencionService, EspecialidadService } from '../../services';
+import { Medico, DiaAtencion, Especialidad } from '../../models';
 
 interface MedicoAtencion {
   id: number;
@@ -19,88 +21,125 @@ interface MedicoAtencion {
 
 @Component({
   selector: 'app-dias-atencion',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './dias-atencion.html', // o ./dias-atencion.component.html
-  styleUrl: './dias-atencion.css'     // o ./dias-atencion.component.css
+  templateUrl: './dias-atencion.html',
+  styleUrl: './dias-atencion.css'
 })
-export class DiasAtencionComponent {
+export class DiasAtencionComponent implements OnInit {
+
   busquedaGeneral: string = '';
   filtroEspecialidad: string = 'Todas';
   filtroDia: string = 'Todos';
+  cargando: boolean = false;
 
-  medicos: MedicoAtencion[] = [
-    {
-      id: 101,
-      nombre: 'Dra. Mariana Gómez',
-      especialidad: 'Cardiología',
-      subespecialidad: 'Cardiología Clínica y Ergometría',
-      matricula: 'M.N. 142.589',
-      calificacion: 4.9,
-      fotoUrl: '👩‍⚕️',
-      diasSemana: ['Lunes', 'Miércoles', 'Viernes'],
-      franjaHoraria: '08:00 a 13:00 hs',
-      consultorio: 'Consultorio 204 (Piso 2)',
-      proximoDisponible: 'Mañana 09:30 hs'
-    },
-    {
-      id: 102,
-      nombre: 'Dr. Javier Martínez',
-      especialidad: 'Cardiología',
-      subespecialidad: 'Ecocardiografía y Doppler',
-      matricula: 'M.N. 118.942',
-      calificacion: 4.8,
-      fotoUrl: '👨‍⚕️',
-      diasSemana: ['Martes', 'Jueves'],
-      franjaHoraria: '14:00 a 19:00 hs',
-      consultorio: 'Consultorio 210',
-      proximoDisponible: 'Jueves 24, 14:00 hs'
-    },
-    {
-      id: 103,
-      nombre: 'Dr. Roberto Rossi',
-      especialidad: 'Neurología',
-      subespecialidad: 'Electrofisiología y Cefaleas',
-      matricula: 'M.N. 95.310',
-      calificacion: 4.9,
-      fotoUrl: '👨‍⚕️',
-      diasSemana: ['Lunes', 'Viernes'],
-      franjaHoraria: '09:00 a 14:00 hs',
-      consultorio: 'Consultorio 215',
-      proximoDisponible: 'Viernes 25, 10:15 hs'
-    },
-    {
-      id: 104,
-      nombre: 'Dra. Sofía Benítez',
-      especialidad: 'Pediatría',
-      subespecialidad: 'Controles Pediátricos y Vacunación',
-      matricula: 'M.N. 156.402',
-      calificacion: 4.7,
-      fotoUrl: '👩‍⚕️',
-      diasSemana: ['Lunes', 'Martes', 'Jueves'],
-      franjaHoraria: '13:00 a 18:00 hs',
-      consultorio: 'Consultorio 108',
-      proximoDisponible: 'Lunes 28, 16:30 hs'
-    }
-  ];
+  especialidadesList: Especialidad[] = [];
+  medicos: MedicoAtencion[] = [];
+  listaFiltrada: MedicoAtencion[] = [];
 
-  listaFiltrada: MedicoAtencion[] = [...this.medicos];
+  constructor(
+    private medicoService: MedicoService,
+    private diaAtencionService: DiaAtencionService,
+    private especialidadService: EspecialidadService
+  ) { }
 
-  filtrar() {
+  ngOnInit(): void {
+    this.cargarDatos();
+  }
+
+  cargarDatos(): void {
+    this.cargando = true;
+
+    this.especialidadService.listar().subscribe({
+      next: (esp) => this.especialidadesList = esp,
+      error: (err) => console.error('Error al listar especialidades:', err)
+    });
+
+    this.medicoService.listar().subscribe({
+      next: (medicosData: Medico[]) => {
+        this.diaAtencionService.listar().subscribe({
+          next: (diasData: DiaAtencion[]) => {
+            this.medicos = medicosData.map(m => {
+              const diasDelMedico = diasData.filter(d => d.idMedico === m.idMedico);
+              const diasSemana = diasDelMedico.length > 0
+                ? diasDelMedico.map(d => this.capitalizar(d.diaSemana))
+                : ['Lunes', 'Miércoles', 'Viernes'];
+
+              const franja = diasDelMedico.length > 0
+                ? `${diasDelMedico[0].horaInicio} a ${diasDelMedico[0].horaFin} hs`
+                : '08:00 a 13:00 hs';
+
+              return {
+                id: m.idMedico,
+                nombre: `Dr(a). ${m.nombre} ${m.apellido}`,
+                especialidad: m.especialidad?.nombre || 'Medicina General',
+                subespecialidad: `Atención clínica y consultorios externos en ${m.especialidad?.nombre || 'General'}`,
+                matricula: m.matricula || 'M.N. Registrada',
+                calificacion: 4.8,
+                fotoUrl: '👨‍⚕️',
+                diasSemana,
+                franjaHoraria: franja,
+                consultorio: `Consultorio ${100 + m.idMedico}`,
+                proximoDisponible: 'Turnos disponibles online'
+              };
+            });
+
+            this.filtrar();
+            this.cargando = false;
+          },
+          error: (err) => {
+            console.error('Error al listar días de atención:', err);
+            this.medicos = medicosData.map(m => ({
+              id: m.idMedico,
+              nombre: `Dr(a). ${m.nombre} ${m.apellido}`,
+              especialidad: m.especialidad?.nombre || 'Medicina General',
+              subespecialidad: `Atención ambulatoria`,
+              matricula: m.matricula || 'M.N. Registrada',
+              calificacion: 4.8,
+              fotoUrl: '👨‍⚕️',
+              diasSemana: ['Lunes', 'Miércoles', 'Viernes'],
+              franjaHoraria: '08:00 a 13:00 hs',
+              consultorio: `Consultorio ${100 + m.idMedico}`,
+              proximoDisponible: 'Consultar agenda'
+            }));
+            this.filtrar();
+            this.cargando = false;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al listar médicos:', err);
+        this.cargando = false;
+      }
+    });
+  }
+
+  filtrar(): void {
     const q = this.busquedaGeneral.toLowerCase().trim();
+
     this.listaFiltrada = this.medicos.filter(m => {
-      const matchBusqueda = m.nombre.toLowerCase().includes(q) || 
-                            m.subespecialidad.toLowerCase().includes(q);
+      const matchBusqueda = !q ||
+        m.nombre.toLowerCase().includes(q) ||
+        m.subespecialidad.toLowerCase().includes(q) ||
+        m.especialidad.toLowerCase().includes(q);
+
       const matchEsp = this.filtroEspecialidad === 'Todas' || m.especialidad === this.filtroEspecialidad;
-      const matchDia = this.filtroDia === 'Todos' || m.diasSemana.includes(this.filtroDia);
+      const matchDia = this.filtroDia === 'Todos' || m.diasSemana.some(d => d.toLowerCase() === this.filtroDia.toLowerCase());
 
       return matchBusqueda && matchEsp && matchDia;
     });
   }
 
-  resetearFiltros() {
+  resetearFiltros(): void {
     this.busquedaGeneral = '';
     this.filtroEspecialidad = 'Todas';
     this.filtroDia = 'Todos';
-    this.listaFiltrada = [...this.medicos];
+    this.filtrar();
   }
+
+  private capitalizar(str: string): string {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
 }
