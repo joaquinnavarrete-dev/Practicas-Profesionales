@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DiaAtencion, DiaAtencionRequest } from '../models';
 
@@ -12,7 +12,9 @@ export class DiaAtencionService {
   private readonly apiUrl = `${environment.apiUrl}/dias-atencion`;
 
   listar(): Observable<DiaAtencion[]> {
-    return this.http.get<DiaAtencion[]>(this.apiUrl);
+    return this.http.get<DiaAtencion[]>(this.apiUrl).pipe(
+      catchError(() => of([]))
+    );
   }
 
   buscarPorId(id: number): Observable<DiaAtencion> {
@@ -20,7 +22,9 @@ export class DiaAtencionService {
   }
 
   buscarPorMedico(idMedico: number): Observable<DiaAtencion[]> {
-    return this.http.get<DiaAtencion[]>(`${this.apiUrl}/medico/${idMedico}`);
+    return this.http.get<DiaAtencion[]>(`${this.apiUrl}/medico/${idMedico}`).pipe(
+      catchError(() => of([]))
+    );
   }
 
   crear(dto: DiaAtencionRequest): Observable<DiaAtencion> {
@@ -35,4 +39,3 @@ export class DiaAtencionService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
-
