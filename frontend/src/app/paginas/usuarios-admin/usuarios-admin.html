@@ -1,6 +1,5 @@
 <div class="admin-view-wrapper">
 
-  <!-- Topbar Administrativo -->
   <header class="topbar-admin">
     <div class="topbar-left">
       <div class="module-title-box">
@@ -11,12 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input 
-        type="text" 
-        placeholder="Buscar usuario por nombre, email o DNI..." 
-        [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()"
-      />
+      <input type="text" placeholder="Buscar usuario por nombre o username..." [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()" />
     </div>
 
     <div class="topbar-right">
@@ -28,17 +23,15 @@
       <div class="profile-card">
         <div class="avatar-ph">👩‍⚕️</div>
         <div class="profile-info">
-          <span class="profile-name">Dra. Mariana Gómez</span>
-          <span class="profile-role">Directora Médica ▾</span>
+          <span class="profile-name">Panel Administrativo</span>
+          <span class="profile-role">Gestión de Usuarios</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Cuerpo Principal -->
   <section class="admin-main-body">
 
-    <!-- Encabezado de Página -->
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">Gestión de Usuarios del Sistema</h1>
@@ -55,7 +48,6 @@
       </div>
     </div>
 
-    <!-- Métricas KPI -->
     <div class="stats-overview-grid">
       <div class="stat-box">
         <div class="stat-icon-tile icon-blue">👥</div>
@@ -82,7 +74,6 @@
       </div>
     </div>
 
-    <!-- Filtros de Búsqueda -->
     <div class="filters-card">
       <div class="filter-group">
         <label>ROL DE ACCESO:</label>
@@ -109,91 +100,87 @@
       </button>
     </div>
 
-    <!-- Tabla Principal de Usuarios -->
     <div class="data-table-container">
       <table class="data-table">
         <thead>
           <tr>
             <th>USUARIO / NOMBRE</th>
             <th>EMAIL DE ACCESO</th>
-            <th>DNI</th>
+            <th>IDENTIFICADOR</th>
             <th>ROL ASIGNADO</th>
-            <th>ÚLTIMO INGRESO</th>
+            <th>ESTADO DE CUENTA</th>
             <th>ESTADO</th>
             <th class="col-actions">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
+          <tr *ngIf="cargando">
+            <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
+              ⏳ Cargando padrón general de usuarios...
+            </td>
+          </tr>
+
           <tr *ngFor="let u of usuariosFiltrados">
-            <!-- Usuario / Nombre -->
             <td>
               <div class="user-cell">
                 <span class="user-avatar">{{ u.avatarUrl }}</span>
                 <div class="user-info">
-                  <strong class="user-name">{{ u.nombre }} {{ u.apellido }}</strong>
-                  <small class="user-username">@{{ u.username }}</small>
+                  <strong class="user-name">{{ u.username }}</strong>
+                  <small class="user-username">ID #{{ u.id }}</small>
                 </div>
               </div>
             </td>
 
-            <!-- Email -->
             <td>
               <span class="email-text">{{ u.email }}</span>
             </td>
 
-            <!-- DNI -->
             <td>
               <span class="dni-text">{{ u.dni }}</span>
             </td>
 
-            <!-- Rol -->
             <td>
-              <span 
-                class="badge-rol"
-                [ngClass]="{
+              <span class="badge-rol" [ngClass]="{
                   'rol-admin': u.rol === 'Administrador',
                   'rol-medico': u.rol === 'Médico',
                   'rol-recepcion': u.rol === 'Recepción',
                   'rol-paciente': u.rol === 'Paciente'
-                }"
-              >
+                }">
                 {{ u.rol }}
               </span>
             </td>
 
-            <!-- Último Ingreso -->
             <td>
               <span class="access-date">🕒 {{ u.ultimoIngreso }}</span>
             </td>
 
-            <!-- Estado -->
             <td>
-              <span 
-                class="badge-status"
-                [ngClass]="{
+              <span class="badge-status" [ngClass]="{
                   'status-activo': u.estado === 'Activo',
                   'status-bloqueado': u.estado === 'Bloqueado'
-                }"
-              >
+                }">
                 ● {{ u.estado }}
               </span>
             </td>
 
-            <!-- Acciones -->
             <td class="col-actions">
               <div class="action-buttons-group">
-                <button class="btn-action-icon" (click)="editarUsuario(u)" title="Editar Usuario y Rol">
+                <button class="btn-action-icon" (click)="editarUsuario(u)" title="Editar Rol de Acceso">
                   ✏️
                 </button>
-                <button class="btn-action-icon danger" (click)="bloquearDesbloquear(u)" title="Bloquear/Desbloquear">
-                  🔒
+                <button class="btn-action-icon" (click)="bloquearDesbloquear(u)"
+                  [title]="u.estado === 'Activo' ? 'Bloquear Cuenta' : 'Activar Cuenta'">
+                  {{ u.estado === 'Activo' ? '🔒' : '🔓' }}
+                </button>
+                <button class="btn-action-icon danger" style="color: #ef4444;" (click)="eliminarUsuario(u)"
+                  title="Eliminar Usuario">
+                  🗑️
                 </button>
               </div>
             </td>
           </tr>
 
-          <!-- Estado Vacío -->
-          <tr *ngIf="usuariosFiltrados.length === 0">
+          <tr *ngIf="!cargando && usuariosFiltrados.length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron usuarios con los filtros seleccionados.</span>
             </td>
@@ -201,10 +188,9 @@
         </tbody>
       </table>
 
-      <!-- Paginación -->
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ usuariosFiltrados.length }} usuarios registrados
+          Mostrando {{ usuariosFiltrados.length }} de {{ usuarios.length }} usuarios registrados
         </span>
         <div class="pages-list">
           <button class="page-nav-btn" disabled>&lt;</button>
