@@ -1,228 +1,285 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-
-// Interfaces que modelan el dominio médico (igual que en los DTOs de Java)
-export interface EspecialidadOpcion {
-  id: number;
-  nombre: string;
-  icono: string;
-}
-
-export interface MedicoOpcion {
-  id: number;
-  nombre: string;
-  subespecialidad: string;
-  matricula: string;
-  calificacion: number;
-  diasAtencion: string;
-  consultorio: string;
-  coberturas: string;
-  proximoTurnoTexto: string;
-  fotoUrl: string;
-}
-
-export interface HorarioOpcion {
-  hora: string;
-  disponible: boolean;
-  turno: 'manana' | 'tarde';
-}
+import { EspecialidadService } from '../../services/especialidad.service';
+import { MedicoService } from '../../services/medico.service';
+import { TurnoService } from '../../services/turno.service';
+import { PacienteService } from '../../services/paciente.service';
+import { AuthService } from '../../services/auth.service';
+import { Especialidad, Medico, TurnoDisponible, Turno } from '../../models';
 
 @Component({
   selector: 'app-solicitar-turno',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './solicitar-turno.html',
   styleUrl: './solicitar-turno.css'
 })
-export class SolicitarTurnoComponent {
+export class SolicitarTurnoComponent implements OnInit {
+  private readonly especialidadService = inject(EspecialidadService);
+  private readonly medicoService = inject(MedicoService);
+  private readonly turnoService = inject(TurnoService);
+  private readonly pacienteService = inject(PacienteService);
+  readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  // Control del Stepper (Paso 1, 2, 3 o 4)
   pasoActual: number = 1;
 
-  // Objeto Borrador: Acumula las selecciones a lo largo de los 4 pasos
+  especialidades: Especialidad[] = [];
+  cargandoEspecialidades: boolean = false;
+
+  medicos: Medico[] = [];
+  cargandoMedicos: boolean = false;
+  filtroNombreMedico: string = '';
+
+  turnosDisponibles: TurnoDisponible[] = [];
+  cargandoDisponibles: boolean = false;
+
+  fechaMinima: string = '';
+  cargandoReserva: boolean = false;
+  reservaExitosa: boolean = false;
+  errorMessage: string = '';
+  turnoConfirmado: Turno | null = null;
+
   turnoBorrador = {
-    especialidad: null as EspecialidadOpcion | null,
-    medico: null as MedicoOpcion | null,
-    fecha: '2025-10-22',
-    hora: '09:30 hs',
+    especialidad: null as Especialidad | null,
+    medico: null as Medico | null,
+    fecha: '',
+    hora: '',
     modalidad: 'Presencial',
     sede: 'Sede Central (Av. San Gabriel 1420)',
-    // Datos del paciente (en el paso 4)
-    pacienteNombre: 'Laura Rodríguez',
-    pacienteDni: '34.567.890',
-    pacienteTelefono: '+54 9 11 4567-8900',
-    pacienteEmail: 'laura.rodriguez@email.com',
-    obraSocial: 'OSDE 310',
-    afiliadoNro: '•••• •••• 4821 - 01',
+    pacienteNombre: '',
+    pacienteDni: '',
+    pacienteTelefono: '',
+    pacienteEmail: '',
+    obraSocial: 'Particular',
+    afiliadoNro: 'Titular',
     copago: '$0 (Cubierto al 100%)',
     motivoConsulta: '',
     recordatorioWhatsapp: true,
     comprobanteEmail: true
   };
 
-  // ================= PASO 1: DATOS MOCK DE ESPECIALIDADES =================
-  especialidades: EspecialidadOpcion[] = [
-    { id: 1, nombre: 'Cardiología', icono: '💙' },
-    { id: 2, nombre: 'Pediatría', icono: '🍼' },
-    { id: 3, nombre: 'Neurología', icono: '🧠' },
-    { id: 4, nombre: 'Oftalmología', icono: '👁' },
-    { id: 5, nombre: 'Psicología', icono: '🧩' },
-    { id: 6, nombre: 'Odontología', icono: '🦷' },
-    { id: 7, nombre: 'Traumatología', icono: '🦴' },
-    { id: 8, nombre: 'Otras', icono: '•••' }
-  ];
+  ngOnInit(): void {
+    const hoy = new Date();
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    this.fechaMinima = `${yyyy}-${mm}-${dd}`;
+    this.turnoBorrador.fecha = this.fechaMinima;
 
-  // ================= PASO 2: DATOS MOCK DE MÉDICOS =================
-  filtroNombreMedico: string = '';
-  medicos: MedicoOpcion[] = [
-    {
-      id: 101,
-      nombre: 'Dra. Mariana Gómez',
-      subespecialidad: 'Cardiología Clínica y Ergometría',
-      matricula: 'M.N. 142.589',
-      calificacion: 4.9,
-      diasAtencion: 'Lun, Mié y Vie',
-      consultorio: 'Consultorio 204 (Piso 2)',
-      coberturas: 'OSDE, Swiss Medical, Galeno, Particular',
-      proximoTurnoTexto: 'Próximo: Mañana, 09:30 hs',
-      fotoUrl: '👩‍⚕️'
-    },
-    {
-      id: 102,
-      nombre: 'Dr. Javier Martínez',
-      subespecialidad: 'Ecocardiografía y Doppler',
-      matricula: 'M.N. 118.942',
-      calificacion: 4.8,
-      diasAtencion: 'Mar y Jue',
-      consultorio: 'Consultorio 210',
-      coberturas: 'Todas las coberturas y particulares',
-      proximoTurnoTexto: 'Próximo: Jueves 24, 14:00 hs',
-      fotoUrl: '👨‍⚕️'
-    },
-    {
-      id: 103,
-      nombre: 'Dr. Roberto Rossi',
-      subespecialidad: 'Electrofisiología y Arritmias',
-      matricula: 'M.N. 95.310',
-      calificacion: 4.9,
-      diasAtencion: 'Lun y Vie',
-      consultorio: 'Consultorio 215',
-      coberturas: 'OSDE, Swiss Medical, Particular',
-      proximoTurnoTexto: 'Próximo: Viernes 25, 10:15 hs',
-      fotoUrl: '👨‍⚕️'
-    },
-    {
-      id: 104,
-      nombre: 'Dra. Sofía Benítez',
-      subespecialidad: 'Prevención Cardiovascular e Hipertensión',
-      matricula: 'M.N. 156.402',
-      calificacion: 4.7,
-      diasAtencion: 'Lun, Mar y Jue',
-      consultorio: 'Consultorio 208',
-      coberturas: 'PAMI, Medifé, Omint, Particular',
-      proximoTurnoTexto: 'Próximo: Lunes 28, 16:30 hs',
-      fotoUrl: '👩‍⚕️'
-    }
-  ];
-
-  // ================= PASO 3: DÍAS Y HORARIOS MOCK =================
-  diasMes = [
-    { dia: 20, disponible: true },
-    { dia: 21, disponible: true },
-    { dia: 22, disponible: true, seleccionado: true },
-    { dia: 23, disponible: true },
-    { dia: 24, disponible: true },
-    { dia: 25, disponible: false },
-    { dia: 26, disponible: false },
-    { dia: 27, disponible: true },
-    { dia: 28, disponible: true },
-    { dia: 29, disponible: true },
-    { dia: 30, disponible: true },
-    { dia: 31, disponible: true }
-  ];
-
-  horariosManana: HorarioOpcion[] = [
-    { hora: '08:30 hs', disponible: true, turno: 'manana' },
-    { hora: '09:00 hs', disponible: true, turno: 'manana' },
-    { hora: '09:30 hs', disponible: true, turno: 'manana' },
-    { hora: '10:15 hs', disponible: false, turno: 'manana' },
-    { hora: '11:00 hs', disponible: true, turno: 'manana' },
-    { hora: '11:45 hs', disponible: true, turno: 'manana' },
-  ];
-
-  horariosTarde: HorarioOpcion[] = [
-    { hora: '14:30 hs', disponible: true, turno: 'tarde' },
-    { hora: '15:15 hs', disponible: false, turno: 'tarde' },
-    { hora: '16:00 hs', disponible: true, turno: 'tarde' },
-    { hora: '17:00 hs', disponible: true, turno: 'tarde' },
-    { hora: '17:45 hs', disponible: true, turno: 'tarde' },
-    { hora: '18:30 hs', disponible: false, turno: 'tarde' },
-  ];
-
-  constructor(private router: Router) {
-    // Selección por defecto del mockup para que no arranque vacío
-    this.turnoBorrador.especialidad = this.especialidades[0];
-    this.turnoBorrador.medico = this.medicos[0];
+    this.cargarEspecialidades();
+    this.precargarDatosPaciente();
   }
 
-  // ================= LÓGICA DE TRANSICIÓN ENTRE PASOS =================
+  cargarEspecialidades(): void {
+    this.cargandoEspecialidades = true;
+    this.especialidadService.listar().subscribe({
+      next: (data) => {
+        this.especialidades = data;
+        this.cargandoEspecialidades = false;
+      },
+      error: (err) => {
+        this.cargandoEspecialidades = false;
+        console.error('Error al cargar especialidades:', err);
+      }
+    });
+  }
 
-  seleccionarEspecialidad(esp: EspecialidadOpcion) {
+  seleccionarEspecialidad(esp: Especialidad): void {
     this.turnoBorrador.especialidad = esp;
+    this.turnoBorrador.medico = null;
+    this.turnoBorrador.hora = '';
+    this.cargarMedicosPorEspecialidad(esp.idEspecialidad);
+    this.avanzar();
   }
 
-  seleccionarMedico(med: MedicoOpcion) {
+  getIconoEspecialidad(nombre: string): string {
+    const n = nombre.toLowerCase();
+    if (n.includes('cardio')) return '💙';
+    if (n.includes('pedia')) return '🍼';
+    if (n.includes('neuro')) return '🧠';
+    if (n.includes('oftalmo')) return '👁️';
+    if (n.includes('psico')) return '🧩';
+    if (n.includes('odonto')) return '🦷';
+    if (n.includes('trauma')) return '🦴';
+    if (n.includes('derma')) return '🩺';
+    if (n.includes('gineco')) return '🌸';
+    return '⚕️';
+  }
+
+  cargarMedicosPorEspecialidad(idEspecialidad: number): void {
+    this.cargandoMedicos = true;
+    this.medicoService.listarPorEspecialidad(idEspecialidad).subscribe({
+      next: (data) => {
+        this.medicos = data;
+        this.cargandoMedicos = false;
+      },
+      error: (err) => {
+        this.cargandoMedicos = false;
+        console.error('Error al cargar médicos:', err);
+      }
+    });
+  }
+
+  get medicosFiltrados(): Medico[] {
+    const q = this.filtroNombreMedico.toLowerCase().trim();
+    if (!q) return this.medicos;
+    return this.medicos.filter(m =>
+      `${m.nombre} ${m.apellido}`.toLowerCase().includes(q) ||
+      m.matricula.toLowerCase().includes(q)
+    );
+  }
+
+  seleccionarMedico(med: Medico): void {
     this.turnoBorrador.medico = med;
+    this.turnoBorrador.hora = '';
+    this.cargarDisponibilidad();
+    this.avanzar();
   }
 
-  seleccionarHorario(h: HorarioOpcion) {
+  cargarDisponibilidad(): void {
+    if (!this.turnoBorrador.medico || !this.turnoBorrador.fecha) return;
+
+    this.cargandoDisponibles = true;
+    this.turnoService.consultarDisponibles(this.turnoBorrador.medico.idMedico, this.turnoBorrador.fecha).subscribe({
+      next: (slots) => {
+        this.turnosDisponibles = slots;
+        this.cargandoDisponibles = false;
+      },
+      error: (err) => {
+        this.cargandoDisponibles = false;
+        console.error('Error al consultar turnos disponibles:', err);
+      }
+    });
+  }
+
+  onFechaCambio(): void {
+    this.turnoBorrador.hora = '';
+    this.cargarDisponibilidad();
+  }
+
+  seleccionarHorario(h: TurnoDisponible): void {
     if (!h.disponible) return;
     this.turnoBorrador.hora = h.hora;
   }
 
-  avanzar() {
+  get horariosManana(): TurnoDisponible[] {
+    return this.turnosDisponibles.filter(s => s.hora < '13:00');
+  }
+
+  get horariosTarde(): TurnoDisponible[] {
+    return this.turnosDisponibles.filter(s => s.hora >= '13:00');
+  }
+
+  get totalDisponibles(): number {
+    return this.turnosDisponibles.filter(s => s.disponible).length;
+  }
+
+  precargarDatosPaciente(): void {
+    if (this.authService.isLoggedIn() && this.authService.isPaciente()) {
+      this.pacienteService.obtenerMiPerfil().subscribe({
+        next: (p) => {
+          this.turnoBorrador.pacienteNombre = `${p.nombre} ${p.apellido}`;
+          this.turnoBorrador.pacienteDni = p.dni;
+          this.turnoBorrador.pacienteTelefono = p.telefono;
+          this.turnoBorrador.pacienteEmail = this.authService.currentUser()?.nombreUsuario || '';
+          this.turnoBorrador.obraSocial = p.obraSocial ? p.obraSocial.nombre : 'Particular';
+        },
+        error: (err) => {
+          console.warn('No se pudo precargar el perfil del paciente:', err);
+        }
+      });
+    }
+  }
+
+  avanzar(): void {
+    this.errorMessage = '';
+
+    if (this.pasoActual === 1 && !this.turnoBorrador.especialidad) {
+      this.errorMessage = 'Debe seleccionar una especialidad para continuar.';
+      return;
+    }
+
+    if (this.pasoActual === 2 && !this.turnoBorrador.medico) {
+      this.errorMessage = 'Debe seleccionar un profesional médico para continuar.';
+      return;
+    }
+
+    if (this.pasoActual === 3 && !this.turnoBorrador.hora) {
+      this.errorMessage = 'Debe seleccionar un horario disponible para continuar.';
+      return;
+    }
+
     if (this.pasoActual < 4) {
       this.pasoActual++;
+      if (this.pasoActual === 4) {
+        this.precargarDatosPaciente();
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       this.confirmarReservaFinal();
     }
   }
 
-  retroceder() {
+  retroceder(): void {
+    this.errorMessage = '';
     if (this.pasoActual > 1) {
       this.pasoActual--;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Si está en el paso 1 y cancela, vuelve al inicio
       this.router.navigate(['/']);
     }
   }
 
-  irAlPaso(paso: number) {
-    // Permite volver a un paso anterior haciendo clic en los botones de "Cambiar"
+  irAlPaso(paso: number): void {
     if (paso < this.pasoActual) {
       this.pasoActual = paso;
+      this.errorMessage = '';
     }
   }
 
-  // ================= DISPARADOR FINAL HACIA BACKEND =================
-  confirmarReservaFinal() {
-    // Objeto listo para mandar como payload JSON a Spring Boot
-    const payloadBackend = {
-      especialidadId: this.turnoBorrador.especialidad?.id,
-      medicoId: this.turnoBorrador.medico?.id,
-      fecha: this.turnoBorrador.fecha,
-      hora: this.turnoBorrador.hora,
-      dniPaciente: this.turnoBorrador.pacienteDni,
-      motivoConsulta: this.turnoBorrador.motivoConsulta,
-      notificarWhatsapp: this.turnoBorrador.recordatorioWhatsapp,
-      notificarEmail: this.turnoBorrador.comprobanteEmail
-    };
+  confirmarReservaFinal(): void {
+    this.errorMessage = '';
 
-    console.log('ENVIANDO TURNO A SPRING BOOT:', payloadBackend);
-    alert('¡Turno confirmado con éxito en San Gabriel!');
+    if (!this.authService.isLoggedIn()) {
+      alert('Para confirmar tu turno médico necesitas iniciar sesión o registrarte como paciente.');
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/turnos/solicitar' } });
+      return;
+    }
+
+    if (!this.turnoBorrador.medico || !this.turnoBorrador.especialidad || !this.turnoBorrador.fecha || !this.turnoBorrador.hora) {
+      this.errorMessage = 'Faltan datos para procesar la reserva del turno.';
+      return;
+    }
+
+    this.cargandoReserva = true;
+
+    this.turnoService.solicitarMiTurno({
+      idMedico: this.turnoBorrador.medico.idMedico,
+      idEspecialidad: this.turnoBorrador.especialidad.idEspecialidad,
+      fecha: this.turnoBorrador.fecha,
+      hora: this.turnoBorrador.hora
+    }).subscribe({
+      next: (res) => {
+        this.cargandoReserva = false;
+        this.reservaExitosa = true;
+        this.turnoConfirmado = res;
+      },
+      error: (err) => {
+        this.cargandoReserva = false;
+        console.error('Error al reservar turno:', err);
+        if (err.status === 409) {
+          this.errorMessage = 'El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.';
+        } else {
+          this.errorMessage = err.error?.message || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.';
+        }
+      }
+    });
+  }
+
+  volverAlInicio(): void {
     this.router.navigate(['/']);
   }
 }
