@@ -1,19 +1,18 @@
 <aside class="sidebar-container">
-  
-  <!-- Identidad Institucional San Gabriel -->
+
   <div class="sidebar-header" routerLink="/admin">
     <div class="sidebar-logo">
       <svg viewBox="0 0 24 24" class="cross-icon" fill="currentColor">
-        <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 12h-2v-3H8V9h3V6h2v3h3v2h-3v3z"/>
+        <path
+          d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 12h-2v-3H8V9h3V6h2v3h3v2h-3v3z" />
       </svg>
     </div>
     <div class="sidebar-brand">
-      <span class="name">Clínica San Gabriel</span>
-      <span class="badge-role">Gestión Médica</span>
+      <span class="name">{{ authService.currentUser()?.nombreUsuario || 'Clínica San Gabriel' }}</span>
+      <span class="badge-role">{{ rolFormateado }}</span>
     </div>
   </div>
 
-  <!-- Botón Destacado de Acción Rápida -->
   <div class="sidebar-cta">
     <button class="btn-new-turno" routerLink="/turnos/solicitar">
       <span class="plus-sign">+</span>
@@ -21,64 +20,59 @@
     </button>
   </div>
 
-  <!-- Navegación por Módulos Reales -->
   <nav class="sidebar-menu">
-    
-    <!-- Dashboard Principal -->
+
     <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-item">
       <span class="menu-icon">⊞</span>
       <span>Dashboard</span>
     </a>
 
-    <!-- Gestión de Turnos Registrados -->
     <a routerLink="/admin/turnos" routerLinkActive="active" class="menu-item">
       <span class="menu-icon">🕒</span>
       <span>Gestión de Turnos</span>
     </a>
 
-    <!-- Pacientes por Médico -->
-    <a routerLink="/admin/pacientes-por-medico" routerLinkActive="active" class="menu-item">
+    <a *ngIf="authService.isMedico() || authService.isAdmin()" routerLink="/admin/pacientes-por-medico"
+      routerLinkActive="active" class="menu-item">
       <span class="menu-icon">👥</span>
       <span>Pacientes por Médico</span>
     </a>
 
-    <!-- Especialidades Admin -->
-    <a routerLink="/admin/especialidades" routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">⚕️</span>
-      <span>Especialidades</span>
-    </a>
-
-    <!-- Días de Atención / Agendas -->
-    <a routerLink="/admin/dias-atencion" routerLinkActive="active" class="menu-item">
+    <a *ngIf="authService.isMedico() || authService.isAdmin()" routerLink="/admin/dias-atencion"
+      routerLinkActive="active" class="menu-item">
       <span class="menu-icon">📅</span>
       <span>Días de Atención</span>
     </a>
 
-    <a routerLink="/admin/obras-sociales" routerLinkActive="active" class="menu-item">
+    <a *ngIf="authService.isRecepcionista() || authService.isAdmin()" routerLink="/admin/obras-sociales"
+      routerLinkActive="active" class="menu-item">
       <span class="menu-icon">🛡️</span>
       <span>Obras Sociales</span>
     </a>
 
-    <a routerLink="/admin/pacientes" routerLinkActive="active" class="menu-item">
+    <a *ngIf="authService.isRecepcionista() || authService.isAdmin()" routerLink="/admin/pacientes"
+      routerLinkActive="active" class="menu-item">
       <span class="menu-icon">👤</span>
       <span>Pacientes</span>
     </a>
 
-    <a routerLink="/admin/medicos" routerLinkActive="active" class="menu-item">
+    <a *ngIf="authService.isAdmin()" routerLink="/admin/especialidades" routerLinkActive="active" class="menu-item">
+      <span class="menu-icon">⚕️</span>
+      <span>Especialidades</span>
+    </a>
+
+    <a *ngIf="authService.isAdmin()" routerLink="/admin/medicos" routerLinkActive="active" class="menu-item">
       <span class="menu-icon">🩺</span>
       <span>Cuerpo Médico</span>
     </a>
 
-    <a routerLink="/admin/usuarios" routerLinkActive="active" class="menu-item">
+    <a *ngIf="authService.isAdmin()" routerLink="/admin/usuarios" routerLinkActive="active" class="menu-item">
       <span class="menu-icon">👥</span>
       <span>Usuarios y Roles</span>
     </a>
 
-
-
   </nav>
 
-  <!-- Acciones al Pie -->
   <div class="sidebar-footer">
     <a routerLink="/" class="footer-link">
       <span class="link-icon">🌐</span>
@@ -89,7 +83,5 @@
       <span>Cerrar Sesión</span>
     </button>
   </div>
-
-  
 
 </aside>

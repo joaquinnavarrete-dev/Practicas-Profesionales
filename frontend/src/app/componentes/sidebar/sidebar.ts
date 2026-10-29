@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,14 +11,19 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidebar.css'
 })
 export class Sidebar {
+  readonly authService = inject(AuthService);
 
-  constructor(private router: Router) {}
-
-  // Maneja la salida del usuario del panel administrativo redirigiéndolo al Login
-  // Futuro con Spring Boot: Limpiará el JWT/Token del localStorage
   cerrarSesion(): void {
-    console.log('Cerrando sesión de usuario administrador...');
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 
+  get rolFormateado(): string {
+    const rol = this.authService.userRole();
+    if (!rol) return 'Gestión Médica';
+    if (rol.includes('ADMINISTRADOR')) return 'Administrador General';
+    if (rol.includes('MEDICO')) return 'Médico / Especialista';
+    if (rol.includes('RECEPCIONISTA')) return 'Recepción / Mostrador';
+    if (rol.includes('PACIENTE')) return 'Paciente';
+    return rol.replace('ROLE_', '');
+  }
 }
