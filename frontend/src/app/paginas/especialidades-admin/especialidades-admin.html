@@ -1,6 +1,5 @@
 <div class="admin-view-wrapper">
 
-  <!-- 1. Topbar Administrativo Superior -->
   <header class="topbar-admin">
     <div class="topbar-left">
       <div class="module-title-box">
@@ -9,17 +8,12 @@
       </div>
     </div>
 
-    <!-- Buscador global superior -->
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input 
-        type="text" 
-        placeholder="Buscar especialidad, código, departamento..." 
-        [(ngModel)]="terminoGlobal"
-      />
+      <input type="text" placeholder="Buscar especialidad, código, departamento..." [(ngModel)]="terminoGlobal"
+        (input)="aplicarFiltros()" />
     </div>
 
-    <!-- Notificaciones, ajustes y perfil -->
     <div class="topbar-right">
       <button class="topbar-btn" title="Notificaciones">
         🔔<span class="noti-badge"></span>
@@ -29,17 +23,15 @@
       <div class="profile-card">
         <div class="avatar-ph">👩‍⚕️</div>
         <div class="profile-info">
-          <span class="profile-name">Dra. Mariana Gómez</span>
-          <span class="profile-role">Directora Médica ▾</span>
+          <span class="profile-name">Panel Administrativo</span>
+          <span class="profile-role">Gestión Médica</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- 2. Área Central de Gestión -->
   <section class="admin-main-body">
 
-    <!-- Encabezado de la página -->
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">Especialidades Médicas</h1>
@@ -51,16 +43,11 @@
       </a>
     </div>
 
-    <!-- Barra de Filtros Rápidos -->
     <div class="filters-card">
       <div class="filter-search-box">
         <span class="lens-icon">🔍</span>
-        <input 
-          type="text" 
-          placeholder="Buscar especialidad por nombre..." 
-          [(ngModel)]="filtroNombre"
-          (input)="aplicarFiltros()"
-        />
+        <input type="text" placeholder="Buscar especialidad por nombre..." [(ngModel)]="filtroNombre"
+          (input)="aplicarFiltros()" />
       </div>
 
       <div class="filter-select-wrapper">
@@ -71,6 +58,7 @@
           <option value="Cirugía">Cirugía</option>
           <option value="Neurociencias">Neurociencias</option>
           <option value="Salud Femenina">Salud Femenina</option>
+          <option value="Medicina General">Medicina General</option>
         </select>
       </div>
 
@@ -87,7 +75,6 @@
       </button>
     </div>
 
-    <!-- Tabla Principal de Datos -->
     <div class="data-table-container">
       <table class="data-table">
         <thead>
@@ -101,8 +88,13 @@
           </tr>
         </thead>
         <tbody>
+          <tr *ngIf="cargando">
+            <td colspan="6" style="text-align: center; padding: 2.5rem; color: #64748b;">
+              ⏳ Cargando catálogo de especialidades médicas...
+            </td>
+          </tr>
+
           <tr *ngFor="let item of listaFiltrada">
-            <!-- Especialidad con Ícono -->
             <td>
               <div class="table-item-info">
                 <div class="icon-avatar" [ngClass]="item.bgClase">
@@ -112,74 +104,73 @@
               </div>
             </td>
 
-            <!-- Departamento -->
             <td class="cell-muted">{{ item.departamento }}</td>
 
-            <!-- Duración -->
             <td>
               <span class="tag-duration">
                 🕒 {{ item.duracion }} min
               </span>
             </td>
 
-            <!-- Médicos -->
             <td>
               <span class="tag-team">
                 👥 {{ item.medicos }} médicos
               </span>
             </td>
 
-            <!-- Estado -->
             <td>
               <span class="badge-status-active">
                 ● {{ item.estado }}
               </span>
             </td>
 
-            <!-- Acciones -->
             <td class="col-actions">
               <div class="action-buttons-group">
-                
                 <button class="btn-action-icon" (click)="editarEspecialidad(item)" title="Editar">
                   ✏️
                 </button>
                 <button class="btn-action-icon" (click)="verDetalle(item)" title="Ver Detalle">
                   👁️
                 </button>
+                <button class="btn-action-icon" style="color: #ef4444;" (click)="eliminarEspecialidad(item)"
+                  title="Eliminar">
+                  🗑️
+                </button>
               </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="!cargando && listaFiltrada.length === 0">
+            <td colspan="6" style="text-align: center; padding: 2.5rem; color: #64748b;">
+              🔍 No se encontraron especialidades que coincidan con la búsqueda.
             </td>
           </tr>
         </tbody>
       </table>
 
-      <!-- Paginador de la tabla -->
       <div class="table-pagination-footer">
-        <span class="pagination-legend">Mostrando 1 a 6 de 24 especialidades</span>
+        <span class="pagination-legend">
+          Mostrando {{ listaFiltrada.length }} de {{ especialidades.length }} especialidades registradas
+        </span>
         <div class="pages-list">
           <button class="page-nav-btn" disabled>&lt;</button>
           <button class="page-num-btn active">1</button>
-          <button class="page-num-btn">2</button>
-          <button class="page-num-btn">3</button>
-          <button class="page-num-btn">4</button>
-          <button class="page-nav-btn">&gt;</button>
+          <button class="page-nav-btn" disabled>&gt;</button>
         </div>
       </div>
     </div>
 
-    <!-- 3. Tarjetas Inferiores de Estadísticas -->
     <div class="stats-overview-grid">
-      <!-- Tarjeta 1: Total Especialidades -->
       <div class="stat-box">
         <div class="stat-icon-tile icon-blue">
           <span>🩺</span>
         </div>
         <div class="stat-body">
           <span class="stat-caption">Total Especialidades</span>
-          <strong class="stat-number">24 Activas</strong>
+          <strong class="stat-number">{{ especialidades.length }} Registradas</strong>
         </div>
       </div>
 
-      <!-- Tarjeta 2: Departamentos -->
       <div class="stat-box">
         <div class="stat-icon-tile icon-cyan">
           <span>🏢</span>
@@ -190,14 +181,13 @@
         </div>
       </div>
 
-      <!-- Tarjeta 3: Especialistas -->
       <div class="stat-box">
         <div class="stat-icon-tile icon-amber">
           <span>🪪</span>
         </div>
         <div class="stat-body">
           <span class="stat-caption">Especialistas</span>
-          <strong class="stat-number">68 Médicos</strong>
+          <strong class="stat-number">{{ totalMedicosRegistrados }} Médicos</strong>
         </div>
       </div>
     </div>

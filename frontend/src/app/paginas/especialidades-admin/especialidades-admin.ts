@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
+import { EspecialidadService, MedicoService } from '../../services';
+import { Especialidad, Medico } from '../../models';
 
-interface EspecialidadRow {
+export interface EspecialidadRow {
   id: number;
   nombre: string;
   departamento: string;
@@ -21,127 +23,151 @@ interface EspecialidadRow {
   templateUrl: './especialidades-admin.html',
   styleUrl: './especialidades-admin.css'
 })
-export class EspecialidadesAdminComponent {
-  
-  // Variables de filtrado en pantalla
+export class EspecialidadesAdminComponent implements OnInit {
+
   terminoGlobal: string = '';
   filtroNombre: string = '';
   filtroDepto: string = 'Todos';
   filtroEstado: string = 'Todas';
 
-  // Padrón mock de especialidades médicas
-  especialidades: EspecialidadRow[] = [
-    {
-      id: 1,
-      nombre: 'Cardiología Infantil',
-      departamento: 'Cardiología',
-      duracion: 30,
-      medicos: 4,
-      estado: 'Activa',
-      icono: '🫀',
-      bgClase: 'bg-blue-soft'
-    },
-    {
-      id: 2,
-      nombre: 'Cardiología Clínica',
-      departamento: 'Cardiología',
-      duracion: 30,
-      medicos: 6,
-      estado: 'Activa',
-      icono: '💙',
-      bgClase: 'bg-cyan-soft'
-    },
-    {
-      id: 3,
-      nombre: 'Pediatría Integral',
-      departamento: 'Materno Infantil',
-      duracion: 20,
-      medicos: 12,
-      estado: 'Activa',
-      icono: '🍼',
-      bgClase: 'bg-blue-soft'
-    },
-    {
-      id: 4,
-      nombre: 'Traumatología y Ortopedia',
-      departamento: 'Cirugía',
-      duracion: 30,
-      medicos: 7,
-      estado: 'Activa',
-      icono: '🦴',
-      bgClase: 'bg-cyan-soft'
-    },
-    {
-      id: 5,
-      nombre: 'Neurología',
-      departamento: 'Neurociencias',
-      duracion: 45,
-      medicos: 3,
-      estado: 'Activa',
-      icono: '🧠',
-      bgClase: 'bg-purple-soft'
-    },
-    {
-      id: 6,
-      nombre: 'Ginecología y Obstetricia',
-      departamento: 'Salud Femenina',
-      duracion: 30,
-      medicos: 5,
-      estado: 'Activa',
-      icono: '🤰',
-      bgClase: 'bg-blue-soft'
-    }
-  ];
+  cargando: boolean = false;
+  especialidades: EspecialidadRow[] = [];
+  listaFiltrada: EspecialidadRow[] = [];
+  totalMedicosRegistrados: number = 0;
 
-  // 1️⃣ PRIMERO declaramos e inicializamos la lista filtrada antes del constructor
-  listaFiltrada: EspecialidadRow[] = [...this.especialidades];
+  constructor(
+    private router: Router,
+    private especialidadService: EspecialidadService,
+    private medicoService: MedicoService
+  ) { }
 
-  // 2️⃣ DESPUÉS va el constructor que ya puede usar sin problema las variables de arriba
-  constructor(private router: Router) {
-    this.aplicarFiltros();
+  ngOnInit(): void {
+    this.cargarDatos();
   }
 
-  /**
-   * Filtra las especialidades según los criterios seleccionados.
-   */
-  aplicarFiltros(): void {
-    this.listaFiltrada = this.especialidades.filter(item => {
-      const matchNombre = item.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase());
-      const matchDepto = this.filtroDepto === 'Todos' || item.departamento === this.filtroDepto;
-      const matchEstado = this.filtroEstado === 'Todas' || item.estado === this.filtroEstado;
-      return matchNombre && matchDepto && matchEstado;
+  cargarDatos(): void {
+    this.cargando = true;
+    this.especialidadService.listar().subscribe({
+      next: (especialidadesData: Especialidad[]) => {
+        this.medicoService.listar().subscribe({
+          next: (medicosData: Medico[]) => {
+            this.totalMedicosRegistrados = medicosData.length;
+            this.especialidades = especialidadesData.map(esp => {
+              const medicosCount = medicosData.filter(m => m.especialidad?.idEspecialidad === esp.idEspecialidad).length;
+              return {
+                id: esp.idEspecialidad,
+                nombre: esp.nombre,
+                departamento: this.inferirDepartamento(esp.nombre),
+                duracion: 30,
+                medicos: medicosCount,
+                estado: 'Activa',
+                icono: this.obtenerIcono(esp.nombre),
+                bgClase: this.obtenerBgClase(esp.nombre)
+              };
+            });
+            this.aplicarFiltros();
+            this.cargando = false;
+          },
+          error: (err) => {
+            console.error('Error al listar médicos para especialidades:', err);
+            this.especialidades = especialidadesData.map(esp => ({
+              id: esp.idEspecialidad,
+              nombre: esp.nombre,
+              departamento: this.inferirDepartamento(esp.nombre),
+              duracion: 30,
+              medicos: 0,
+              estado: 'Activa',
+              icono: this.obtenerIcono(esp.nombre),
+              bgClase: 'bg-blue-soft'
+            }));
+            this.aplicarFiltros();
+            this.cargando = false;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al listar especialidades desde la API:', err);
+        this.cargando = false;
+      }
     });
   }
 
-  /**
-   * Resetea los filtros a su estado inicial.
-   */
+  aplicarFiltros(): void {
+    const qGlobal = this.terminoGlobal.toLowerCase().trim();
+    const qNombre = this.filtroNombre.toLowerCase().trim();
+
+    this.listaFiltrada = this.especialidades.filter(item => {
+      const matchGlobal = !qGlobal ||
+        item.nombre.toLowerCase().includes(qGlobal) ||
+        item.departamento.toLowerCase().includes(qGlobal);
+      const matchNombre = !qNombre || item.nombre.toLowerCase().includes(qNombre);
+      const matchDepto = this.filtroDepto === 'Todos' || item.departamento === this.filtroDepto;
+      const matchEstado = this.filtroEstado === 'Todas' || item.estado === this.filtroEstado;
+      return matchGlobal && matchNombre && matchDepto && matchEstado;
+    });
+  }
+
   resetearFiltros(): void {
+    this.terminoGlobal = '';
     this.filtroNombre = '';
     this.filtroDepto = 'Todos';
     this.filtroEstado = 'Todas';
     this.listaFiltrada = [...this.especialidades];
   }
 
-  /**
-   * Redirige al formulario de alta de una nueva especialidad médica.
-   */
   abrirModalNueva(): void {
     this.router.navigate(['/admin/especialidades/nuevo']);
   }
 
-  /**
-   * Redirige a la pantalla de edición pasando el ID de la especialidad seleccionada.
-   */
   editarEspecialidad(e: EspecialidadRow): void {
     this.router.navigate(['/admin/especialidades/editar', e.id]);
   }
 
-  /**
-   * Muestra el detalle del ítem seleccionado en consola.
-   */
+  eliminarEspecialidad(e: EspecialidadRow): void {
+    if (confirm(`¿Confirma que desea eliminar la especialidad "${e.nombre}"?`)) {
+      this.especialidadService.eliminar(e.id).subscribe({
+        next: () => {
+          alert(`Especialidad "${e.nombre}" eliminada exitosamente.`);
+          this.cargarDatos();
+        },
+        error: (err) => {
+          console.error('Error al eliminar especialidad:', err);
+          alert(err?.error?.message || 'No se pudo eliminar la especialidad. Verifique que no posea médicos asociados.');
+        }
+      });
+    }
+  }
+
   verDetalle(item: EspecialidadRow): void {
-    console.log('Ver detalle:', item);
+    alert(`Especialidad: ${item.nombre}\nDepartamento: ${item.departamento}\nMédicos asignados: ${item.medicos}\nDuración promedio: ${item.duracion} min`);
+  }
+
+  private inferirDepartamento(nombre: string): string {
+    const n = nombre.toLowerCase();
+    if (n.includes('cardio')) return 'Cardiología';
+    if (n.includes('pediat') || n.includes('infan') || n.includes('materno')) return 'Materno Infantil';
+    if (n.includes('trauma') || n.includes('ortop') || n.includes('cirug')) return 'Cirugía';
+    if (n.includes('neuro')) return 'Neurociencias';
+    if (n.includes('ginec') || n.includes('obstet')) return 'Salud Femenina';
+    return 'Medicina General';
+  }
+
+  private obtenerIcono(nombre: string): string {
+    const n = nombre.toLowerCase();
+    if (n.includes('cardio')) return '🫀';
+    if (n.includes('pediat')) return '🍼';
+    if (n.includes('trauma')) return '🦴';
+    if (n.includes('neuro')) return '🧠';
+    if (n.includes('ginec')) return '🤰';
+    return '🩺';
+  }
+
+  private obtenerBgClase(nombre: string): string {
+    const n = nombre.toLowerCase();
+    if (n.includes('cardio')) return 'bg-blue-soft';
+    if (n.includes('pediat')) return 'bg-cyan-soft';
+    if (n.includes('neuro')) return 'bg-purple-soft';
+    return 'bg-blue-soft';
   }
 
 }
