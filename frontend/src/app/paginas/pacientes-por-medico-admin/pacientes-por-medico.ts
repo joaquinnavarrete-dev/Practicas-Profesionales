@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MedicoService, TurnoService } from '../../services';
+import { Medico, Turno } from '../../models';
 
 export interface MedicoInfo {
   id: number;
@@ -29,156 +31,120 @@ export interface PacienteCita {
 
 @Component({
   selector: 'app-pacientes-por-medico',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pacientes-por-medico.html',
   styleUrl: './pacientes-por-medico.css'
 })
-export class PacientesPorMedicoComponent {
+export class PacientesPorMedicoComponent implements OnInit {
 
   busquedaGlobal: string = '';
-  medicoSeleccionadoId: number = 101;
-  fechaFiltro: string = '2025-10-22';
+  medicoSeleccionadoId: number = 0;
+  fechaFiltro: string = '';
   estadoFiltro: string = 'Todos';
+  cargando: boolean = false;
 
-  medicos: MedicoInfo[] = [
-    {
-      id: 101,
-      nombre: 'Dra. Mariana Gómez',
-      especialidad: 'Cardiología',
-      subespecialidad: 'Cardiología Clínica y Ergometría',
-      matricula: 'M.N. 142.589',
-      consultorio: 'Consultorio 204 (Piso 2)',
-      fotoUrl: '👩‍⚕️'
-    },
-    {
-      id: 102,
-      nombre: 'Dr. Javier Martínez',
-      especialidad: 'Cardiología',
-      subespecialidad: 'Ecocardiografía y Doppler',
-      matricula: 'M.N. 118.942',
-      consultorio: 'Consultorio 210',
-      fotoUrl: '👨‍⚕️'
-    },
-    {
-      id: 103,
-      nombre: 'Dr. Roberto Rossi',
-      especialidad: 'Neurología',
-      subespecialidad: 'Electrofisiología y Cefaleas',
-      matricula: 'M.N. 95.310',
-      consultorio: 'Consultorio 215',
-      fotoUrl: '👨‍⚕️'
-    }
-  ];
-
-  pacientes: PacienteCita[] = [
-    {
-      id: 1,
-      medicoId: 101,
-      hora: '08:30 hs',
-      nombre: 'Carlos Eduardo Fernández',
-      dni: '28.452.109',
-      numHistoriaClinica: 'HC-84201',
-      telefono: '+54 9 11 5821-9042',
-      obraSocial: 'OSDE',
-      planAfiliado: 'Plan 310 • N° 482109',
-      motivo: 'Control post-operatorio de colocación de stent',
-      estado: 'Atendido',
-      fecha: '2025-10-22'
-    },
-    {
-      id: 2,
-      medicoId: 101,
-      hora: '09:00 hs',
-      nombre: 'Laura Rodríguez',
-      dni: '34.567.890',
-      numHistoriaClinica: 'HC-90412',
-      telefono: '+54 9 11 4567-8900',
-      obraSocial: 'Swiss Medical',
-      planAfiliado: 'Plan Sual • N° 108422',
-      motivo: 'Evaluación de hipertensión arterial y ergometría',
-      estado: 'En Espera',
-      fecha: '2025-10-22'
-    },
-    {
-      id: 3,
-      medicoId: 101,
-      hora: '09:30 hs',
-      nombre: 'Martín Gonzalo Peralta',
-      dni: '40.128.943',
-      numHistoriaClinica: 'HC-10482',
-      telefono: '+54 9 11 3104-5829',
-      obraSocial: 'Galeno',
-      planAfiliado: 'Oro 450 • N° 994012',
-      motivo: 'Revisión de holter y ecocardiograma',
-      estado: 'Confirmado',
-      fecha: '2025-10-22'
-    },
-    {
-      id: 4,
-      medicoId: 101,
-      hora: '10:15 hs',
-      nombre: 'Elena Beatríz Rossi',
-      dni: '22.940.182',
-      numHistoriaClinica: 'HC-34901',
-      telefono: '+54 9 11 6940-1122',
-      obraSocial: 'PAMI',
-      planAfiliado: 'Beneficiario N° 0029482',
-      motivo: 'Consulta preventiva cardiometabólica',
-      estado: 'Confirmado',
-      fecha: '2025-10-22'
-    },
-    {
-      id: 5,
-      medicoId: 101,
-      hora: '11:00 hs',
-      nombre: 'Lucas Nahuel Torres',
-      dni: '38.904.211',
-      numHistoriaClinica: 'HC-77401',
-      telefono: '+54 9 11 2049-8833',
-      obraSocial: 'Particular',
-      planAfiliado: 'Sin cobertura',
-      motivo: 'Apto físico deportivo para gimnasio',
-      estado: 'Ausente',
-      fecha: '2025-10-22'
-    },
-    {
-      id: 6,
-      medicoId: 102,
-      hora: '14:00 hs',
-      nombre: 'Agustina Morales',
-      dni: '36.402.109',
-      numHistoriaClinica: 'HC-61029',
-      telefono: '+54 9 11 8842-1049',
-      obraSocial: 'Omint',
-      planAfiliado: 'Plan Premium',
-      motivo: 'Ecocardiograma Doppler de control',
-      estado: 'Confirmado',
-      fecha: '2025-10-22'
-    }
-  ];
-
+  medicos: MedicoInfo[] = [];
+  pacientes: PacienteCita[] = [];
   medicoActual: MedicoInfo | undefined;
   pacientesFiltrados: PacienteCita[] = [];
 
-  constructor() {
-    this.alCambiarMedico();
+  constructor(
+    private medicoService: MedicoService,
+    private turnoService: TurnoService
+  ) { }
+
+  ngOnInit(): void {
+    this.fechaFiltro = new Date().toISOString().split('T')[0];
+    this.cargarMedicos();
   }
 
-  alCambiarMedico() {
+  cargarMedicos(): void {
+    this.cargando = true;
+    this.medicoService.listar().subscribe({
+      next: (medicosData: Medico[]) => {
+        this.medicos = medicosData.map(m => ({
+          id: m.idMedico,
+          nombre: `Dr(a). ${m.nombre} ${m.apellido}`,
+          especialidad: m.especialidad?.nombre || 'Medicina General',
+          subespecialidad: `Consultorio externo en ${m.especialidad?.nombre || 'General'}`,
+          matricula: m.matricula || 'M.N. Registrada',
+          consultorio: `Consultorio ${100 + m.idMedico}`,
+          fotoUrl: '👨‍⚕️'
+        }));
+
+        if (this.medicos.length > 0) {
+          this.medicoSeleccionadoId = this.medicos[0].id;
+          this.alCambiarMedico();
+        } else {
+          this.cargando = false;
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al listar médicos:', err);
+        this.cargando = false;
+      }
+    });
+  }
+
+  alCambiarMedico(): void {
     this.medicoActual = this.medicos.find(m => m.id === Number(this.medicoSeleccionadoId));
-    this.aplicarFiltros();
+    if (!this.medicoSeleccionadoId) return;
+
+    this.cargando = true;
+    this.turnoService.listarTodos().subscribe({
+      next: (turnos: Turno[]) => {
+        const idMed = Number(this.medicoSeleccionadoId);
+        const turnosDelMedico = turnos.filter(t => t.medico?.idMedico === idMed);
+
+        this.pacientes = turnosDelMedico.map(t => {
+          const hoy = new Date().toISOString().split('T')[0];
+          let estadoCalc: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' = 'Confirmado';
+          if (t.fecha < hoy) {
+            estadoCalc = 'Atendido';
+          } else if (t.fecha === hoy) {
+            estadoCalc = 'En Espera';
+          }
+
+          return {
+            id: t.idTurno,
+            medicoId: t.medico?.idMedico || idMed,
+            hora: t.hora ? `${t.hora} hs` : '09:00 hs',
+            nombre: t.paciente ? `${t.paciente.nombre} ${t.paciente.apellido}` : 'Paciente General',
+            dni: t.paciente?.dni || 'Sin DNI',
+            numHistoriaClinica: `HC-${t.paciente?.idPaciente || t.idTurno}`,
+            telefono: t.paciente?.telefono || 'No informado',
+            obraSocial: t.paciente?.obraSocial?.nombre || 'Particular',
+            planAfiliado: 'Plan Estándar',
+            motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`,
+            estado: estadoCalc,
+            fecha: t.fecha
+          };
+        });
+
+        this.aplicarFiltros();
+        this.cargando = false;
+      },
+      error: (err: any) => {
+        console.error('Error al cargar turnos del médico:', err);
+        this.pacientes = [];
+        this.aplicarFiltros();
+        this.cargando = false;
+      }
+    });
   }
 
-  aplicarFiltros() {
+  aplicarFiltros(): void {
     const query = this.busquedaGlobal.toLowerCase().trim();
 
     this.pacientesFiltrados = this.pacientes.filter(p => {
       const coincideMedico = p.medicoId === Number(this.medicoSeleccionadoId);
       const coincideFecha = !this.fechaFiltro || p.fecha === this.fechaFiltro;
       const coincideEstado = this.estadoFiltro === 'Todos' || p.estado === this.estadoFiltro;
-      const coincideQuery = p.nombre.toLowerCase().includes(query) ||
-                            p.dni.includes(query) ||
-                            p.numHistoriaClinica.toLowerCase().includes(query);
+      const coincideQuery = !query ||
+        p.nombre.toLowerCase().includes(query) ||
+        p.dni.includes(query) ||
+        p.numHistoriaClinica.toLowerCase().includes(query);
 
       return coincideMedico && coincideFecha && coincideEstado && coincideQuery;
     });
@@ -188,22 +154,26 @@ export class PacientesPorMedicoComponent {
     return this.pacientes.filter(p => p.medicoId === Number(this.medicoSeleccionadoId) && p.estado === estado).length;
   }
 
-  resetearFiltros() {
+  resetearFiltros(): void {
     this.busquedaGlobal = '';
-    this.fechaFiltro = '2025-10-22';
+    this.fechaFiltro = '';
     this.estadoFiltro = 'Todos';
     this.aplicarFiltros();
   }
 
-  exportarListado() {
-    console.log('Exportando listado de pacientes para médico ID:', this.medicoSeleccionadoId);
+  exportarListado(): void {
+    window.print();
   }
 
-  verHistoriaClinica(p: PacienteCita) {
-    console.log('Ver Historia Clínica de:', p.nombre);
+  verHistoriaClinica(p: PacienteCita): void {
+    alert(`Historia Clínica del Paciente:\nNombre: ${p.nombre}\nDNI: ${p.dni}\nHC: ${p.numHistoriaClinica}\nCobertura: ${p.obraSocial}\nTeléfono: ${p.telefono}`);
   }
 
-  cambiarEstado(p: PacienteCita) {
-    console.log('Cambiar estado del turno ID:', p.id);
+  cambiarEstado(p: PacienteCita): void {
+    if (p.estado === 'Confirmado') p.estado = 'En Espera';
+    else if (p.estado === 'En Espera') p.estado = 'Atendido';
+    else if (p.estado === 'Atendido') p.estado = 'Ausente';
+    else p.estado = 'Confirmado';
   }
+
 }
