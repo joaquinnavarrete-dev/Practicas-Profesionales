@@ -1,104 +1,71 @@
 <div class="admin-view-wrapper">
 
-  <!-- Topbar Administrativo -->
   <header class="topbar-admin">
     <div class="topbar-left">
       <div class="module-title-box">
         <span class="module-icon">👤</span>
-        <h2 class="module-title">Gestión de Pacientes</h2>
+        <h2 class="module-title">Padrón de Pacientes</h2>
       </div>
     </div>
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input 
-        type="text" 
-        placeholder="Buscar por paciente, DNI o N° Historia Clínica..." 
-        [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()"
-      />
+      <input type="text" placeholder="Buscar por nombre, apellido, DNI o cobertura..." [(ngModel)]="busquedaGlobal"
+        (input)="aplicarFiltros()" />
     </div>
 
     <div class="topbar-right">
-      <button class="topbar-btn" title="Notificaciones">
-        🔔<span class="noti-badge"></span>
-      </button>
-      <button class="topbar-btn" title="Configuración">⚙️</button>
-
-      <div class="profile-card">
-        <div class="avatar-ph">👩‍⚕️</div>
-        <div class="profile-info">
-          <span class="profile-name">Dra. Mariana Gómez</span>
-          <span class="profile-role">Directora Médica ▾</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Cuerpo Principal -->
-  <section class="admin-main-body">
-
-    <!-- Encabezado de Página -->
-    <div class="page-title-row">
-      <div class="title-block">
-        <h1 class="main-heading">Padrón de Pacientes Registrados</h1>
-        <p class="sub-heading">Administre las historias clínicas, datos personales y coberturas asociadas.</p>
-      </div>
-
-    <div class="header-actions">
-      <a routerLink="/admin/paciente/nuevo" class="btn-create-modal">
+      <a routerLink="/registro" class="btn-create-modal">
         <span class="plus-symbol">+</span> Nuevo Paciente
       </a>
     </div>
-  </div>
+  </header>
 
-    <!-- Métricas KPI -->
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Pacientes Registrados</h1>
+        <p class="sub-heading">Gestión integral de fichas de pacientes, coberturas médicas y datos de contacto.</p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/registro" class="btn-create-modal">
+          <span class="plus-symbol">+</span> Registrar Paciente
+        </a>
+      </div>
+    </div>
+
     <div class="stats-overview-grid">
       <div class="stat-box">
         <div class="stat-icon-tile icon-blue">👥</div>
         <div class="stat-body">
           <span class="stat-caption">Total Pacientes</span>
-          <strong class="stat-number">{{ pacientes.length }} Registrados</strong>
+          <strong class="stat-number">{{ pacientes.length }} Fichas</strong>
         </div>
       </div>
 
       <div class="stat-box">
         <div class="stat-icon-tile icon-green">✓</div>
         <div class="stat-body">
-          <span class="stat-caption">Historias Activas</span>
-          <strong class="stat-number">{{ contarPorEstado('Activo') }} Pacientes</strong>
-        </div>
-      </div>
-
-      <div class="stat-box">
-        <div class="stat-icon-tile icon-amber">🛡️</div>
-        <div class="stat-body">
-          <span class="stat-caption">Con Cobertura Médica</span>
-          <strong class="stat-number">{{ contarConCobertura() }} Afiliados</strong>
+          <span class="stat-caption">Filtrados en Pantalla</span>
+          <strong class="stat-number">{{ pacientesFiltrados.length }} Pacientes</strong>
         </div>
       </div>
     </div>
 
-    <!-- Filtros de Búsqueda -->
+    <div *ngIf="errorMessage" class="error-banner">
+      <span>{{ errorMessage }}</span>
+    </div>
+
     <div class="filters-card">
       <div class="filter-group">
         <label>OBRA SOCIAL / PREPAGA:</label>
         <select [(ngModel)]="obraSocialFiltro" (change)="aplicarFiltros()">
           <option value="Todas">Todas las coberturas</option>
-          <option value="OSDE">OSDE</option>
-          <option value="Swiss Medical">Swiss Medical</option>
-          <option value="Galeno">Galeno</option>
-          <option value="PAMI">PAMI</option>
-          <option value="Particular">Particular (Sin cobertura)</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label>ESTADO HISTORIA:</label>
-        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
-          <option value="Todos">Todos los estados</option>
-          <option value="Activo">Activo</option>
-          <option value="Inactivo">Inactivo</option>
+          <option *ngFor="let os of obrasSociales" [value]="os.nombre">
+            {{ os.nombre }}
+          </option>
         </select>
       </div>
 
@@ -107,110 +74,71 @@
       </button>
     </div>
 
-    <!-- Tabla Principal de Pacientes -->
     <div class="data-table-container">
       <table class="data-table">
         <thead>
           <tr>
             <th>PACIENTE</th>
-            <th>DNI / HISTORIA CLINICA</th>
-            <th>CONTACTO</th>
-            <th>COBERTURA / PLAN</th>
-            <th>ÚLTIMA VISITA</th>
-            <th>ESTADO</th>
+            <th>DOCUMENTO (DNI)</th>
+            <th>TELÉFONO DE CONTACTO</th>
+            <th>COBERTURA MÉDICA</th>
             <th class="col-actions">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
+          <tr *ngIf="cargando">
+            <td colspan="5" class="loading-table-row">
+              <div class="spinner-small"></div>
+              <span>Cargando padrón de pacientes...</span>
+            </td>
+          </tr>
+
           <tr *ngFor="let p of pacientesFiltrados">
-            <!-- Nombre y Avatar -->
             <td>
               <div class="patient-cell">
-                <span class="patient-avatar">{{ p.avatarUrl }}</span>
+                <span class="patient-avatar">👤</span>
                 <div class="patient-info">
                   <strong class="patient-name">{{ p.nombre }} {{ p.apellido }}</strong>
-                  <small class="patient-gender">{{ p.genero }} • {{ p.edad }} años</small>
+                  <small class="patient-gender">ID #{{ p.idPaciente }}</small>
                 </div>
               </div>
             </td>
 
-            <!-- DNI / HC -->
             <td>
               <div class="hc-cell">
                 <strong>DNI {{ p.dni }}</strong>
-                <span class="hc-num">{{ p.numHistoriaClinica }}</span>
               </div>
             </td>
 
-            <!-- Contacto -->
             <td>
-              <div class="contact-cell">
-                <span class="contact-phone">📱 {{ p.telefono }}</span>
-                <small class="contact-email">{{ p.email }}</small>
-              </div>
+              <span class="contact-text">📞 {{ p.telefono }}</span>
             </td>
 
-            <!-- Cobertura -->
             <td>
-              <div class="coverage-cell">
-                <strong class="os-title">{{ p.obraSocial }}</strong>
-                <small class="plan-sub">{{ p.planAfiliado }}</small>
-              </div>
+              <span class="os-badge">{{ p.obraSocial?.nombre || 'Particular' }}</span>
             </td>
 
-            <!-- Última Visita -->
-            <td>
-              <span class="visit-date">🕒 {{ p.ultimaVisita }}</span>
-            </td>
-
-            <!-- Estado -->
-            <td>
-              <span 
-                class="badge-status"
-                [ngClass]="{
-                  'status-activo': p.estado === 'Activo',
-                  'status-inactivo': p.estado === 'Inactivo'
-                }"
-              >
-                ● {{ p.estado }}
-              </span>
-            </td>
-
-            <!-- Acciones -->
             <td class="col-actions">
               <div class="action-buttons-group">
-                <button class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
-                  📄
-                </button>
-                <button class="btn-action-icon" (click)="editarPaciente(p)" title="Editar Datos">
-                  ✏️
-                </button>
-                <button class="btn-action-icon danger" (click)="cambiarEstadoPaciente(p)" title="Activar/Desactivar">
-                  🔄
+                <button class="btn-action-icon danger" (click)="eliminarPaciente(p)" title="Eliminar Ficha">
+                  🗑️
                 </button>
               </div>
             </td>
           </tr>
 
-          <!-- Estado Vacío -->
-          <tr *ngIf="pacientesFiltrados.length === 0">
-            <td colspan="7" class="empty-table-row">
-              <span>🔍 No se encontraron pacientes con los criterios de búsqueda aplicados.</span>
+          <tr *ngIf="!cargando && pacientesFiltrados.length === 0">
+            <td colspan="5" class="empty-table-row">
+              <span>🔍 No se encontraron pacientes registrados con los filtros aplicados.</span>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <!-- Paginación -->
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ pacientesFiltrados.length }} pacientes registrados
+          Mostrando {{ pacientesFiltrados.length }} de {{ pacientes.length }} pacientes registrados
         </span>
-        <div class="pages-list">
-          <button class="page-nav-btn" disabled>&lt;</button>
-          <button class="page-num-btn active">1</button>
-          <button class="page-nav-btn" disabled>&gt;</button>
-        </div>
       </div>
     </div>
 
