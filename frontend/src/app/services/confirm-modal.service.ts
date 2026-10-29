@@ -18,19 +18,16 @@ export interface ConfirmModalState extends ConfirmOptions {
 export class ConfirmModalService {
   readonly state = signal<ConfirmModalState | null>(null);
 
-  /**
-   * Abre un modal de confirmación y retorna una promesa con el resultado (true si acepta, false si cancela).
-   */
   confirm(options: ConfirmOptions | string): Promise<boolean> {
     const config: ConfirmOptions = typeof options === 'string'
       ? { mensaje: options, titulo: 'Confirmar Acción', tipo: 'warning' }
       : {
-          titulo: options.titulo || 'Confirmar Acción',
-          mensaje: options.mensaje,
-          textoConfirmar: options.textoConfirmar || 'Confirmar',
-          textoCancelar: options.textoCancelar || 'Cancelar',
-          tipo: options.tipo || 'warning'
-        };
+        titulo: options.titulo || 'Confirmar Acción',
+        mensaje: options.mensaje,
+        textoConfirmar: options.textoConfirmar || 'Confirmar',
+        textoCancelar: options.textoCancelar || 'Cancelar',
+        tipo: options.tipo || 'warning'
+      };
 
     return new Promise<boolean>((resolve) => {
       this.state.set({

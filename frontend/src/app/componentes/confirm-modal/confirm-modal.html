@@ -1,13 +1,8 @@
-<div 
-  class="modal-backdrop" 
-  *ngIf="modalService.state() as state"
-  (click)="onBackdropClick($event)"
-  aria-modal="true"
-  role="dialog"
->
+<div class="modal-backdrop" *ngIf="modalService.state() as state" (click)="onBackdropClick($event)" aria-modal="true"
+  role="dialog">
   <div class="modal-card" [ngClass]="'modal-' + (state.tipo || 'warning')">
     <div class="modal-header-icon">
-      <!-- Danger -->
+
       <div class="icon-circle icon-danger" *ngIf="state.tipo === 'danger'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="3 6 5 6 21 6"></polyline>
@@ -17,7 +12,6 @@
         </svg>
       </div>
 
-      <!-- Warning -->
       <div class="icon-circle icon-warning" *ngIf="state.tipo !== 'danger'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="12" cy="12" r="10"></circle>
@@ -33,23 +27,14 @@
     </div>
 
     <div class="modal-actions">
-      <button 
-        type="button" 
-        class="btn-modal-cancel" 
-        (click)="modalService.cancelar()"
-      >
+      <button type="button" class="btn-modal-cancel" (click)="modalService.cancelar()">
         {{ state.textoCancelar || 'Cancelar' }}
       </button>
 
-      <button 
-        type="button" 
-        class="btn-modal-confirm" 
-        [ngClass]="state.tipo === 'danger' ? 'btn-danger' : 'btn-primary'"
-        (click)="modalService.aceptar()"
-      >
+      <button type="button" class="btn-modal-confirm" [ngClass]="state.tipo === 'danger' ? 'btn-danger' : 'btn-primary'"
+        (click)="modalService.aceptar()">
         {{ state.textoConfirmar || 'Confirmar' }}
       </button>
     </div>
   </div>
 </div>
-

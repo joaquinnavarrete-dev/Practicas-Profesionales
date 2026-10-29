@@ -30,6 +30,7 @@
     transform: translateX(110%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -86,13 +87,14 @@
   background: #f1f5f9;
 }
 
-/* Variantes según tipo */
 .toast-success {
   border-left-color: #10b981;
 }
+
 .toast-success .toast-icon-box {
   color: #10b981;
 }
+
 .toast-success .toast-title {
   color: #065f46;
 }
@@ -100,9 +102,11 @@
 .toast-error {
   border-left-color: #ef4444;
 }
+
 .toast-error .toast-icon-box {
   color: #ef4444;
 }
+
 .toast-error .toast-title {
   color: #991b1b;
 }
@@ -110,9 +114,11 @@
 .toast-warning {
   border-left-color: #f59e0b;
 }
+
 .toast-warning .toast-icon-box {
   color: #f59e0b;
 }
+
 .toast-warning .toast-title {
   color: #92400e;
 }
@@ -120,10 +126,11 @@
 .toast-info {
   border-left-color: #0284c7;
 }
+
 .toast-info .toast-icon-box {
   color: #0284c7;
 }
+
 .toast-info .toast-title {
   color: #075985;
 }
-
