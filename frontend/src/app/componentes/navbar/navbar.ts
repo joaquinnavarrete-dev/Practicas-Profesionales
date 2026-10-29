@@ -1,21 +1,23 @@
-// Importamos 'Component' para definir la configuración del bloque de interfaz
-import { Component } from '@angular/core';
-
-// Importamos 'RouterLink' para poder navegar entre vistas mediante enlaces sin recargar el navegador
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  // Etiqueta HTML personalizada que usaremos para renderizar este componente (<app-navbar></app-navbar>)
   selector: 'app-navbar',
-
-  // Declaramos qué herramientas externas o directivas necesita este template (en este caso, enlaces de rutas)
-  imports: [RouterLink, RouterLinkActive],
-
-  // Archivo donde reside la estructura visual HTML
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-
-  // Archivo de estilos encapsulados para este componente
   styleUrl: './navbar.css'
 })
-// Exportamos la clase para que pueda ser importada en app.component.ts o en cualquier otra vista
-export class Navbar {}
+export class Navbar {
+  readonly authService = inject(AuthService);
+
+  get esPersonalClinico(): boolean {
+    return this.authService.isAdmin() || this.authService.isMedico() || this.authService.isRecepcionista();
+  }
+
+  cerrarSesion(): void {
+    this.authService.logout();
+  }
+}
