@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { EspecialidadService } from '../../services';
+import { Especialidad } from '../../models';
 
 interface EspecialidadItem {
   id: number;
@@ -15,78 +17,93 @@ interface EspecialidadItem {
 
 @Component({
   selector: 'app-especialidades-publica',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './especialidades-publica.html',
   styleUrl: './especialidades-publica.css'
 })
-export class EspecialidadesPublicaComponent {
+export class EspecialidadesPublicaComponent implements OnInit {
+
   busqueda: string = '';
+  cargando: boolean = false;
 
-  especialidades: EspecialidadItem[] = [
-    {
-      id: 1,
-      nombre: 'Cardiología',
-      descripcion: 'Prevención, diagnóstico y tratamiento de patologías cardíacas y vasculares con aparatología de última generación.',
-      atencion24hs: false,
-      icono: '💙',
-      colorClase: 'icon-blue',
-      etiquetas: ['Holter', 'Ergometría', 'Ecocardiograma']
-    },
-    {
-      id: 2,
-      nombre: 'Pediatría y Neonatología',
-      descripcion: 'Atención integral del niño y adolescente. Guardia pediátrica presencial permanente y seguimiento de desarrollo.',
-      atencion24hs: true,
-      icono: '🍼',
-      colorClase: 'icon-cyan',
-      etiquetas: ['Guardia 24hs', 'Controles', 'Vacunación']
-    },
-    {
-      id: 3,
-      nombre: 'Traumatología y Ortopedia',
-      descripcion: 'Tratamiento de lesiones óseas, articulares y ligamentarias. Cirugías artroscópicas y rehabilitación integral.',
-      atencion24hs: true,
-      icono: '🦴',
-      colorClase: 'icon-green',
-      etiquetas: ['Columna', 'Yesos', 'Guardia Activa']
-    },
-    {
-      id: 4,
-      nombre: 'Neurología',
-      descripcion: 'Estudio de trastornos del sistema nervioso central y periférico, cefaleas, migrañas y estudios electroencefalográficos.',
-      atencion24hs: false,
-      icono: '🧠',
-      colorClase: 'icon-purple',
-      etiquetas: ['EEG', 'Mapeo Cerebral', 'Cefaleas']
-    },
-    {
-      id: 5,
-      nombre: 'Ginecología y Obstetricia',
-      descripcion: 'Cuidado de la salud femenina, seguimiento del embarazo, estudios ecográficos de alta resolución y controles preventivos.',
-      atencion24hs: false,
-      icono: '🤰',
-      colorClase: 'icon-blue',
-      etiquetas: ['Eco 5D', 'Papanicolau', 'Obstetricia']
-    },
-    {
-      id: 6,
-      nombre: 'Diagnóstico por Imágenes',
-      descripcion: 'Servicio digital de resonancia magnética, tomografía computada multicorte, radiología y ecografía general.',
-      atencion24hs: true,
-      icono: '📷',
-      colorClase: 'icon-cyan',
-      etiquetas: ['Resonador 3.0T', 'Tomografía', 'Rayos X']
+  especialidades: EspecialidadItem[] = [];
+  especialidadesFiltradas: EspecialidadItem[] = [];
+
+  constructor(private especialidadService: EspecialidadService) {}
+
+  ngOnInit(): void {
+    this.cargarEspecialidades();
+  }
+
+  cargarEspecialidades(): void {
+    this.cargando = true;
+    this.especialidadService.listar().subscribe({
+      next: (data: Especialidad[]) => {
+        this.especialidades = data.map(esp => this.mapearEspecialidad(esp));
+        this.filtrar();
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error al listar especialidades públicas:', err);
+        this.cargando = false;
+      }
+    });
+  }
+
+  private mapearEspecialidad(esp: Especialidad): EspecialidadItem {
+    const id = esp.idEspecialidad;
+    const nombre = esp.nombre;
+    const n = nombre.toLowerCase();
+
+    let icono = '🩺';
+    let colorClase = 'icon-blue';
+    let atencion24hs = false;
+    let tags = ['Consultorios', 'Turnos Online'];
+
+    if (n.includes('cardio')) {
+      icono = '💙';
+      colorClase = 'icon-blue';
+      tags = ['Holter', 'Ergometría', 'Ecocardiograma'];
+    } else if (n.includes('pediat') || n.includes('infan') || n.includes('neonat')) {
+      icono = '🍼';
+      colorClase = 'icon-cyan';
+      atencion24hs = true;
+      tags = ['Guardia 24hs', 'Controles', 'Vacunación'];
+    } else if (n.includes('trauma') || n.includes('ortop')) {
+      icono = '🦴';
+      colorClase = 'icon-green';
+      atencion24hs = true;
+      tags = ['Guardia Activa', 'Yesos', 'Rehabilitación'];
+    } else if (n.includes('neuro')) {
+      icono = '🧠';
+      colorClase = 'icon-purple';
+      tags = ['EEG', 'Mapeo', 'Cefaleas'];
+    } else if (n.includes('ginec') || n.includes('obstet')) {
+      icono = '🤰';
+      colorClase = 'icon-blue';
+      tags = ['Obstetricia', 'Eco Doppler', 'Salud Femenina'];
     }
-  ];
 
-  especialidadesFiltradas: EspecialidadItem[] = [...this.especialidades];
+    return {
+      id,
+      nombre,
+      descripcion: `Atención médica integral en ${nombre} con equipamiento moderno y profesionales de primer nivel.`,
+      atencion24hs,
+      icono,
+      colorClase,
+      etiquetas: tags
+    };
+  }
 
-  filtrar() {
+  filtrar(): void {
     const query = this.busqueda.toLowerCase().trim();
     this.especialidadesFiltradas = this.especialidades.filter(esp => 
+      !query ||
       esp.nombre.toLowerCase().includes(query) ||
       esp.descripcion.toLowerCase().includes(query) ||
       esp.etiquetas.some(t => t.toLowerCase().includes(query))
     );
   }
+
 }
