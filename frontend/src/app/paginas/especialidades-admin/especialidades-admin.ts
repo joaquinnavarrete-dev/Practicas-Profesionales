@@ -98,7 +98,7 @@ export class EspecialidadesAdminComponent implements OnInit {
     this.listaFiltrada = this.especialidades.filter(item => {
       const matchGlobal = !qGlobal ||
         item.nombre.toLowerCase().includes(qGlobal) ||
-        item.departamento.toLowerCase().includes(qGlobal);
+        (qGlobal.length >= 3 && item.departamento.toLowerCase().includes(qGlobal));
       const matchNombre = !qNombre || item.nombre.toLowerCase().includes(qNombre);
       const matchDepto = this.filtroDepto === 'Todos' || item.departamento === this.filtroDepto;
       const matchEstado = this.filtroEstado === 'Todas' || item.estado === this.filtroEstado;

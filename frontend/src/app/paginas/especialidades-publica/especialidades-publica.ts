@@ -98,10 +98,12 @@ export class EspecialidadesPublicaComponent implements OnInit {
 
   filtrar(): void {
     const query = this.busqueda.toLowerCase().trim();
+    if (!query) {
+      this.especialidadesFiltradas = [...this.especialidades];
+      return;
+    }
     this.especialidadesFiltradas = this.especialidades.filter(esp => 
-      !query ||
       esp.nombre.toLowerCase().includes(query) ||
-      esp.descripcion.toLowerCase().includes(query) ||
       esp.etiquetas.some(t => t.toLowerCase().includes(query))
     );
   }
