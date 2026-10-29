@@ -12,8 +12,6 @@ export class UsuarioService {
   private readonly apiUrl = `${environment.apiUrl}/usuarios`;
   private readonly rolesUrl = `${environment.apiUrl}/roles`;
 
-  // ================= GESTIÓN DE USUARIOS =================
-
   listar(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(this.apiUrl);
   }
@@ -50,8 +48,6 @@ export class UsuarioService {
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-
-  // ================= GESTIÓN DE ROLES =================
 
   listarRoles(): Observable<Rol[]> {
     return this.http.get<Rol[]>(this.rolesUrl);
