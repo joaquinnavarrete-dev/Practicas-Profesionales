@@ -1,46 +1,34 @@
 <div class="register-doctor-wrapper">
 
-  <!-- Topbar Administrativo -->
-  <header class="topbar-admin">
-    <div class="topbar-left">
-      <div class="module-title-box">
-        <span class="module-icon">🩺</span>
-        <h2 class="module-title">Gestión del Cuerpo Médico</h2>
-      </div>
-    </div>
-
-    <div class="topbar-right">
-      <div class="profile-card">
-        <div class="avatar-ph">👩‍⚕️</div>
-        <div class="profile-info">
-          <span class="profile-name">Dra. Mariana Gómez</span>
-          <span class="profile-role">Directora Médica ▾</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Cabecera de la Página -->
   <header class="form-header-bar">
     <div class="header-titles">
       <span class="back-link" routerLink="/admin/medicos">← Volver al Cuerpo Médico</span>
       <h1 class="main-title">Modificar Datos del Profesional</h1>
-      <p class="sub-title">Actualice la información personal, credenciales, consultorio y estado institucional del médico ID: {{ medicoId }}.</p>
+      <p class="sub-title">Actualice la información profesional y especialidad del médico ID #{{ medicoId }}.</p>
     </div>
   </header>
 
-  <!-- Formulario Principal de Edición -->
   <main class="form-content-body">
-    <form class="doctor-form-card" (ngSubmit)="actualizarMedico()">
 
-      <!-- SECCIÓN 1: DATOS PERSONALES Y CONTACTO -->
+    <div *ngIf="errorMessage" class="error-banner">
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando información del profesional médico...</p>
+    </div>
+
+    <form class="doctor-form-card" (ngSubmit)="guardarCambios()" *ngIf="!cargando">
+
       <div class="form-section">
         <h3 class="section-title">1. Datos Personales y de Contacto</h3>
-        
+
         <div class="form-grid-2">
           <div class="form-group">
             <label>NOMBRE(S) *</label>
-            <input type="text" [(ngModel)]="medicoForm.nombre" name="nombre" placeholder="Ej. Roberto Carlos" required />
+            <input type="text" [(ngModel)]="medicoForm.nombre" name="nombre" placeholder="Ej. Roberto Carlos"
+              required />
           </div>
 
           <div class="form-group">
@@ -51,81 +39,45 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label>CORREO ELECTRÓNICO INSTITUCIONAL *</label>
-            <input type="email" [(ngModel)]="medicoForm.email" name="email" placeholder="Ej. roberto.gimenez@sangabriel.com" required />
+            <label>TELÉFONO / CELULAR DE CONTACTO *</label>
+            <input type="text" [(ngModel)]="medicoForm.telefono" name="telefono" placeholder="Ej. +54 9 11 4402-9911"
+              required />
           </div>
 
           <div class="form-group">
-            <label>TELÉFONO / CELULAR DE CONTACTO *</label>
-            <input type="text" [(ngModel)]="medicoForm.telefono" name="telefono" placeholder="Ej. +54 9 11 4402-9911" required />
+            <label>SEDE INSTITUCIONAL</label>
+            <input type="text" value="Sede Central (Av. San Gabriel 1420)" disabled />
           </div>
         </div>
       </div>
 
-      <!-- SECCIÓN 2: DATOS PROFESIONALES Y MATRÍCULA -->
       <div class="form-section">
         <h3 class="section-title">2. Credenciales y Especialidad Médica</h3>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label>NÚMERO DE MATRÍCULA *</label>
-            <input type="text" [(ngModel)]="medicoForm.matricula" name="matricula" placeholder="Ej. M.N. 142.589" required />
+            <label>NÚMERO DE MATRÍCULA PROFESIONAL *</label>
+            <input type="text" [(ngModel)]="medicoForm.matricula" name="matricula" placeholder="Ej. M.N. 142.589"
+              required />
           </div>
 
           <div class="form-group">
-            <label>ESPECIALIDAD PRINCIPAL *</label>
-            <select [(ngModel)]="medicoForm.especialidad" name="especialidad">
-              <option value="Cardiología">Cardiología</option>
-              <option value="Neurología">Neurología</option>
-              <option value="Pediatría">Pediatría</option>
-              <option value="Traumatología">Traumatología</option>
-              <option value="Clínica Médica">Clínica Médica</option>
+            <label>ESPECIALIDAD ASIGNADA *</label>
+            <select [(ngModel)]="medicoForm.idEspecialidad" name="idEspecialidad" required>
+              <option *ngFor="let esp of especialidades" [ngValue]="esp.idEspecialidad">
+                {{ esp.nombre }}
+              </option>
             </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>SUBESPECIALIDAD O ÁREA DE ORIENTACIÓN</label>
-          <input type="text" [(ngModel)]="medicoForm.subespecialidad" name="subespecialidad" placeholder="Ej. Ecocardiografía y Doppler" />
-        </div>
-      </div>
-
-      <!-- SECCIÓN 3: UBICACIÓN, HORARIOS Y ESTADO -->
-      <div class="form-section">
-        <h3 class="section-title">3. Ubicación, Horarios y Estado Institucional</h3>
-
-        <div class="form-grid-3">
-          <div class="form-group">
-            <label>CONSULTORIO ASIGNADO *</label>
-            <select [(ngModel)]="medicoForm.consultorio" name="consultorio">
-              <option value="Consultorio 101 (Piso 1)">Consultorio 101 (Piso 1)</option>
-              <option value="Consultorio 102 (Piso 1)">Consultorio 102 (Piso 1)</option>
-              <option value="Consultorio 204 (Piso 2)">Consultorio 204 (Piso 2)</option>
-              <option value="Consultorio 210 (Piso 2)">Consultorio 210 (Piso 2)</option>
-              <option value="Consultorio 301 (Piso 3)">Consultorio 301 (Piso 3)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>ESTADO ACTUAL *</label>
-            <select [(ngModel)]="medicoForm.estado" name="estado">
-              <option value="Activo">Activo</option>
-              <option value="Licencia">Licencia</option>
-              <option value="Inactivo">Inactivo</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>DÍAS Y HORARIOS *</label>
-            <input type="text" [(ngModel)]="medicoForm.diasAtencion" name="diasAtencion" placeholder="Ej. Lun, Mié y Vie" required />
           </div>
         </div>
       </div>
 
-      <!-- BOTONES DE ACCIÓN -->
       <div class="form-actions-footer">
         <button type="button" class="btn-cancel" routerLink="/admin/medicos">Cancelar</button>
-        <button type="submit" class="btn-submit">💾 Guardar Modificaciones</button>
+        <button type="submit" class="btn-submit" [disabled]="guardando">
+          <span *ngIf="!guardando">💾 Guardar Cambios</span>
+          <span *ngIf="guardando">Guardando...</span>
+        </button>
       </div>
 
     </form>
