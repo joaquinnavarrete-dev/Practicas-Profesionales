@@ -11,12 +11,15 @@ export interface Usuario {
   idUsuario: number;
   nombreUsuario: string;
   rol: Rol;
-  estado: boolean;
+  activo?: boolean;
+  estado?: boolean;
 }
 
 export interface UsuarioRequest {
   nombreUsuario: string;
   password?: string;
+  contrasena?: string;
   idRol: number;
-  estado: boolean;
+  activo?: boolean;
+  estado?: boolean;
 }

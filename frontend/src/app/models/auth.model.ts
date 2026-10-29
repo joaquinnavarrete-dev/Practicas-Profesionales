@@ -1,6 +1,7 @@
 export interface AuthRequest {
   nombreUsuario: string;
-  password: string;
+  password?: string;
+  contrasena?: string;
 }
 
 export interface AuthResponse {
