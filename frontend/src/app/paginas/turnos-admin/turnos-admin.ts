@@ -1,146 +1,112 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-
-export interface TurnoAdminRow {
-  id: number;
-  hora: string;
-  fecha: string;
-  pacienteNombre: string;
-  pacienteDni: string;
-  medicoNombre: string;
-  especialidad: string;
-  obraSocial: string;
-  plan: string;
-  motivo: string;
-  estado: 'Confirmado' | 'En Espera' | 'Atendido' | 'Cancelado';
-}
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { TurnoService } from '../../services/turno.service';
+import { EspecialidadService } from '../../services/especialidad.service';
+import { Turno, Especialidad } from '../../models';
 
 @Component({
   selector: 'app-turnos-admin',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './turnos-admin.html',
   styleUrl: './turnos-admin.css'
 })
-export class TurnosAdminComponent {
+export class TurnosAdminComponent implements OnInit {
+  private readonly turnoService = inject(TurnoService);
+  private readonly especialidadService = inject(EspecialidadService);
+  private readonly route = inject(ActivatedRoute);
 
   busquedaGlobal: string = '';
-  fechaFiltro: string = '2025-10-22';
-  estadoFiltro: string = 'Todos';
+  fechaFiltro: string = '';
   especialidadFiltro: string = 'Todas';
 
-  turnos: TurnoAdminRow[] = [
-    {
-      id: 1,
-      hora: '08:30 hs',
-      fecha: '2025-10-22',
-      pacienteNombre: 'Carlos Eduardo Fernández',
-      pacienteDni: '28.452.109',
-      medicoNombre: 'Dra. Mariana Gómez',
-      especialidad: 'Cardiología',
-      obraSocial: 'OSDE',
-      plan: 'Plan 310',
-      motivo: 'Control post-operatorio',
-      estado: 'Atendido'
-    },
-    {
-      id: 2,
-      hora: '09:00 hs',
-      fecha: '2025-10-22',
-      pacienteNombre: 'Laura Rodríguez',
-      pacienteDni: '34.567.890',
-      medicoNombre: 'Dra. Mariana Gómez',
-      especialidad: 'Cardiología',
-      obraSocial: 'Swiss Medical',
-      plan: 'Plan Sual',
-      motivo: 'Evaluación ergométrica',
-      estado: 'En Espera'
-    },
-    {
-      id: 3,
-      hora: '09:30 hs',
-      fecha: '2025-10-22',
-      pacienteNombre: 'Martín Gonzalo Peralta',
-      pacienteDni: '40.128.943',
-      medicoNombre: 'Dra. Mariana Gómez',
-      especialidad: 'Cardiología',
-      obraSocial: 'Galeno',
-      plan: 'Oro 450',
-      motivo: 'Ecocardiograma de rutina',
-      estado: 'Confirmado'
-    },
-    {
-      id: 4,
-      hora: '10:15 hs',
-      fecha: '2025-10-22',
-      pacienteNombre: 'Elena Beatríz Rossi',
-      pacienteDni: '22.940.182',
-      medicoNombre: 'Dr. Roberto Rossi',
-      especialidad: 'Neurología',
-      obraSocial: 'PAMI',
-      plan: 'Beneficiario',
-      motivo: 'Consulta por cefaleas recurrentes',
-      estado: 'Confirmado'
-    },
-    {
-      id: 5,
-      hora: '11:00 hs',
-      fecha: '2025-10-22',
-      pacienteNombre: 'Lucas Torres',
-      pacienteDni: '38.904.211',
-      medicoNombre: 'Dra. Sofía Benítez',
-      especialidad: 'Pediatría',
-      obraSocial: 'Particular',
-      plan: 'Sin Cobertura',
-      motivo: 'Control pediátrico',
-      estado: 'Cancelado'
-    }
-  ];
+  turnos: Turno[] = [];
+  turnosFiltrados: Turno[] = [];
+  especialidades: Especialidad[] = [];
+  cargando: boolean = false;
+  errorMessage: string = '';
 
-  turnosFiltrados: TurnoAdminRow[] = [...this.turnos];
+  ngOnInit(): void {
+    const idMedicoParam = this.route.snapshot.queryParams['idMedico'];
 
-  constructor() {
-    this.aplicarFiltros();
+    this.cargarEspecialidades();
+    this.cargarTurnos(idMedicoParam ? Number(idMedicoParam) : undefined);
   }
 
-  aplicarFiltros() {
+  cargarTurnos(idMedicoFiltro?: number): void {
+    this.cargando = true;
+    this.errorMessage = '';
+
+    this.turnoService.listarTodos().subscribe({
+      next: (data) => {
+        if (idMedicoFiltro) {
+          this.turnos = data.filter(t => t.medico.idMedico === idMedicoFiltro);
+        } else {
+          this.turnos = data;
+        }
+        this.cargando = false;
+        this.aplicarFiltros();
+      },
+      error: (err) => {
+        this.cargando = false;
+        console.error('Error al cargar turnos:', err);
+        this.errorMessage = 'No se pudieron cargar los turnos desde el servidor.';
+      }
+    });
+  }
+
+  cargarEspecialidades(): void {
+    this.especialidadService.listar().subscribe({
+      next: (data) => {
+        this.especialidades = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar especialidades:', err);
+      }
+    });
+  }
+
+  aplicarFiltros(): void {
     const q = this.busquedaGlobal.toLowerCase().trim();
 
     this.turnosFiltrados = this.turnos.filter(t => {
       const matchFecha = !this.fechaFiltro || t.fecha === this.fechaFiltro;
-      const matchEstado = this.estadoFiltro === 'Todos' || t.estado === this.estadoFiltro;
-      const matchEsp = this.especialidadFiltro === 'Todas' || t.especialidad === this.especialidadFiltro;
-      const matchQuery = t.pacienteNombre.toLowerCase().includes(q) ||
-                          t.pacienteDni.includes(q) ||
-                          t.medicoNombre.toLowerCase().includes(q) ||
-                          t.especialidad.toLowerCase().includes(q);
+      const matchEsp = this.especialidadFiltro === 'Todas' ||
+        t.especialidad.nombre === this.especialidadFiltro;
 
-      return matchFecha && matchEstado && matchEsp && matchQuery;
+      const pacienteFull = `${t.paciente.nombre} ${t.paciente.apellido}`.toLowerCase();
+      const medicoFull = `${t.medico.nombre} ${t.medico.apellido}`.toLowerCase();
+      const matchQuery = !q ||
+        pacienteFull.includes(q) ||
+        t.paciente.dni.includes(q) ||
+        medicoFull.includes(q) ||
+        t.especialidad.nombre.toLowerCase().includes(q);
+
+      return matchFecha && matchEsp && matchQuery;
     });
   }
 
-  contarPorEstado(estado: string): number {
-    return this.turnos.filter(t => t.estado === estado).length;
-  }
-
-  resetearFiltros() {
+  resetearFiltros(): void {
     this.busquedaGlobal = '';
-    this.fechaFiltro = '2025-10-22';
-    this.estadoFiltro = 'Todos';
+    this.fechaFiltro = '';
     this.especialidadFiltro = 'Todas';
     this.aplicarFiltros();
   }
 
-  verDetalleTurno(t: TurnoAdminRow) {
-    console.log('Ver detalle del turno ID:', t.id);
-  }
-
-  cambiarEstado(t: TurnoAdminRow) {
-    console.log('Cambiar estado del turno ID:', t.id);
-  }
-
-  cancelarTurno(t: TurnoAdminRow) {
-    console.log('Cancelar turno ID:', t.id);
+  cancelarTurno(t: Turno): void {
+    if (confirm(`¿Confirma la cancelación del turno del paciente ${t.paciente.nombre} ${t.paciente.apellido} para el ${t.fecha} a las ${t.hora} hs?`)) {
+      this.turnoService.cancelar(t.idTurno).subscribe({
+        next: () => {
+          this.turnos = this.turnos.filter(item => item.idTurno !== t.idTurno);
+          this.aplicarFiltros();
+        },
+        error: (err) => {
+          console.error('Error al cancelar turno:', err);
+          alert(err.error?.message || 'No se pudo cancelar el turno.');
+        }
+      });
+    }
   }
 }
