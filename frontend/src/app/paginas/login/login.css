@@ -1,5 +1,5 @@
 .login-wrapper {
-  min-height: calc(100vh - 180px); /* Centrado visual considerando navbar/footer */
+  min-height: calc(100vh - 180px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,13 +19,12 @@
   flex-direction: column;
 }
 
-/* Header de la tarjeta */
 .card-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 2.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .brand-badge {
@@ -59,7 +58,27 @@
   font-weight: 500;
 }
 
-/* Formulario */
+.login-error-alert {
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.35;
+}
+
+.alert-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
@@ -83,19 +102,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.45rem;
-}
-
-.forgot-link {
-  font-size: 0.82rem;
-  color: #004b93;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.15s ease;
-}
-
-.forgot-link:hover {
-  color: #002b55;
-  text-decoration: underline;
 }
 
 .input-wrapper {
@@ -168,7 +174,6 @@
   height: 20px;
 }
 
-/* Botón Iniciar Sesión */
 .btn-login-submit {
   width: 100%;
   padding: 0.85rem;
@@ -183,12 +188,38 @@
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-login-submit:hover {
+.btn-login-submit:hover:not(:disabled) {
   background-color: #00366a;
   box-shadow: 0 4px 12px rgba(0, 75, 147, 0.25);
 }
 
-/* Footer de la tarjeta */
+.btn-login-submit:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.85;
+}
+
+.register-redirect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.register-link {
+  color: #004b93;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
 .card-footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
