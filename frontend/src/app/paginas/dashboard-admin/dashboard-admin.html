@@ -22,7 +22,7 @@
       <div class="profile-card">
         <div class="avatar-ph">👩‍⚕️</div>
         <div class="profile-info">
-          <span class="profile-name">{{ nombreUsuario }}</span>
+          <span class="profile-name">{{ nombreUsuario() }}</span>
           <span class="profile-role">Administración Clínica</span>
         </div>
       </div>
@@ -34,7 +34,7 @@
     <div class="page-title-row">
       <div class="title-block">
         <span class="today-badge">📅 Hoy: {{ fechaHoyTexto }}</span>
-        <h1 class="main-heading">¡Hola, {{ nombreUsuario }}! 👋</h1>
+        <h1 class="main-heading">¡Hola, {{ nombreUsuario() }}! 👋</h1>
         <p class="sub-heading">Este es el resumen operativo y métricas en tiempo real de la Clínica San Gabriel.</p>
       </div>
 
@@ -52,9 +52,9 @@
           <span class="kpi-label">TOTAL TURNOS</span>
           <div class="kpi-icon-box icon-blue">📅</div>
         </div>
-        <strong class="kpi-value">{{ totalTurnos }}</strong>
+        <strong class="kpi-value">{{ totalTurnos() }}</strong>
         <div class="kpi-footer">
-          <span class="trend-up">{{ turnosHoyCount }} agendados para hoy</span>
+          <span class="trend-up">{{ turnosHoyCount() }} agendados para hoy</span>
         </div>
       </div>
 
@@ -63,7 +63,7 @@
           <span class="kpi-label">PACIENTES REGISTRADOS</span>
           <div class="kpi-icon-box icon-amber">👥</div>
         </div>
-        <strong class="kpi-value">{{ totalPacientes }}</strong>
+        <strong class="kpi-value">{{ totalPacientes() }}</strong>
         <div class="kpi-footer">
           <span class="kpi-subtext">Padrón clínico activo</span>
         </div>
@@ -74,7 +74,7 @@
           <span class="kpi-label">ATENDIDOS / COMPLETADOS</span>
           <div class="kpi-icon-box icon-green">✓</div>
         </div>
-        <strong class="kpi-value">{{ atendidosHoyCount }}</strong>
+        <strong class="kpi-value">{{ atendidosHoyCount() }}</strong>
         <div class="kpi-footer">
           <span class="kpi-subtext">Consultas confirmadas o atendidas</span>
         </div>
@@ -85,7 +85,7 @@
           <span class="kpi-label">MÉDICOS DEL PLANTEL</span>
           <div class="kpi-icon-box icon-purple">🩺</div>
         </div>
-        <strong class="kpi-value">{{ totalMedicos }}</strong>
+        <strong class="kpi-value">{{ totalMedicos() }}</strong>
         <div class="kpi-footer">
           <span class="kpi-subtext">Profesionales en cartilla</span>
         </div>
@@ -102,10 +102,10 @@
         </div>
 
         <div class="specialty-progress-list">
-          <div *ngIf="demandaEspecialidades.length === 0" style="padding: 1.5rem; color: #64748b; text-align: center;">
+          <div *ngIf="demandaEspecialidades().length === 0" style="padding: 1.5rem; color: #64748b; text-align: center;">
             No hay turnos registrados aún para graficar la demanda.
           </div>
-          <div class="progress-item" *ngFor="let item of demandaEspecialidades">
+          <div class="progress-item" *ngFor="let item of demandaEspecialidades()">
             <div class="progress-labels">
               <span class="item-name">{{ item.nombre }}</span>
               <span class="item-val">{{ item.turnos }} turnos ({{ item.porcentaje }}%)</span>
@@ -120,31 +120,31 @@
 
       <div class="dash-card quick-actions-card">
         <div class="dash-card-header">
-          <h3>Acceso Rápido & Gestión</h3>
+          <h3>Accesos Rápidos</h3>
         </div>
 
-        <div class="quick-buttons-grid">
+        <div class="quick-links-list">
+          <a routerLink="/admin/especialidades" class="quick-btn">
+            <span class="q-icon">📋</span>
+            <div>
+              <strong>Catálogo de Especialidades</strong>
+              <small>Departamentos y áreas clínicas</small>
+            </div>
+          </a>
+
+          <a routerLink="/admin/pacientes-por-medico" class="quick-btn">
+            <span class="q-icon">👨‍⚕️</span>
+            <div>
+              <strong>Pacientes por Profesional</strong>
+              <small>Agenda diaria de consultorios</small>
+            </div>
+          </a>
+
           <a routerLink="/admin/turnos" class="quick-btn">
             <span class="q-icon">📅</span>
             <div>
-              <strong>Gestión de Turnos</strong>
-              <small>Ver agenda general</small>
-            </div>
-          </a>
-
-          <a routerLink="/admin/pacientes" class="quick-btn">
-            <span class="q-icon">👥</span>
-            <div>
-              <strong>Padrón de Pacientes</strong>
-              <small>Nómina y coberturas</small>
-            </div>
-          </a>
-
-          <a routerLink="/admin/especialidades" class="quick-btn">
-            <span class="q-icon">📐</span>
-            <div>
-              <strong>Especialidades</strong>
-              <small>Administrar catálogo</small>
+              <strong>Libro General de Turnos</strong>
+              <small>Listado y cancelaciones</small>
             </div>
           </a>
 
@@ -191,12 +191,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngIf="cargando">
+            <tr *ngIf="cargando()">
               <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
                 ⏳ Cargando agenda del día...
               </td>
             </tr>
-            <tr *ngFor="let t of proximosTurnos">
+            <tr *ngFor="let t of proximosTurnos()">
               <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
               <td><strong class="patient-name">{{ t.paciente }}</strong></td>
               <td>{{ t.dni }}</td>
@@ -213,7 +213,7 @@
                 </span>
               </td>
             </tr>
-            <tr *ngIf="!cargando && proximosTurnos.length === 0">
+            <tr *ngIf="!cargando() && proximosTurnos().length === 0">
               <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
                 No hay turnos registrados en la agenda.
               </td>

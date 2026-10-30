@@ -10,8 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar por nombre, apellido, DNI o cobertura..." [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()" />
+      <input type="text" placeholder="Buscar por nombre, apellido, DNI o cobertura..." [ngModel]="busquedaGlobal()"
+        (ngModelChange)="busquedaGlobal.set($event)" />
     </div>
 
     <div class="topbar-right">
@@ -41,7 +41,7 @@
         <div class="stat-icon-tile icon-blue">👥</div>
         <div class="stat-body">
           <span class="stat-caption">Total Pacientes</span>
-          <strong class="stat-number">{{ pacientes.length }} Fichas</strong>
+          <strong class="stat-number">{{ pacientes().length }} Fichas</strong>
         </div>
       </div>
 
@@ -49,21 +49,21 @@
         <div class="stat-icon-tile icon-green">✓</div>
         <div class="stat-body">
           <span class="stat-caption">Filtrados en Pantalla</span>
-          <strong class="stat-number">{{ pacientesFiltrados.length }} Pacientes</strong>
+          <strong class="stat-number">{{ pacientesFiltrados().length }} Pacientes</strong>
         </div>
       </div>
     </div>
 
-    <div *ngIf="errorMessage" class="error-banner">
-      <span>{{ errorMessage }}</span>
+    <div *ngIf="errorMessage()" class="error-banner">
+      <span>{{ errorMessage() }}</span>
     </div>
 
     <div class="filters-card">
       <div class="filter-group">
         <label>OBRA SOCIAL / PREPAGA:</label>
-        <select [(ngModel)]="obraSocialFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="obraSocialFiltro()" (ngModelChange)="obraSocialFiltro.set($event)">
           <option value="Todas">Todas las coberturas</option>
-          <option *ngFor="let os of obrasSociales" [value]="os.nombre">
+          <option *ngFor="let os of obrasSociales()" [value]="os.nombre">
             {{ os.nombre }}
           </option>
         </select>
@@ -86,14 +86,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cargando">
+          <tr *ngIf="cargando()">
             <td colspan="5" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Cargando padrón de pacientes...</span>
             </td>
           </tr>
 
-          <tr *ngFor="let p of pacientesFiltrados">
+          <tr *ngFor="let p of pacientesFiltrados()">
             <td>
               <div class="patient-cell">
                 <span class="patient-avatar">👤</span>
@@ -127,7 +127,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando && pacientesFiltrados.length === 0">
+          <tr *ngIf="!cargando() && pacientesFiltrados().length === 0">
             <td colspan="5" class="empty-table-row">
               <span>🔍 No se encontraron pacientes registrados con los filtros aplicados.</span>
             </td>
@@ -137,7 +137,7 @@
 
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ pacientesFiltrados.length }} de {{ pacientes.length }} pacientes registrados
+          Mostrando {{ pacientesFiltrados().length }} de {{ pacientes().length }} pacientes registrados
         </span>
       </div>
     </div>

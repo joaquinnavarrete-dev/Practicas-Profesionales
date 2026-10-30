@@ -10,16 +10,16 @@
       </p>
     </div>
 
-    <div *ngIf="errorMessage" class="wizard-alert-error">
+    <div *ngIf="errorMessage()" class="wizard-alert-error">
       <svg viewBox="0 0 24 24" class="alert-ico" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"></circle>
         <line x1="12" y1="8" x2="12" y2="12"></line>
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
-      <span>{{ errorMessage }}</span>
+      <span>{{ errorMessage() }}</span>
     </div>
 
-    <div class="success-screen-card" *ngIf="reservaExitosa">
+    <div class="success-screen-card" *ngIf="reservaExitosa()">
       <div class="success-icon-circle">✓</div>
       <h2 class="success-title">¡Turno Confirmado con Éxito!</h2>
       <p class="success-sub">Tu cita médica ha sido agendada en la base de datos de la Clínica San Gabriel.</p>
@@ -27,21 +27,21 @@
       <div class="voucher-details-box">
         <div class="v-row">
           <span>Especialidad:</span>
-          <strong>{{ turnoConfirmado?.especialidad?.nombre || turnoBorrador.especialidad?.nombre }}</strong>
+          <strong>{{ turnoConfirmado()?.especialidad?.nombre || turnoBorrador.especialidad?.nombre }}</strong>
         </div>
         <div class="v-row">
           <span>Profesional:</span>
-          <strong>Dr(a). {{ turnoConfirmado?.medico?.nombre }} {{ turnoConfirmado?.medico?.apellido }} (M.N. {{
-            turnoConfirmado?.medico?.matricula }})</strong>
+          <strong>Dr(a). {{ turnoConfirmado()?.medico?.nombre }} {{ turnoConfirmado()?.medico?.apellido }} (M.N. {{
+            turnoConfirmado()?.medico?.matricula }})</strong>
         </div>
         <div class="v-row">
           <span>Fecha y Hora:</span>
-          <strong>{{ turnoConfirmado?.fecha }} a las {{ turnoConfirmado?.hora }} hs</strong>
+          <strong>{{ turnoConfirmado()?.fecha }} a las {{ turnoConfirmado()?.hora }} hs</strong>
         </div>
         <div class="v-row">
           <span>Paciente:</span>
-          <strong>{{ turnoConfirmado?.paciente?.nombre }} {{ turnoConfirmado?.paciente?.apellido }} (DNI: {{
-            turnoConfirmado?.paciente?.dni }})</strong>
+          <strong>{{ turnoConfirmado()?.paciente?.nombre }} {{ turnoConfirmado()?.paciente?.apellido }} (DNI: {{
+            turnoConfirmado()?.paciente?.dni }})</strong>
         </div>
         <div class="v-row">
           <span>Lugar:</span>
@@ -54,58 +54,58 @@
       </div>
     </div>
 
-    <div class="stepper-indicator" *ngIf="!reservaExitosa">
-      <div class="step-node" [class.active]="pasoActual === 1" [class.completed]="pasoActual > 1" (click)="irAlPaso(1)">
+    <div class="stepper-indicator" *ngIf="!reservaExitosa()">
+      <div class="step-node" [class.active]="pasoActual() === 1" [class.completed]="pasoActual() > 1" (click)="irAlPaso(1)">
         <div class="node-circle">
-          <span *ngIf="pasoActual <= 1">1</span>
-          <span *ngIf="pasoActual > 1">✓</span>
+          <span *ngIf="pasoActual() <= 1">1</span>
+          <span *ngIf="pasoActual() > 1">✓</span>
         </div>
         <span class="node-label">Especialidad</span>
       </div>
 
-      <div class="step-connector" [class.filled]="pasoActual > 1"></div>
+      <div class="step-connector" [class.filled]="pasoActual() > 1"></div>
 
-      <div class="step-node" [class.active]="pasoActual === 2" [class.completed]="pasoActual > 2" (click)="irAlPaso(2)">
+      <div class="step-node" [class.active]="pasoActual() === 2" [class.completed]="pasoActual() > 2" (click)="irAlPaso(2)">
         <div class="node-circle">
-          <span *ngIf="pasoActual <= 2">2</span>
-          <span *ngIf="pasoActual > 2">✓</span>
+          <span *ngIf="pasoActual() <= 2">2</span>
+          <span *ngIf="pasoActual() > 2">✓</span>
         </div>
         <span class="node-label">Médico</span>
       </div>
 
-      <div class="step-connector" [class.filled]="pasoActual > 2"></div>
+      <div class="step-connector" [class.filled]="pasoActual() > 2"></div>
 
-      <div class="step-node" [class.active]="pasoActual === 3" [class.completed]="pasoActual > 3" (click)="irAlPaso(3)">
+      <div class="step-node" [class.active]="pasoActual() === 3" [class.completed]="pasoActual() > 3" (click)="irAlPaso(3)">
         <div class="node-circle">
-          <span *ngIf="pasoActual <= 3">3</span>
-          <span *ngIf="pasoActual > 3">✓</span>
+          <span *ngIf="pasoActual() <= 3">3</span>
+          <span *ngIf="pasoActual() > 3">✓</span>
         </div>
         <span class="node-label">Fecha y Hora</span>
       </div>
 
-      <div class="step-connector" [class.filled]="pasoActual > 3"></div>
+      <div class="step-connector" [class.filled]="pasoActual() > 3"></div>
 
-      <div class="step-node" [class.active]="pasoActual === 4">
+      <div class="step-node" [class.active]="pasoActual() === 4">
         <div class="node-circle">4</div>
         <span class="node-label">Confirmación</span>
       </div>
     </div>
 
-    <div class="wizard-main-card" *ngIf="!reservaExitosa">
+    <div class="wizard-main-card" *ngIf="!reservaExitosa()">
 
-      <div class="step-content" *ngIf="pasoActual === 1">
+      <div class="step-content" *ngIf="pasoActual() === 1">
         <div class="step-card-header">
           <span class="step-ico">📐</span>
           <h2 class="step-card-title">Seleccione una Especialidad</h2>
         </div>
 
-        <div *ngIf="cargandoEspecialidades" class="loading-state">
+        <div *ngIf="cargandoEspecialidades()" class="loading-state">
           <div class="spinner"></div>
           <p>Cargando especialidades médicas...</p>
         </div>
 
-        <div class="grid-especialidades" *ngIf="!cargandoEspecialidades">
-          <div class="especialidad-tile" *ngFor="let esp of especialidades"
+        <div class="grid-especialidades" *ngIf="!cargandoEspecialidades()">
+          <div class="especialidad-tile" *ngFor="let esp of especialidades()"
             [class.selected]="turnoBorrador.especialidad?.idEspecialidad === esp.idEspecialidad"
             (click)="seleccionarEspecialidad(esp)">
             <span class="esp-icon-huge">{{ getIconoEspecialidad(esp.nombre) }}</span>
@@ -114,14 +114,14 @@
         </div>
       </div>
 
-      <div class="step-content" *ngIf="pasoActual === 2">
+      <div class="step-content" *ngIf="pasoActual() === 2">
         <div class="context-bar">
           <div class="context-left">
             <span class="heart-ico">❤️</span>
             <span>Especialidad seleccionada: <strong>{{ turnoBorrador.especialidad?.nombre }}</strong></span>
             <button class="btn-change-link" (click)="irAlPaso(1)">Cambiar</button>
           </div>
-          <span class="context-right">{{ medicosFiltrados.length }} profesionales disponibles</span>
+          <span class="context-right">{{ medicosFiltrados().length }} profesionales disponibles</span>
         </div>
 
         <div class="medicos-filter-row">
@@ -133,22 +133,23 @@
             </div>
           </div>
           <div class="row-inputs">
-            <input type="text" placeholder="Buscar por apellido o matrícula..." [(ngModel)]="filtroNombreMedico" />
+            <input type="text" placeholder="Buscar por apellido o matrícula..." [ngModel]="filtroNombreMedico()"
+              (ngModelChange)="actualizarFiltroMedico($event)" />
           </div>
         </div>
 
-        <div *ngIf="cargandoMedicos" class="loading-state">
+        <div *ngIf="cargandoMedicos()" class="loading-state">
           <div class="spinner"></div>
           <p>Consultando médicos de {{ turnoBorrador.especialidad?.nombre }}...</p>
         </div>
 
-        <div *ngIf="!cargandoMedicos && medicosFiltrados.length === 0" class="empty-state">
+        <div *ngIf="!cargandoMedicos() && medicosFiltrados().length === 0" class="empty-state">
           <p>No se encontraron médicos registrados para la especialidad seleccionada.</p>
           <button class="btn-change-link" (click)="irAlPaso(1)">Elegir otra especialidad</button>
         </div>
 
-        <div class="grid-medicos" *ngIf="!cargandoMedicos && medicosFiltrados.length > 0">
-          <div class="medico-card" *ngFor="let med of medicosFiltrados"
+        <div class="grid-medicos" *ngIf="!cargandoMedicos() && medicosFiltrados().length > 0">
+          <div class="medico-card" *ngFor="let med of medicosFiltrados()"
             [class.selected]="turnoBorrador.medico?.idMedico === med.idMedico" (click)="seleccionarMedico(med)">
             <div class="medico-header">
               <div class="medico-avatar-ph">👨‍⚕️</div>
@@ -175,7 +176,7 @@
         </div>
       </div>
 
-      <div class="step-content" *ngIf="pasoActual === 3">
+      <div class="step-content" *ngIf="pasoActual() === 3">
         <div class="context-bar">
           <div class="context-left">
             <span>Especialidad: <strong>{{ turnoBorrador.especialidad?.nombre }}</strong></span>
@@ -215,24 +216,24 @@
           <div class="hours-card">
             <div class="hours-header">
               <h4>Horarios para el día {{ turnoBorrador.fecha }}</h4>
-              <span class="badge-avail-count">{{ totalDisponibles }} disponibles</span>
+              <span class="badge-avail-count">{{ totalDisponibles() }} disponibles</span>
             </div>
 
-            <div *ngIf="cargandoDisponibles" class="loading-state">
+            <div *ngIf="cargandoDisponibles()" class="loading-state">
               <div class="spinner"></div>
               <p>Calculando turnos disponibles...</p>
             </div>
 
-            <div *ngIf="!cargandoDisponibles && turnosDisponibles.length === 0" class="empty-state">
+            <div *ngIf="!cargandoDisponibles() && turnosDisponibles().length === 0" class="empty-state">
               <p>El profesional no atiende en el día seleccionado o no posee turnos configurados para esta fecha.</p>
               <small>Pruebe seleccionando otra fecha en el calendario.</small>
             </div>
 
-            <ng-container *ngIf="!cargandoDisponibles && turnosDisponibles.length > 0">
-              <div class="hour-group" *ngIf="horariosManana.length > 0">
+            <ng-container *ngIf="!cargandoDisponibles() && turnosDisponibles().length > 0">
+              <div class="hour-group" *ngIf="horariosManana().length > 0">
                 <span class="hour-group-title">☀️ TURNO MAÑANA</span>
                 <div class="slots-grid">
-                  <button *ngFor="let h of horariosManana" type="button" class="slot-btn"
+                  <button *ngFor="let h of horariosManana()" type="button" class="slot-btn"
                     [class.active]="turnoBorrador.hora === h.hora" [disabled]="!h.disponible"
                     (click)="seleccionarHorario(h)">
                     {{ h.hora }} hs <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
@@ -240,10 +241,10 @@
                 </div>
               </div>
 
-              <div class="hour-group" *ngIf="horariosTarde.length > 0">
+              <div class="hour-group" *ngIf="horariosTarde().length > 0">
                 <span class="hour-group-title">🌙 TURNO TARDE</span>
                 <div class="slots-grid">
-                  <button *ngFor="let h of horariosTarde" type="button" class="slot-btn"
+                  <button *ngFor="let h of horariosTarde()" type="button" class="slot-btn"
                     [class.active]="turnoBorrador.hora === h.hora" [disabled]="!h.disponible"
                     (click)="seleccionarHorario(h)">
                     {{ h.hora }} hs <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
@@ -273,7 +274,7 @@
         </div>
       </div>
 
-      <div class="step-content" *ngIf="pasoActual === 4">
+      <div class="step-content" *ngIf="pasoActual() === 4">
 
         <div class="confirm-head-bar">
           <div class="confirm-head-left">
@@ -400,14 +401,14 @@
 
     </div>
 
-    <div class="wizard-bottom-actions" *ngIf="!reservaExitosa">
+    <div class="wizard-bottom-actions" *ngIf="!reservaExitosa()">
       <button class="btn-action-back" (click)="retroceder()">
-        ← {{ pasoActual === 1 ? 'Cancelar' : 'Volver' }}
+        ← {{ pasoActual() === 1 ? 'Cancelar' : 'Volver' }}
       </button>
 
-      <button class="btn-action-next" [disabled]="cargandoReserva" (click)="avanzar()">
-        <span *ngIf="!cargandoReserva">{{ pasoActual === 4 ? '✓ Confirmar Turno' : 'Siguiente →' }}</span>
-        <span *ngIf="cargandoReserva">Procesando reserva...</span>
+      <button class="btn-action-next" [disabled]="cargandoReserva()" (click)="avanzar()">
+        <span *ngIf="!cargandoReserva()">{{ pasoActual() === 4 ? '✓ Confirmar Turno' : 'Siguiente →' }}</span>
+        <span *ngIf="cargandoReserva()">Procesando reserva...</span>
       </button>
     </div>
 

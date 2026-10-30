@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MedicoService, TurnoService, NotificationService } from '../../services';
@@ -41,28 +41,50 @@ export class PacientesPorMedicoComponent implements OnInit {
   private readonly turnoService = inject(TurnoService);
   private readonly notify = inject(NotificationService);
 
-  busquedaGlobal: string = '';
-  medicoSeleccionadoId: number = 0;
-  fechaFiltro: string = '';
-  estadoFiltro: string = 'Todos';
-  cargando: boolean = false;
+  readonly busquedaGlobal = signal<string>('');
+  readonly medicoSeleccionadoId = signal<number>(0);
+  readonly fechaFiltro = signal<string>('');
+  readonly estadoFiltro = signal<string>('Todos');
+  readonly cargando = signal<boolean>(false);
 
-  medicos: MedicoInfo[] = [];
-  pacientes: PacienteCita[] = [];
-  medicoActual: MedicoInfo | undefined;
-  pacientesFiltrados: PacienteCita[] = [];
+  readonly medicos = signal<MedicoInfo[]>([]);
+  readonly pacientes = signal<PacienteCita[]>([]);
+
+  readonly medicoActual = computed(() => {
+    const id = Number(this.medicoSeleccionadoId());
+    return this.medicos().find(m => m.id === id);
+  });
+
+  readonly pacientesFiltrados = computed(() => {
+    const query = this.busquedaGlobal().toLowerCase().trim();
+    const idMed = Number(this.medicoSeleccionadoId());
+    const fFecha = this.fechaFiltro();
+    const fEstado = this.estadoFiltro();
+    const lista = this.pacientes();
+
+    return lista.filter(p => {
+      const coincideMedico = p.medicoId === idMed;
+      const coincideFecha = !fFecha || p.fecha === fFecha;
+      const coincideEstado = fEstado === 'Todos' || p.estado === fEstado;
+      const coincideQuery = !query ||
+        p.nombre.toLowerCase().includes(query) ||
+        p.dni.includes(query) ||
+        p.numHistoriaClinica.toLowerCase().includes(query);
+
+      return coincideMedico && coincideFecha && coincideEstado && coincideQuery;
+    });
+  });
 
   ngOnInit(): void {
-    // Establecer fecha de hoy como filtro predeterminado
-    this.fechaFiltro = new Date().toISOString().split('T')[0];
+    this.fechaFiltro.set(new Date().toISOString().split('T')[0]);
     this.cargarMedicos();
   }
 
   cargarMedicos(): void {
-    this.cargando = true;
+    this.cargando.set(true);
     this.medicoService.listar().subscribe({
       next: (medicosData: Medico[]) => {
-        this.medicos = medicosData.map(m => ({
+        const mapped = medicosData.map(m => ({
           id: m.idMedico,
           nombre: `Dr(a). ${m.nombre} ${m.apellido}`,
           especialidad: m.especialidad?.nombre || 'Medicina General',
@@ -71,32 +93,37 @@ export class PacientesPorMedicoComponent implements OnInit {
           consultorio: `Consultorio ${100 + m.idMedico}`,
           fotoUrl: '👨‍⚕️'
         }));
+        this.medicos.set(mapped);
 
-        if (this.medicos.length > 0) {
-          this.medicoSeleccionadoId = this.medicos[0].id;
-          this.alCambiarMedico();
+        if (mapped.length > 0) {
+          this.medicoSeleccionadoId.set(mapped[0].id);
+          this.cargarTurnosDelMedico(mapped[0].id);
         } else {
-          this.cargando = false;
+          this.cargando.set(false);
         }
       },
       error: (err: any) => {
         console.error('Error al listar médicos:', err);
-        this.cargando = false;
+        this.cargando.set(false);
       }
     });
   }
 
-  alCambiarMedico(): void {
-    this.medicoActual = this.medicos.find(m => m.id === Number(this.medicoSeleccionadoId));
-    if (!this.medicoSeleccionadoId) return;
+  onSeleccionarMedico(idStr: any): void {
+    const id = Number(idStr);
+    this.medicoSeleccionadoId.set(id);
+    this.cargarTurnosDelMedico(id);
+  }
 
-    this.cargando = true;
+  cargarTurnosDelMedico(idMedico: number): void {
+    if (!idMedico) return;
+
+    this.cargando.set(true);
     this.turnoService.listarTodos().subscribe({
       next: (turnos: Turno[]) => {
-        const idMed = Number(this.medicoSeleccionadoId);
-        const turnosDelMedico = turnos.filter(t => t.medico?.idMedico === idMed);
+        const turnosDelMedico = turnos.filter(t => t.medico?.idMedico === idMedico);
 
-        this.pacientes = turnosDelMedico.map(t => {
+        const mapped = turnosDelMedico.map(t => {
           const hoy = new Date().toISOString().split('T')[0];
           let estadoCalc: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' = 'Confirmado';
           if (t.fecha < hoy) {
@@ -107,7 +134,7 @@ export class PacientesPorMedicoComponent implements OnInit {
 
           return {
             id: t.idTurno,
-            medicoId: t.medico?.idMedico || idMed,
+            medicoId: t.medico?.idMedico || idMedico,
             hora: t.hora ? `${t.hora} hs` : '09:00 hs',
             nombre: t.paciente ? `${t.paciente.nombre} ${t.paciente.apellido}` : 'Paciente General',
             dni: t.paciente?.dni || 'Sin DNI',
@@ -121,43 +148,30 @@ export class PacientesPorMedicoComponent implements OnInit {
           };
         });
 
-        this.aplicarFiltros();
-        this.cargando = false;
+        this.pacientes.set(mapped);
+        this.cargando.set(false);
       },
       error: (err: any) => {
         console.error('Error al cargar turnos del médico:', err);
-        this.pacientes = [];
-        this.aplicarFiltros();
-        this.cargando = false;
+        this.pacientes.set([]);
+        this.cargando.set(false);
       }
     });
   }
 
   aplicarFiltros(): void {
-    const query = this.busquedaGlobal.toLowerCase().trim();
-
-    this.pacientesFiltrados = this.pacientes.filter(p => {
-      const coincideMedico = p.medicoId === Number(this.medicoSeleccionadoId);
-      const coincideFecha = !this.fechaFiltro || p.fecha === this.fechaFiltro;
-      const coincideEstado = this.estadoFiltro === 'Todos' || p.estado === this.estadoFiltro;
-      const coincideQuery = !query ||
-        p.nombre.toLowerCase().includes(query) ||
-        p.dni.includes(query) ||
-        p.numHistoriaClinica.toLowerCase().includes(query);
-
-      return coincideMedico && coincideFecha && coincideEstado && coincideQuery;
-    });
+    // Computado reactivamente por Signals
   }
 
   contarPorEstado(estado: string): number {
-    return this.pacientes.filter(p => p.medicoId === Number(this.medicoSeleccionadoId) && p.estado === estado).length;
+    const idMed = Number(this.medicoSeleccionadoId());
+    return this.pacientes().filter(p => p.medicoId === idMed && p.estado === estado).length;
   }
 
   resetearFiltros(): void {
-    this.busquedaGlobal = '';
-    this.fechaFiltro = '';
-    this.estadoFiltro = 'Todos';
-    this.aplicarFiltros();
+    this.busquedaGlobal.set('');
+    this.fechaFiltro.set('');
+    this.estadoFiltro.set('Todos');
   }
 
   exportarListado(): void {
@@ -169,11 +183,15 @@ export class PacientesPorMedicoComponent implements OnInit {
   }
 
   cambiarEstado(p: PacienteCita): void {
-    if (p.estado === 'Confirmado') p.estado = 'En Espera';
-    else if (p.estado === 'En Espera') p.estado = 'Atendido';
-    else if (p.estado === 'Atendido') p.estado = 'Ausente';
-    else p.estado = 'Confirmado';
-    this.notify.info(`Estado del turno actualizado a: ${p.estado}`, p.nombre);
-  }
+    let nuevoEstado: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' = 'Confirmado';
+    if (p.estado === 'Confirmado') nuevoEstado = 'En Espera';
+    else if (p.estado === 'En Espera') nuevoEstado = 'Atendido';
+    else if (p.estado === 'Atendido') nuevoEstado = 'Ausente';
+    else nuevoEstado = 'Confirmado';
 
+    this.pacientes.update(lista =>
+      lista.map(item => item.id === p.id ? { ...item, estado: nuevoEstado } : item)
+    );
+    this.notify.info(`Estado del turno actualizado a: ${nuevoEstado}`, p.nombre);
+  }
 }

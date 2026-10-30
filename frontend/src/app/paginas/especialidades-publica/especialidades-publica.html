@@ -11,16 +11,16 @@
     <div class="search-box">
       <span class="search-icon">🔍</span>
       <input type="text" placeholder="Buscar especialidad o síntoma (ej: cardiología, pediatría)..."
-        [(ngModel)]="busqueda" (input)="filtrar()" />
+        [ngModel]="busqueda()" (ngModelChange)="actualizarBusqueda($event)" />
     </div>
   </header>
 
   <section class="especialidades-grid">
-    <div *ngIf="cargando" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b;">
+    <div *ngIf="cargando()" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b;">
       ⏳ Cargando especialidades médicas disponibles...
     </div>
 
-    <div class="especialidad-card" *ngFor="let esp of especialidadesFiltradas">
+    <div class="especialidad-card" *ngFor="let esp of especialidadesFiltradas()">
       <div class="card-head">
         <div class="icon-circle" [ngClass]="esp.colorClase">
           <span>{{ esp.icono }}</span>
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div *ngIf="!cargando && especialidadesFiltradas.length === 0"
+    <div *ngIf="!cargando() && especialidadesFiltradas().length === 0"
       style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b;">
       No se encontraron especialidades que coincidan con la búsqueda.
     </div>

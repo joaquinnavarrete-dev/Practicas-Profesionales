@@ -10,8 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar usuario por nombre o username..." [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()" />
+      <input type="text" placeholder="Buscar usuario por nombre o username..." [ngModel]="busquedaGlobal()"
+        (ngModelChange)="busquedaGlobal.set($event)" />
     </div>
 
     <div class="topbar-right">
@@ -53,7 +53,7 @@
         <div class="stat-icon-tile icon-blue">👥</div>
         <div class="stat-body">
           <span class="stat-caption">Total Cuentas</span>
-          <strong class="stat-number">{{ usuarios.length }} Registradas</strong>
+          <strong class="stat-number">{{ usuarios().length }} Registradas</strong>
         </div>
       </div>
 
@@ -77,7 +77,7 @@
     <div class="filters-card">
       <div class="filter-group">
         <label>ROL DE ACCESO:</label>
-        <select [(ngModel)]="rolFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="rolFiltro()" (ngModelChange)="rolFiltro.set($event)">
           <option value="Todos">Todos los roles</option>
           <option value="Administrador">Administrador</option>
           <option value="Médico">Médico</option>
@@ -88,7 +88,7 @@
 
       <div class="filter-group">
         <label>ESTADO DE CUENTA:</label>
-        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
           <option value="Todos">Todos los estados</option>
           <option value="Activo">Activo</option>
           <option value="Bloqueado">Bloqueado / Inactivo</option>
@@ -114,13 +114,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cargando">
+          <tr *ngIf="cargando()">
             <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando padrón general de usuarios...
             </td>
           </tr>
 
-          <tr *ngFor="let u of usuariosFiltrados">
+          <tr *ngFor="let u of usuariosFiltrados()">
             <td>
               <div class="user-cell">
                 <span class="user-avatar">{{ u.avatarUrl }}</span>
@@ -180,7 +180,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando && usuariosFiltrados.length === 0">
+          <tr *ngIf="!cargando() && usuariosFiltrados().length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron usuarios con los filtros seleccionados.</span>
             </td>
@@ -190,7 +190,7 @@
 
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ usuariosFiltrados.length }} de {{ usuarios.length }} usuarios registrados
+          Mostrando {{ usuariosFiltrados().length }} de {{ usuarios().length }} usuarios registrados
         </span>
         <div class="pages-list">
           <button class="page-nav-btn" disabled>&lt;</button>

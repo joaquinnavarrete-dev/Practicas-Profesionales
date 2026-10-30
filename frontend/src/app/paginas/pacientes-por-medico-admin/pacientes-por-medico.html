@@ -14,8 +14,8 @@
       <input 
         type="text" 
         placeholder="Buscar paciente, DNI, número de historia clínica..." 
-        [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()"
+        [ngModel]="busquedaGlobal()"
+        (ngModelChange)="busquedaGlobal.set($event)"
       />
     </div>
 
@@ -28,8 +28,8 @@
       <div class="profile-card">
         <div class="avatar-ph">👩‍⚕️</div>
         <div class="profile-info">
-          <span class="profile-name">Dra. Mariana Gómez</span>
-          <span class="profile-role">Directora Médica ▾</span>
+          <span class="profile-name">Panel Administrativo</span>
+          <span class="profile-role">Gestión Médica</span>
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@
     <!-- Encabezado de página -->
     <div class="page-title-row">
       <div class="title-block">
-        <h1 class="main-heading">Nomina de Pacientes Citados</h1>
+        <h1 class="main-heading">Nómina de Pacientes Citados</h1>
         <p class="sub-heading">Consulte la agenda diaria de pacientes asignados a cada profesional médico.</p>
       </div>
 
@@ -58,8 +58,8 @@
       <!-- Selector de Médico -->
       <div class="select-doctor-box">
         <label>MÉDICO PROFESIONAL:</label>
-        <select [(ngModel)]="medicoSeleccionadoId" (change)="alCambiarMedico()">
-          <option *ngFor="let med of medicos" [value]="med.id">
+        <select [ngModel]="medicoSeleccionadoId()" (ngModelChange)="onSeleccionarMedico($event)">
+          <option *ngFor="let med of medicos()" [value]="med.id">
             {{ med.nombre }} — {{ med.especialidad }} ({{ med.consultorio }})
           </option>
         </select>
@@ -68,13 +68,13 @@
       <!-- Selector de Fecha -->
       <div class="date-picker-box">
         <label>FECHA DE CITA:</label>
-        <input type="date" [(ngModel)]="fechaFiltro" (change)="aplicarFiltros()" />
+        <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event)" />
       </div>
 
       <!-- Filtro Estado -->
       <div class="select-status-box">
         <label>ESTADO:</label>
-        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
           <option value="Todos">Todos los estados</option>
           <option value="Confirmado">Confirmado</option>
           <option value="En Espera">En Espera</option>
@@ -89,25 +89,25 @@
     </div>
 
     <!-- Ficha Resumen del Médico Seleccionado -->
-    <div class="doctor-summary-banner" *ngIf="medicoActual">
-      <div class="doc-avatar-large">{{ medicoActual.fotoUrl }}</div>
+    <div class="doctor-summary-banner" *ngIf="medicoActual() as med">
+      <div class="doc-avatar-large">{{ med.fotoUrl }}</div>
       <div class="doc-meta-info">
         <div class="doc-title-line">
-          <h2>{{ medicoActual.nombre }}</h2>
-          <span class="badge-mat">Mat. {{ medicoActual.matricula }}</span>
+          <h2>{{ med.nombre }}</h2>
+          <span class="badge-mat">Mat. {{ med.matricula }}</span>
         </div>
         <p class="doc-subesp">
-          {{ medicoActual.especialidad }} • {{ medicoActual.subespecialidad }}
+          {{ med.especialidad }} • {{ med.subespecialidad }}
         </p>
         <p class="doc-location">
-          📍 {{ medicoActual.consultorio }} — Turno Mañana (08:00 a 13:00 hs)
+          📍 {{ med.consultorio }} — Turno Mañana (08:00 a 13:00 hs)
         </p>
       </div>
 
       <div class="doc-kpi-group">
         <div class="kpi-mini">
           <span>TOTAL PACIENTES</span>
-          <strong>{{ pacientesFiltrados.length }}</strong>
+          <strong>{{ pacientesFiltrados().length }}</strong>
         </div>
         <div class="kpi-mini green">
           <span>CONFIRMADOS</span>
@@ -127,7 +127,7 @@
           <tr>
             <th>HORA</th>
             <th>PACIENTE</th>
-            <th>DNI / HISTORIA CLINICA</th>
+            <th>DNI / HISTORIA CLÍNICA</th>
             <th>COBERTURA / OS</th>
             <th>MOTIVO CONSULTA</th>
             <th>ESTADO</th>
@@ -135,7 +135,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of pacientesFiltrados">
+          <tr *ngIf="cargando()">
+            <td colspan="7" class="loading-table-row">
+              <div class="spinner-small"></div>
+              <span>Cargando pacientes del profesional médico...</span>
+            </td>
+          </tr>
+
+          <tr *ngFor="let p of pacientesFiltrados()">
             <!-- Hora -->
             <td>
               <span class="time-tag">🕒 {{ p.hora }}</span>
@@ -199,7 +206,7 @@
           </tr>
 
           <!-- Estado Vacío -->
-          <tr *ngIf="pacientesFiltrados.length === 0">
+          <tr *ngIf="!cargando() && pacientesFiltrados().length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron pacientes agendados para este profesional con los filtros aplicados.</span>
             </td>
@@ -210,13 +217,8 @@
       <!-- Footer Paginación -->
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ pacientesFiltrados.length }} pacientes citados
+          Mostrando {{ pacientesFiltrados().length }} pacientes citados
         </span>
-        <div class="pages-list">
-          <button class="page-nav-btn" disabled>&lt;</button>
-          <button class="page-num-btn active">1</button>
-          <button class="page-nav-btn" disabled>&gt;</button>
-        </div>
       </div>
     </div>
 

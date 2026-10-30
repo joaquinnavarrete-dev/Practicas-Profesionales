@@ -10,8 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar especialidad, código, departamento..." [(ngModel)]="terminoGlobal"
-        (input)="aplicarFiltros()" />
+      <input type="text" placeholder="Buscar especialidad, código, departamento..." [ngModel]="terminoGlobal()"
+        (ngModelChange)="terminoGlobal.set($event)" />
     </div>
 
     <div class="topbar-right">
@@ -46,12 +46,12 @@
     <div class="filters-card">
       <div class="filter-search-box">
         <span class="lens-icon">🔍</span>
-        <input type="text" placeholder="Buscar especialidad por nombre..." [(ngModel)]="filtroNombre"
-          (input)="aplicarFiltros()" />
+        <input type="text" placeholder="Buscar especialidad por nombre..." [ngModel]="filtroNombre()"
+          (ngModelChange)="filtroNombre.set($event)" />
       </div>
 
       <div class="filter-select-wrapper">
-        <select [(ngModel)]="filtroDepto" (change)="aplicarFiltros()">
+        <select [ngModel]="filtroDepto()" (ngModelChange)="filtroDepto.set($event)">
           <option value="Todos">Departamento: Todos</option>
           <option value="Cardiología">Cardiología</option>
           <option value="Materno Infantil">Materno Infantil</option>
@@ -63,7 +63,7 @@
       </div>
 
       <div class="filter-select-wrapper">
-        <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+        <select [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event)">
           <option value="Todas">Estado: Todas</option>
           <option value="Activa">Activa</option>
           <option value="Inactiva">Inactiva</option>
@@ -88,13 +88,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cargando">
+          <tr *ngIf="cargando()">
             <td colspan="6" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando catálogo de especialidades médicas...
             </td>
           </tr>
 
-          <tr *ngFor="let item of listaFiltrada">
+          <tr *ngFor="let item of listaFiltrada()">
             <td>
               <div class="table-item-info">
                 <div class="icon-avatar" [ngClass]="item.bgClase">
@@ -140,7 +140,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando && listaFiltrada.length === 0">
+          <tr *ngIf="!cargando() && listaFiltrada().length === 0">
             <td colspan="6" style="text-align: center; padding: 2.5rem; color: #64748b;">
               🔍 No se encontraron especialidades que coincidan con la búsqueda.
             </td>
@@ -150,7 +150,7 @@
 
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ listaFiltrada.length }} de {{ especialidades.length }} especialidades registradas
+          Mostrando {{ listaFiltrada().length }} de {{ especialidades().length }} especialidades registradas
         </span>
         <div class="pages-list">
           <button class="page-nav-btn" disabled>&lt;</button>
@@ -167,7 +167,7 @@
         </div>
         <div class="stat-body">
           <span class="stat-caption">Total Especialidades</span>
-          <strong class="stat-number">{{ especialidades.length }} Registradas</strong>
+          <strong class="stat-number">{{ especialidades().length }} Registradas</strong>
         </div>
       </div>
 
@@ -187,7 +187,7 @@
         </div>
         <div class="stat-body">
           <span class="stat-caption">Especialistas</span>
-          <strong class="stat-number">{{ totalMedicosRegistrados }} Médicos</strong>
+          <strong class="stat-number">{{ totalMedicosRegistrados() }} Médicos</strong>
         </div>
       </div>
     </div>

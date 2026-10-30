@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -24,23 +24,45 @@ export class SolicitarTurnoComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  pasoActual: number = 1;
+  readonly pasoActual = signal<number>(1);
 
-  especialidades: Especialidad[] = [];
-  cargandoEspecialidades: boolean = false;
+  readonly especialidades = signal<Especialidad[]>([]);
+  readonly cargandoEspecialidades = signal<boolean>(false);
 
-  medicos: Medico[] = [];
-  cargandoMedicos: boolean = false;
-  filtroNombreMedico: string = '';
+  readonly medicos = signal<Medico[]>([]);
+  readonly cargandoMedicos = signal<boolean>(false);
+  readonly filtroNombreMedico = signal<string>('');
 
-  turnosDisponibles: TurnoDisponible[] = [];
-  cargandoDisponibles: boolean = false;
+  readonly turnosDisponibles = signal<TurnoDisponible[]>([]);
+  readonly cargandoDisponibles = signal<boolean>(false);
 
   fechaMinima: string = '';
-  cargandoReserva: boolean = false;
-  reservaExitosa: boolean = false;
-  errorMessage: string = '';
-  turnoConfirmado: Turno | null = null;
+  readonly cargandoReserva = signal<boolean>(false);
+  readonly reservaExitosa = signal<boolean>(false);
+  readonly errorMessage = signal<string>('');
+  readonly turnoConfirmado = signal<Turno | null>(null);
+
+  readonly medicosFiltrados = computed(() => {
+    const q = this.filtroNombreMedico().toLowerCase().trim();
+    const lista = this.medicos();
+    if (!q) return lista;
+    return lista.filter(m =>
+      `${m.nombre} ${m.apellido}`.toLowerCase().includes(q) ||
+      m.matricula.toLowerCase().includes(q)
+    );
+  });
+
+  readonly horariosManana = computed(() => {
+    return this.turnosDisponibles().filter(s => s.hora < '13:00');
+  });
+
+  readonly horariosTarde = computed(() => {
+    return this.turnosDisponibles().filter(s => s.hora >= '13:00');
+  });
+
+  readonly totalDisponibles = computed(() => {
+    return this.turnosDisponibles().filter(s => s.disponible).length;
+  });
 
   turnoBorrador = {
     especialidad: null as Especialidad | null,
@@ -74,14 +96,14 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   cargarEspecialidades(): void {
-    this.cargandoEspecialidades = true;
+    this.cargandoEspecialidades.set(true);
     this.especialidadService.listar().subscribe({
       next: (data) => {
-        this.especialidades = data;
-        this.cargandoEspecialidades = false;
+        this.especialidades.set(data);
+        this.cargandoEspecialidades.set(false);
       },
       error: (err) => {
-        this.cargandoEspecialidades = false;
+        this.cargandoEspecialidades.set(false);
         console.error('Error al cargar especialidades:', err);
       }
     });
@@ -110,26 +132,17 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   cargarMedicosPorEspecialidad(idEspecialidad: number): void {
-    this.cargandoMedicos = true;
+    this.cargandoMedicos.set(true);
     this.medicoService.listarPorEspecialidad(idEspecialidad).subscribe({
       next: (data) => {
-        this.medicos = data;
-        this.cargandoMedicos = false;
+        this.medicos.set(data);
+        this.cargandoMedicos.set(false);
       },
       error: (err) => {
-        this.cargandoMedicos = false;
+        this.cargandoMedicos.set(false);
         console.error('Error al cargar médicos:', err);
       }
     });
-  }
-
-  get medicosFiltrados(): Medico[] {
-    const q = this.filtroNombreMedico.toLowerCase().trim();
-    if (!q) return this.medicos;
-    return this.medicos.filter(m =>
-      `${m.nombre} ${m.apellido}`.toLowerCase().includes(q) ||
-      m.matricula.toLowerCase().includes(q)
-    );
   }
 
   seleccionarMedico(med: Medico): void {
@@ -142,14 +155,14 @@ export class SolicitarTurnoComponent implements OnInit {
   cargarDisponibilidad(): void {
     if (!this.turnoBorrador.medico || !this.turnoBorrador.fecha) return;
 
-    this.cargandoDisponibles = true;
+    this.cargandoDisponibles.set(true);
     this.turnoService.consultarDisponibles(this.turnoBorrador.medico.idMedico, this.turnoBorrador.fecha).subscribe({
       next: (slots) => {
-        this.turnosDisponibles = slots;
-        this.cargandoDisponibles = false;
+        this.turnosDisponibles.set(slots);
+        this.cargandoDisponibles.set(false);
       },
       error: (err) => {
-        this.cargandoDisponibles = false;
+        this.cargandoDisponibles.set(false);
         console.error('Error al consultar turnos disponibles:', err);
       }
     });
@@ -163,18 +176,6 @@ export class SolicitarTurnoComponent implements OnInit {
   seleccionarHorario(h: TurnoDisponible): void {
     if (!h.disponible) return;
     this.turnoBorrador.hora = h.hora;
-  }
-
-  get horariosManana(): TurnoDisponible[] {
-    return this.turnosDisponibles.filter(s => s.hora < '13:00');
-  }
-
-  get horariosTarde(): TurnoDisponible[] {
-    return this.turnosDisponibles.filter(s => s.hora >= '13:00');
-  }
-
-  get totalDisponibles(): number {
-    return this.turnosDisponibles.filter(s => s.disponible).length;
   }
 
   precargarDatosPaciente(): void {
@@ -195,26 +196,26 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   avanzar(): void {
-    this.errorMessage = '';
+    this.errorMessage.set('');
 
-    if (this.pasoActual === 1 && !this.turnoBorrador.especialidad) {
-      this.errorMessage = 'Debe seleccionar una especialidad para continuar.';
+    if (this.pasoActual() === 1 && !this.turnoBorrador.especialidad) {
+      this.errorMessage.set('Debe seleccionar una especialidad para continuar.');
       return;
     }
 
-    if (this.pasoActual === 2 && !this.turnoBorrador.medico) {
-      this.errorMessage = 'Debe seleccionar un profesional médico para continuar.';
+    if (this.pasoActual() === 2 && !this.turnoBorrador.medico) {
+      this.errorMessage.set('Debe seleccionar un profesional médico para continuar.');
       return;
     }
 
-    if (this.pasoActual === 3 && !this.turnoBorrador.hora) {
-      this.errorMessage = 'Debe seleccionar un horario disponible para continuar.';
+    if (this.pasoActual() === 3 && !this.turnoBorrador.hora) {
+      this.errorMessage.set('Debe seleccionar un horario disponible para continuar.');
       return;
     }
 
-    if (this.pasoActual < 4) {
-      this.pasoActual++;
-      if (this.pasoActual === 4) {
+    if (this.pasoActual() < 4) {
+      this.pasoActual.update(p => p + 1);
+      if (this.pasoActual() === 4) {
         this.precargarDatosPaciente();
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -224,9 +225,9 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   retroceder(): void {
-    this.errorMessage = '';
-    if (this.pasoActual > 1) {
-      this.pasoActual--;
+    this.errorMessage.set('');
+    if (this.pasoActual() > 1) {
+      this.pasoActual.update(p => p - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       this.router.navigate(['/']);
@@ -234,14 +235,14 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   irAlPaso(paso: number): void {
-    if (paso < this.pasoActual) {
-      this.pasoActual = paso;
-      this.errorMessage = '';
+    if (paso < this.pasoActual()) {
+      this.pasoActual.set(paso);
+      this.errorMessage.set('');
     }
   }
 
   confirmarReservaFinal(): void {
-    this.errorMessage = '';
+    this.errorMessage.set('');
 
     if (!this.authService.isLoggedIn()) {
       alert('Para confirmar tu turno médico necesitas iniciar sesión o registrarte como paciente.');
@@ -250,11 +251,11 @@ export class SolicitarTurnoComponent implements OnInit {
     }
 
     if (!this.turnoBorrador.medico || !this.turnoBorrador.especialidad || !this.turnoBorrador.fecha || !this.turnoBorrador.hora) {
-      this.errorMessage = 'Faltan datos para procesar la reserva del turno.';
+      this.errorMessage.set('Faltan datos para procesar la reserva del turno.');
       return;
     }
 
-    this.cargandoReserva = true;
+    this.cargandoReserva.set(true);
 
     this.turnoService.solicitarMiTurno({
       idMedico: this.turnoBorrador.medico.idMedico,
@@ -263,20 +264,24 @@ export class SolicitarTurnoComponent implements OnInit {
       hora: this.turnoBorrador.hora
     }).subscribe({
       next: (res) => {
-        this.cargandoReserva = false;
-        this.reservaExitosa = true;
-        this.turnoConfirmado = res;
+        this.cargandoReserva.set(false);
+        this.reservaExitosa.set(true);
+        this.turnoConfirmado.set(res);
       },
       error: (err) => {
-        this.cargandoReserva = false;
+        this.cargandoReserva.set(false);
         console.error('Error al reservar turno:', err);
         if (err.status === 409) {
-          this.errorMessage = 'El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.';
+          this.errorMessage.set('El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.');
         } else {
-          this.errorMessage = err.error?.message || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.';
+          this.errorMessage.set(err.error?.message || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.');
         }
       }
     });
+  }
+
+  actualizarFiltroMedico(valor: string): void {
+    this.filtroNombreMedico.set(valor);
   }
 
   volverAlInicio(): void {

@@ -12,21 +12,21 @@
     <div class="filter-card">
       <div class="search-input-group">
         <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Buscar por médico o especialidad..." [(ngModel)]="busquedaGeneral"
-          (input)="filtrar()" />
+        <input type="text" placeholder="Buscar por médico o especialidad..." [ngModel]="busquedaGeneral()"
+          (ngModelChange)="busquedaGeneral.set($event)" />
       </div>
 
       <div class="select-group">
-        <select [(ngModel)]="filtroEspecialidad" (change)="filtrar()">
+        <select [ngModel]="filtroEspecialidad()" (ngModelChange)="filtroEspecialidad.set($event)">
           <option value="Todas">Especialidad: Todas</option>
-          <option *ngFor="let esp of especialidadesList" [value]="esp.nombre">
+          <option *ngFor="let esp of especialidadesList()" [value]="esp.nombre">
             {{ esp.nombre }}
           </option>
         </select>
       </div>
 
       <div class="select-group">
-        <select [(ngModel)]="filtroDia" (change)="filtrar()">
+        <select [ngModel]="filtroDia()" (ngModelChange)="filtroDia.set($event)">
           <option value="Todos">Día: Todos</option>
           <option value="Lunes">Lunes</option>
           <option value="Martes">Martes</option>
@@ -41,11 +41,11 @@
   </header>
 
   <section class="results-grid">
-    <div *ngIf="cargando" style="text-align: center; padding: 3rem; color: #64748b; font-size: 1.1rem;">
+    <div *ngIf="cargando()" style="text-align: center; padding: 3rem; color: #64748b; font-size: 1.1rem;">
       ⏳ Cargando grilla de días y horarios de atención...
     </div>
 
-    <div class="medico-schedule-card" *ngFor="let item of listaFiltrada">
+    <div class="medico-schedule-card" *ngFor="let item of listaFiltrada()">
 
       <div class="medico-profile-col">
         <div class="avatar-box">{{ item.fotoUrl }}</div>
@@ -60,9 +60,9 @@
         </div>
       </div>
 
-      <div class="week-days-col">
-        <span class="week-title">Días de consulta en sede:</span>
-        <div class="days-badges-row">
+      <div class="schedule-days-col">
+        <span class="col-caption">DÍAS DE CONSULTORIO ACTIVO:</span>
+        <div class="days-chips-row">
           <div class="day-chip" [class.active]="item.diasSemana.includes('Lunes')">
             <span class="day-name">Lun</span>
             <span class="status-dot"></span>
@@ -96,7 +96,7 @@
 
     </div>
 
-    <div class="no-results" *ngIf="!cargando && listaFiltrada.length === 0">
+    <div class="no-results" *ngIf="!cargando() && listaFiltrada().length === 0">
       <span>🔎</span>
       <p>No se encontraron médicos que coincidan con los filtros seleccionados.</p>
     </div>

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -13,11 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class Sidebar {
   readonly authService = inject(AuthService);
 
-  cerrarSesion(): void {
-    this.authService.logout();
-  }
-
-  get rolFormateado(): string {
+  readonly rolFormateado = computed(() => {
     const rol = this.authService.userRole();
     if (!rol) return 'Gestión Médica';
     if (rol.includes('ADMINISTRADOR')) return 'Administrador General';
@@ -25,5 +21,9 @@ export class Sidebar {
     if (rol.includes('RECEPCIONISTA')) return 'Recepción / Mostrador';
     if (rol.includes('PACIENTE')) return 'Paciente';
     return rol.replace('ROLE_', '');
+  });
+
+  cerrarSesion(): void {
+    this.authService.logout();
   }
 }

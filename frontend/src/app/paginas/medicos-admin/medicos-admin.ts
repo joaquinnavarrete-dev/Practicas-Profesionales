@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,54 +22,22 @@ export class MedicosAdminComponent implements OnInit {
   private readonly confirmModal = inject(ConfirmModalService);
   private readonly router = inject(Router);
 
-  busquedaGlobal: string = '';
-  especialidadFiltro: string = 'Todas';
+  readonly busquedaGlobal = signal<string>('');
+  readonly especialidadFiltro = signal<string>('Todas');
 
-  medicos: Medico[] = [];
-  medicosFiltrados: Medico[] = [];
-  especialidades: Especialidad[] = [];
-  cargando: boolean = false;
-  errorMessage: string = '';
+  readonly medicos = signal<Medico[]>([]);
+  readonly especialidades = signal<Especialidad[]>([]);
+  readonly cargando = signal<boolean>(false);
+  readonly errorMessage = signal<string>('');
 
-  ngOnInit(): void {
-    this.cargarMedicos();
-    this.cargarEspecialidades();
-  }
+  readonly medicosFiltrados = computed(() => {
+    const q = this.busquedaGlobal().toLowerCase().trim();
+    const filtroEsp = this.especialidadFiltro();
+    const lista = this.medicos();
 
-  cargarMedicos(): void {
-    this.cargando = true;
-    this.errorMessage = '';
-    this.medicoService.listar().subscribe({
-      next: (data) => {
-        this.medicos = data;
-        this.cargando = false;
-        this.aplicarFiltros();
-      },
-      error: (err) => {
-        this.cargando = false;
-        console.error('Error al cargar médicos:', err);
-        this.errorMessage = 'No se pudo conectar con el servidor para cargar el padrón médico.';
-      }
-    });
-  }
-
-  cargarEspecialidades(): void {
-    this.especialidadService.listar().subscribe({
-      next: (data) => {
-        this.especialidades = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar especialidades:', err);
-      }
-    });
-  }
-
-  aplicarFiltros(): void {
-    const q = this.busquedaGlobal.toLowerCase().trim();
-
-    this.medicosFiltrados = this.medicos.filter(m => {
-      const matchEsp = this.especialidadFiltro === 'Todas' ||
-        m.especialidad.nombre === this.especialidadFiltro;
+    return lista.filter(m => {
+      const matchEsp = filtroEsp === 'Todas' ||
+        m.especialidad.nombre === filtroEsp;
 
       const nombreCompleto = `${m.nombre} ${m.apellido}`.toLowerCase();
       const matchQuery = !q ||
@@ -79,12 +47,47 @@ export class MedicosAdminComponent implements OnInit {
 
       return matchEsp && matchQuery;
     });
+  });
+
+  ngOnInit(): void {
+    this.cargarMedicos();
+    this.cargarEspecialidades();
+  }
+
+  cargarMedicos(): void {
+    this.cargando.set(true);
+    this.errorMessage.set('');
+    this.medicoService.listar().subscribe({
+      next: (data) => {
+        this.medicos.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        this.cargando.set(false);
+        console.error('Error al cargar médicos:', err);
+        this.errorMessage.set('No se pudo conectar con el servidor para cargar el padrón médico.');
+      }
+    });
+  }
+
+  cargarEspecialidades(): void {
+    this.especialidadService.listar().subscribe({
+      next: (data) => {
+        this.especialidades.set(data);
+      },
+      error: (err) => {
+        console.error('Error al cargar especialidades:', err);
+      }
+    });
+  }
+
+  aplicarFiltros(): void {
+    // Computado reactivamente por Signals
   }
 
   resetearFiltros(): void {
-    this.busquedaGlobal = '';
-    this.especialidadFiltro = 'Todas';
-    this.aplicarFiltros();
+    this.busquedaGlobal.set('');
+    this.especialidadFiltro.set('Todas');
   }
 
   abrirModalCrear(): void {

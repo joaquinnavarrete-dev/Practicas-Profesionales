@@ -10,8 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar por paciente, DNI, médico o especialidad..." [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()" />
+      <input type="text" placeholder="Buscar por paciente, DNI, médico o especialidad..." [ngModel]="busquedaGlobal()"
+        (ngModelChange)="busquedaGlobal.set($event)" />
     </div>
 
     <div class="topbar-right">
@@ -41,7 +41,7 @@
         <div class="stat-icon-tile icon-blue">📋</div>
         <div class="stat-body">
           <span class="stat-caption">Total Agendados</span>
-          <strong class="stat-number">{{ turnos.length }} Turnos</strong>
+          <strong class="stat-number">{{ turnos().length }} Turnos</strong>
         </div>
       </div>
 
@@ -49,26 +49,26 @@
         <div class="stat-icon-tile icon-green">✓</div>
         <div class="stat-body">
           <span class="stat-caption">Filtrados en Pantalla</span>
-          <strong class="stat-number">{{ turnosFiltrados.length }} Citas</strong>
+          <strong class="stat-number">{{ turnosFiltrados().length }} Citas</strong>
         </div>
       </div>
     </div>
 
-    <div *ngIf="errorMessage" class="error-banner">
-      <span>{{ errorMessage }}</span>
+    <div *ngIf="errorMessage()" class="error-banner">
+      <span>{{ errorMessage() }}</span>
     </div>
 
     <div class="filters-card">
       <div class="filter-group">
         <label>FECHA:</label>
-        <input type="date" [(ngModel)]="fechaFiltro" (change)="aplicarFiltros()" />
+        <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event)" />
       </div>
 
       <div class="filter-group">
         <label>ESPECIALIDAD:</label>
-        <select [(ngModel)]="especialidadFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event)">
           <option value="Todas">Todas las especialidades</option>
-          <option *ngFor="let esp of especialidades" [value]="esp.nombre">
+          <option *ngFor="let esp of especialidades()" [value]="esp.nombre">
             {{ esp.nombre }}
           </option>
         </select>
@@ -93,14 +93,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cargando">
+          <tr *ngIf="cargando()">
             <td colspan="7" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Consultando turnos en tiempo real...</span>
             </td>
           </tr>
 
-          <tr *ngFor="let t of turnosFiltrados">
+          <tr *ngFor="let t of turnosFiltrados()">
             <td>
               <div class="datetime-cell">
                 <strong class="time-text">🕒 {{ t.hora }} hs</strong>
@@ -145,7 +145,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando && turnosFiltrados.length === 0">
+          <tr *ngIf="!cargando() && turnosFiltrados().length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron turnos registrados con los filtros seleccionados.</span>
             </td>
@@ -155,7 +155,7 @@
 
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ turnosFiltrados.length }} turnos clínicos
+          Mostrando {{ turnosFiltrados().length }} turnos clínicos
         </span>
       </div>
     </div>

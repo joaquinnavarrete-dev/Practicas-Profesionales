@@ -90,7 +90,10 @@
       <!-- PIE DE ACCIONES -->
       <div class="form-actions-footer">
         <button type="button" class="btn-cancel" routerLink="/admin/especialidades">Cancelar</button>
-        <button type="submit" class="btn-submit">💾 Registrar Especialidad</button>
+        <button type="submit" class="btn-submit" [disabled]="guardando()">
+          <span *ngIf="!guardando()">💾 Registrar Especialidad</span>
+          <span *ngIf="guardando()">Guardando especialidad...</span>
+        </button>
       </div>
 
     </form>

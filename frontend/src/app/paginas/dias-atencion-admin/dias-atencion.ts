@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -27,31 +27,46 @@ interface MedicoAtencion {
   styleUrl: './dias-atencion.css'
 })
 export class DiasAtencionComponent implements OnInit {
+  private readonly medicoService = inject(MedicoService);
+  private readonly diaAtencionService = inject(DiaAtencionService);
+  private readonly especialidadService = inject(EspecialidadService);
 
-  busquedaGeneral: string = '';
-  filtroEspecialidad: string = 'Todas';
-  filtroDia: string = 'Todos';
-  cargando: boolean = false;
+  readonly busquedaGeneral = signal<string>('');
+  readonly filtroEspecialidad = signal<string>('Todas');
+  readonly filtroDia = signal<string>('Todos');
+  readonly cargando = signal<boolean>(false);
 
-  especialidadesList: Especialidad[] = [];
-  medicos: MedicoAtencion[] = [];
-  listaFiltrada: MedicoAtencion[] = [];
+  readonly especialidadesList = signal<Especialidad[]>([]);
+  readonly medicos = signal<MedicoAtencion[]>([]);
 
-  constructor(
-    private medicoService: MedicoService,
-    private diaAtencionService: DiaAtencionService,
-    private especialidadService: EspecialidadService
-  ) { }
+  readonly listaFiltrada = computed(() => {
+    const q = this.busquedaGeneral().toLowerCase().trim();
+    const fEsp = this.filtroEspecialidad();
+    const fDia = this.filtroDia();
+    const lista = this.medicos();
+
+    return lista.filter(m => {
+      const matchBusqueda = !q ||
+        m.nombre.toLowerCase().includes(q) ||
+        m.subespecialidad.toLowerCase().includes(q) ||
+        m.especialidad.toLowerCase().includes(q);
+
+      const matchEsp = fEsp === 'Todas' || m.especialidad === fEsp;
+      const matchDia = fDia === 'Todos' || m.diasSemana.some(d => d.toLowerCase() === fDia.toLowerCase());
+
+      return matchBusqueda && matchEsp && matchDia;
+    });
+  });
 
   ngOnInit(): void {
     this.cargarDatos();
   }
 
   cargarDatos(): void {
-    this.cargando = true;
+    this.cargando.set(true);
 
     this.especialidadService.listar().subscribe({
-      next: (esp) => this.especialidadesList = esp,
+      next: (esp) => this.especialidadesList.set(esp),
       error: (err) => console.error('Error al listar especialidades:', err)
     });
 
@@ -59,7 +74,7 @@ export class DiasAtencionComponent implements OnInit {
       next: (medicosData: Medico[]) => {
         this.diaAtencionService.listar().subscribe({
           next: (diasData: DiaAtencion[]) => {
-            this.medicos = medicosData.map(m => {
+            const mapped = medicosData.map(m => {
               const diasDelMedico = diasData.filter(d => d.idMedico === m.idMedico);
               const diasSemana = diasDelMedico.length > 0
                 ? diasDelMedico.map(d => this.capitalizar(d.diaSemana))
@@ -84,12 +99,12 @@ export class DiasAtencionComponent implements OnInit {
               };
             });
 
-            this.filtrar();
-            this.cargando = false;
+            this.medicos.set(mapped);
+            this.cargando.set(false);
           },
           error: (err) => {
             console.error('Error al listar días de atención:', err);
-            this.medicos = medicosData.map(m => ({
+            const mapped = medicosData.map(m => ({
               id: m.idMedico,
               nombre: `Dr(a). ${m.nombre} ${m.apellido}`,
               especialidad: m.especialidad?.nombre || 'Medicina General',
@@ -102,44 +117,30 @@ export class DiasAtencionComponent implements OnInit {
               consultorio: `Consultorio ${100 + m.idMedico}`,
               proximoDisponible: 'Consultar agenda'
             }));
-            this.filtrar();
-            this.cargando = false;
+            this.medicos.set(mapped);
+            this.cargando.set(false);
           }
         });
       },
       error: (err) => {
         console.error('Error al listar médicos:', err);
-        this.cargando = false;
+        this.cargando.set(false);
       }
     });
   }
 
   filtrar(): void {
-    const q = this.busquedaGeneral.toLowerCase().trim();
-
-    this.listaFiltrada = this.medicos.filter(m => {
-      const matchBusqueda = !q ||
-        m.nombre.toLowerCase().includes(q) ||
-        m.subespecialidad.toLowerCase().includes(q) ||
-        m.especialidad.toLowerCase().includes(q);
-
-      const matchEsp = this.filtroEspecialidad === 'Todas' || m.especialidad === this.filtroEspecialidad;
-      const matchDia = this.filtroDia === 'Todos' || m.diasSemana.some(d => d.toLowerCase() === this.filtroDia.toLowerCase());
-
-      return matchBusqueda && matchEsp && matchDia;
-    });
+    // Computado reactivamente por Signals
   }
 
   resetearFiltros(): void {
-    this.busquedaGeneral = '';
-    this.filtroEspecialidad = 'Todas';
-    this.filtroDia = 'Todos';
-    this.filtrar();
+    this.busquedaGeneral.set('');
+    this.filtroEspecialidad.set('Todas');
+    this.filtroDia.set('Todos');
   }
 
   private capitalizar(str: string): string {
     if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
-
 }

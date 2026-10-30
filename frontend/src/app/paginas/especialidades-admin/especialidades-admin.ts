@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
@@ -30,28 +30,45 @@ export class EspecialidadesAdminComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
 
-  terminoGlobal: string = '';
-  filtroNombre: string = '';
-  filtroDepto: string = 'Todos';
-  filtroEstado: string = 'Todas';
+  readonly terminoGlobal = signal<string>('');
+  readonly filtroNombre = signal<string>('');
+  readonly filtroDepto = signal<string>('Todos');
+  readonly filtroEstado = signal<string>('Todas');
 
-  cargando: boolean = false;
-  especialidades: EspecialidadRow[] = [];
-  listaFiltrada: EspecialidadRow[] = [];
-  totalMedicosRegistrados: number = 0;
+  readonly cargando = signal<boolean>(false);
+  readonly especialidades = signal<EspecialidadRow[]>([]);
+  readonly totalMedicosRegistrados = signal<number>(0);
+
+  readonly listaFiltrada = computed(() => {
+    const qGlobal = this.terminoGlobal().toLowerCase().trim();
+    const qNombre = this.filtroNombre().toLowerCase().trim();
+    const fDepto = this.filtroDepto();
+    const fEstado = this.filtroEstado();
+    const lista = this.especialidades();
+
+    return lista.filter(item => {
+      const matchGlobal = !qGlobal ||
+        item.nombre.toLowerCase().includes(qGlobal) ||
+        (qGlobal.length >= 3 && item.departamento.toLowerCase().includes(qGlobal));
+      const matchNombre = !qNombre || item.nombre.toLowerCase().includes(qNombre);
+      const matchDepto = fDepto === 'Todos' || item.departamento === fDepto;
+      const matchEstado = fEstado === 'Todas' || item.estado === fEstado;
+      return matchGlobal && matchNombre && matchDepto && matchEstado;
+    });
+  });
 
   ngOnInit(): void {
     this.cargarDatos();
   }
 
   cargarDatos(): void {
-    this.cargando = true;
+    this.cargando.set(true);
     this.especialidadService.listar().subscribe({
       next: (especialidadesData: Especialidad[]) => {
         this.medicoService.listar().subscribe({
           next: (medicosData: Medico[]) => {
-            this.totalMedicosRegistrados = medicosData.length;
-            this.especialidades = especialidadesData.map(esp => {
+            this.totalMedicosRegistrados.set(medicosData.length);
+            const items = especialidadesData.map(esp => {
               const medicosCount = medicosData.filter(m => m.especialidad?.idEspecialidad === esp.idEspecialidad).length;
               return {
                 id: esp.idEspecialidad,
@@ -64,12 +81,12 @@ export class EspecialidadesAdminComponent implements OnInit {
                 bgClase: this.obtenerBgClase(esp.nombre)
               };
             });
-            this.aplicarFiltros();
-            this.cargando = false;
+            this.especialidades.set(items);
+            this.cargando.set(false);
           },
           error: (err) => {
             console.error('Error al listar médicos para especialidades:', err);
-            this.especialidades = especialidadesData.map(esp => ({
+            const items = especialidadesData.map(esp => ({
               id: esp.idEspecialidad,
               nombre: esp.nombre,
               departamento: this.inferirDepartamento(esp.nombre),
@@ -79,39 +96,27 @@ export class EspecialidadesAdminComponent implements OnInit {
               icono: this.obtenerIcono(esp.nombre),
               bgClase: 'bg-blue-soft'
             }));
-            this.aplicarFiltros();
-            this.cargando = false;
+            this.especialidades.set(items);
+            this.cargando.set(false);
           }
         });
       },
       error: (err) => {
         console.error('Error al listar especialidades desde la API:', err);
-        this.cargando = false;
+        this.cargando.set(false);
       }
     });
   }
 
   aplicarFiltros(): void {
-    const qGlobal = this.terminoGlobal.toLowerCase().trim();
-    const qNombre = this.filtroNombre.toLowerCase().trim();
-
-    this.listaFiltrada = this.especialidades.filter(item => {
-      const matchGlobal = !qGlobal ||
-        item.nombre.toLowerCase().includes(qGlobal) ||
-        (qGlobal.length >= 3 && item.departamento.toLowerCase().includes(qGlobal));
-      const matchNombre = !qNombre || item.nombre.toLowerCase().includes(qNombre);
-      const matchDepto = this.filtroDepto === 'Todos' || item.departamento === this.filtroDepto;
-      const matchEstado = this.filtroEstado === 'Todas' || item.estado === this.filtroEstado;
-      return matchGlobal && matchNombre && matchDepto && matchEstado;
-    });
+    // Computado reactivamente por Signals
   }
 
   resetearFiltros(): void {
-    this.terminoGlobal = '';
-    this.filtroNombre = '';
-    this.filtroDepto = 'Todos';
-    this.filtroEstado = 'Todas';
-    this.listaFiltrada = [...this.especialidades];
+    this.terminoGlobal.set('');
+    this.filtroNombre.set('');
+    this.filtroDepto.set('Todos');
+    this.filtroEstado.set('Todas');
   }
 
   abrirModalNueva(): void {
@@ -175,5 +180,4 @@ export class EspecialidadesAdminComponent implements OnInit {
     if (n.includes('neuro')) return 'bg-purple-soft';
     return 'bg-blue-soft';
   }
-
 }

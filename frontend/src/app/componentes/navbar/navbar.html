@@ -38,7 +38,7 @@
     </ng-container>
 
     <ng-container *ngIf="authService.isLoggedIn()">
-      <a *ngIf="esPersonalClinico" routerLink="/admin" class="btn-panel-admin">
+      <a *ngIf="esPersonalClinico()" routerLink="/admin" class="btn-panel-admin">
         <span class="panel-icon">⚙️</span>
         <span>Panel Admin</span>
       </a>

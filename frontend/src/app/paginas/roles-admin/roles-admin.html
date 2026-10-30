@@ -31,32 +31,32 @@
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">
-          {{ usuarioEnEdicion ? 'Permisos del Usuario: ' + usuarioEnEdicion.nombre + ' ' + usuarioEnEdicion.apellido : 'Matriz de Control de Acceso (RBAC)' }}
+          {{ usuarioEnEdicion() ? 'Permisos del Usuario: ' + usuarioEnEdicion()!.nombre + ' ' + usuarioEnEdicion()!.apellido : 'Matriz de Control de Acceso (RBAC)' }}
         </h1>
         <p class="sub-heading">
-          {{ usuarioEnEdicion ? 'Modifique el rol asignado y ajuste los privilegios específicos para esta cuenta.' : 'Defina los perfiles de usuario y los permisos de acceso por cada módulo de la clínica.' }}
+          {{ usuarioEnEdicion() ? 'Modifique el rol asignado y ajuste los privilegios específicos para esta cuenta.' : 'Defina los perfiles de usuario y los permisos de acceso por cada módulo de la clínica.' }}
         </p>
       </div>
 
       <div class="header-actions">
-        <button class="btn-create-modal" (click)="guardarCambios()">
-          💾 Guardar Permisos {{ usuarioEnEdicion ? 'del Usuario' : 'Globales' }}
+        <button class="btn-create-modal" (click)="guardarCambios()" [disabled]="guardando()">
+          💾 Guardar Permisos {{ usuarioEnEdicion() ? 'del Usuario' : 'Globales' }}
         </button>
       </div>
     </div>
 
     <!-- FICHA DEL USUARIO EN EDICIÓN (Se muestra si venimos desde el lápiz de un usuario) -->
-    <div class="user-editing-card" *ngIf="usuarioEnEdicion">
-      <div class="user-avatar-big">{{ usuarioEnEdicion.avatarUrl }}</div>
+    <div class="user-editing-card" *ngIf="usuarioEnEdicion()">
+      <div class="user-avatar-big">{{ usuarioEnEdicion()!.avatarUrl }}</div>
       <div class="user-details">
         <div class="user-header-info">
-          <h2>{{ usuarioEnEdicion.nombre }} {{ usuarioEnEdicion.apellido }}</h2>
-          <span class="username-tag">@{{ usuarioEnEdicion.username }}</span>
+          <h2>{{ usuarioEnEdicion()!.nombre }} {{ usuarioEnEdicion()!.apellido }}</h2>
+          <span class="username-tag">@{{ usuarioEnEdicion()!.username }}</span>
         </div>
         <div class="user-meta-grid">
-          <span>📧 <strong>Email:</strong> {{ usuarioEnEdicion.email }}</span>
-          <span>🪪 <strong>DNI:</strong> {{ usuarioEnEdicion.dni }}</span>
-          <span>🛡️ <strong>Rol Actual:</strong> <span class="current-role-badge">{{ usuarioEnEdicion.rol }}</span></span>
+          <span>📧 <strong>Email:</strong> {{ usuarioEnEdicion()!.email }}</span>
+          <span>🪪 <strong>DNI:</strong> {{ usuarioEnEdicion()!.dni }}</span>
+          <span>🛡️ <strong>Rol Actual:</strong> <span class="current-role-badge">{{ usuarioEnEdicion()!.rol }}</span></span>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
       <div 
         class="role-card" 
         *ngFor="let r of roles"
-        [class.selected]="r.nombre === rolSeleccionado.nombre"
+        [class.selected]="r.nombre === rolSeleccionado().nombre"
         (click)="seleccionarRol(r)"
       >
         <div class="role-card-header">
@@ -84,8 +84,8 @@
         <div>
           <h3>
             Permisos asignados a 
-            <span class="highlight-role">{{ usuarioEnEdicion ? usuarioEnEdicion.nombre + ' ' + usuarioEnEdicion.apellido : 'Perfil' }}</span> 
-            bajo el rol: <span class="highlight-role">{{ rolSeleccionado.nombre }}</span>
+            <span class="highlight-role">{{ usuarioEnEdicion() ? usuarioEnEdicion()!.nombre + ' ' + usuarioEnEdicion()!.apellido : 'Perfil' }}</span> 
+            bajo el rol: <span class="highlight-role">{{ rolSeleccionado().nombre }}</span>
           </h3>
           <p class="sub-perm">Marque o desmarque los privilegios de lectura, escritura y eliminación.</p>
         </div>
@@ -102,7 +102,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let m of rolSeleccionado.modulos">
+          <tr *ngFor="let m of rolSeleccionado().modulos">
             <td>
               <div class="module-cell">
                 <strong>{{ m.nombreModulo }}</strong>

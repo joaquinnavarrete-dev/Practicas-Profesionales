@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -23,32 +23,43 @@ interface EspecialidadItem {
   styleUrl: './especialidades-publica.css'
 })
 export class EspecialidadesPublicaComponent implements OnInit {
+  private readonly especialidadService = inject(EspecialidadService);
 
-  busqueda: string = '';
-  cargando: boolean = false;
+  readonly busqueda = signal<string>('');
+  readonly cargando = signal<boolean>(false);
+  readonly especialidades = signal<EspecialidadItem[]>([]);
 
-  especialidades: EspecialidadItem[] = [];
-  especialidadesFiltradas: EspecialidadItem[] = [];
-
-  constructor(private especialidadService: EspecialidadService) {}
+  readonly especialidadesFiltradas = computed(() => {
+    const query = this.busqueda().toLowerCase().trim();
+    if (!query) {
+      return this.especialidades();
+    }
+    return this.especialidades().filter(esp =>
+      esp.nombre.toLowerCase().includes(query) ||
+      esp.etiquetas.some(t => t.toLowerCase().includes(query))
+    );
+  });
 
   ngOnInit(): void {
     this.cargarEspecialidades();
   }
 
   cargarEspecialidades(): void {
-    this.cargando = true;
+    this.cargando.set(true);
     this.especialidadService.listar().subscribe({
       next: (data: Especialidad[]) => {
-        this.especialidades = data.map(esp => this.mapearEspecialidad(esp));
-        this.filtrar();
-        this.cargando = false;
+        this.especialidades.set(data.map(esp => this.mapearEspecialidad(esp)));
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('Error al listar especialidades públicas:', err);
-        this.cargando = false;
+        this.cargando.set(false);
       }
     });
+  }
+
+  actualizarBusqueda(valor: string): void {
+    this.busqueda.set(valor);
   }
 
   private mapearEspecialidad(esp: Especialidad): EspecialidadItem {
@@ -96,16 +107,10 @@ export class EspecialidadesPublicaComponent implements OnInit {
     };
   }
 
-  filtrar(): void {
-    const query = this.busqueda.toLowerCase().trim();
-    if (!query) {
-      this.especialidadesFiltradas = [...this.especialidades];
-      return;
+  filtrar(valor?: string): void {
+    if (typeof valor === 'string') {
+      this.busqueda.set(valor);
     }
-    this.especialidadesFiltradas = this.especialidades.filter(esp => 
-      esp.nombre.toLowerCase().includes(query) ||
-      esp.etiquetas.some(t => t.toLowerCase().includes(query))
-    );
   }
 
 }

@@ -12,21 +12,21 @@
   <main class="public-form-container">
     <form class="auth-form-card" (ngSubmit)="registrarUsuarioPublico()">
 
-      <div *ngIf="errorMessage" class="register-alert error">
+      <div *ngIf="errorMessage()" class="register-alert error">
         <svg viewBox="0 0 24 24" class="alert-icon" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        <span>{{ errorMessage }}</span>
+        <span>{{ errorMessage() }}</span>
       </div>
 
-      <div *ngIf="successMessage" class="register-alert success">
+      <div *ngIf="successMessage()" class="register-alert success">
         <svg viewBox="0 0 24 24" class="alert-icon" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
-        <span>{{ successMessage }}</span>
+        <span>{{ successMessage() }}</span>
       </div>
 
       <div class="form-section">
@@ -115,10 +115,10 @@
           <div class="form-group">
             <label>OBRA SOCIAL / PREPAGA *</label>
             <select [(ngModel)]="pacienteForm.idObraSocial" name="idObraSocial" required>
-              <option [ngValue]="null" disabled *ngIf="cargandoObrasSociales">Cargando coberturas disponibles...
+              <option [ngValue]="null" disabled *ngIf="cargandoObrasSociales()">Cargando coberturas disponibles...
               </option>
-              <option [ngValue]="null" disabled *ngIf="!cargandoObrasSociales">Seleccione su cobertura médica</option>
-              <option *ngFor="let os of obrasSociales" [ngValue]="os.idObraSocial">
+              <option [ngValue]="null" disabled *ngIf="!cargandoObrasSociales()">Seleccione su cobertura médica</option>
+              <option *ngFor="let os of obrasSociales()" [ngValue]="os.idObraSocial">
                 {{ os.nombre }}
               </option>
             </select>
@@ -135,9 +135,9 @@
       <div class="form-actions-footer">
         <p class="terms-legend">Al registrarte, aceptás los términos y condiciones de privacidad de la Clínica San
           Gabriel.</p>
-        <button type="submit" class="btn-submit-public" [disabled]="cargandoRegistro">
-          <span *ngIf="!cargandoRegistro">Crear mi Cuenta de Paciente</span>
-          <span *ngIf="cargandoRegistro">Registrando tu cuenta...</span>
+        <button type="submit" class="btn-submit-public" [disabled]="cargandoRegistro()">
+          <span *ngIf="!cargandoRegistro()">Crear mi Cuenta de Paciente</span>
+          <span *ngIf="cargandoRegistro()">Registrando tu cuenta...</span>
         </button>
 
         <div class="login-already">

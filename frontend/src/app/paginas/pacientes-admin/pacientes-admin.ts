@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -22,55 +22,22 @@ export class PacientesAdminComponent implements OnInit {
   private readonly confirmModal = inject(ConfirmModalService);
   private readonly router = inject(Router);
 
-  busquedaGlobal: string = '';
-  obraSocialFiltro: string = 'Todas';
+  readonly busquedaGlobal = signal<string>('');
+  readonly obraSocialFiltro = signal<string>('Todas');
 
-  pacientes: Paciente[] = [];
-  pacientesFiltrados: Paciente[] = [];
-  obrasSociales: ObraSocial[] = [];
-  cargando: boolean = false;
-  errorMessage: string = '';
+  readonly pacientes = signal<Paciente[]>([]);
+  readonly obrasSociales = signal<ObraSocial[]>([]);
+  readonly cargando = signal<boolean>(false);
+  readonly errorMessage = signal<string>('');
 
-  ngOnInit(): void {
-    this.cargarPacientes();
-    this.cargarObrasSociales();
-  }
+  readonly pacientesFiltrados = computed(() => {
+    const q = this.busquedaGlobal().toLowerCase().trim();
+    const filtroOS = this.obraSocialFiltro();
+    const lista = this.pacientes();
 
-  cargarPacientes(): void {
-    this.cargando = true;
-    this.errorMessage = '';
-
-    this.pacienteService.listar().subscribe({
-      next: (data) => {
-        this.pacientes = data;
-        this.cargando = false;
-        this.aplicarFiltros();
-      },
-      error: (err) => {
-        this.cargando = false;
-        console.error('Error al cargar pacientes:', err);
-        this.errorMessage = 'No se pudo conectar con el servidor para cargar el padrón de pacientes.';
-      }
-    });
-  }
-
-  cargarObrasSociales(): void {
-    this.obraSocialService.listar().subscribe({
-      next: (data) => {
-        this.obrasSociales = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar obras sociales:', err);
-      }
-    });
-  }
-
-  aplicarFiltros(): void {
-    const q = this.busquedaGlobal.toLowerCase().trim();
-
-    this.pacientesFiltrados = this.pacientes.filter(p => {
-      const matchOS = this.obraSocialFiltro === 'Todas' || 
-                      (p.obraSocial && p.obraSocial.nombre === this.obraSocialFiltro);
+    return lista.filter(p => {
+      const matchOS = filtroOS === 'Todas' ||
+                      (p.obraSocial && p.obraSocial.nombre === filtroOS);
 
       const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase();
       const matchQuery = !q ||
@@ -81,12 +48,48 @@ export class PacientesAdminComponent implements OnInit {
 
       return matchOS && matchQuery;
     });
+  });
+
+  ngOnInit(): void {
+    this.cargarPacientes();
+    this.cargarObrasSociales();
+  }
+
+  cargarPacientes(): void {
+    this.cargando.set(true);
+    this.errorMessage.set('');
+
+    this.pacienteService.listar().subscribe({
+      next: (data) => {
+        this.pacientes.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        this.cargando.set(false);
+        console.error('Error al cargar pacientes:', err);
+        this.errorMessage.set('No se pudo conectar con el servidor para cargar el padrón de pacientes.');
+      }
+    });
+  }
+
+  cargarObrasSociales(): void {
+    this.obraSocialService.listar().subscribe({
+      next: (data) => {
+        this.obrasSociales.set(data);
+      },
+      error: (err) => {
+        console.error('Error al cargar obras sociales:', err);
+      }
+    });
+  }
+
+  aplicarFiltros(): void {
+    // Computado reactivamente por Signals
   }
 
   resetearFiltros(): void {
-    this.busquedaGlobal = '';
-    this.obraSocialFiltro = 'Todas';
-    this.aplicarFiltros();
+    this.busquedaGlobal.set('');
+    this.obraSocialFiltro.set('Todas');
   }
 
   async eliminarPaciente(p: Paciente): Promise<void> {
@@ -101,8 +104,7 @@ export class PacientesAdminComponent implements OnInit {
 
     this.pacienteService.eliminar(p.idPaciente).subscribe({
       next: () => {
-        this.pacientes = this.pacientes.filter(item => item.idPaciente !== p.idPaciente);
-        this.aplicarFiltros();
+        this.pacientes.update(lista => lista.filter(item => item.idPaciente !== p.idPaciente));
         this.notify.success(`El paciente ${p.nombre} ${p.apellido} fue eliminado correctamente.`);
       },
       error: (err) => {

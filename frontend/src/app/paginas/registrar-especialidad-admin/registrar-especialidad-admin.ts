@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -16,7 +16,7 @@ export class RegistrarEspecialidadAdminComponent {
   private readonly especialidadService = inject(EspecialidadService);
   private readonly notify = inject(NotificationService);
 
-  guardando: boolean = false;
+  readonly guardando = signal<boolean>(false);
 
   especialidadForm = {
     nombre: '',
@@ -32,17 +32,17 @@ export class RegistrarEspecialidadAdminComponent {
       return;
     }
 
-    this.guardando = true;
+    this.guardando.set(true);
     this.especialidadService.crear({
       nombre: this.especialidadForm.nombre.trim()
     }).subscribe({
       next: (nuevaEsp) => {
-        this.guardando = false;
+        this.guardando.set(false);
         this.notify.success(`¡Especialidad médica "${nuevaEsp.nombre}" registrada con éxito!`);
         this.router.navigate(['/admin/especialidades']);
       },
       error: (err) => {
-        this.guardando = false;
+        this.guardando.set(false);
         console.error('Error al registrar especialidad en Spring Boot:', err);
         this.notify.error(err?.error?.message || 'Error al conectar con el servidor para registrar la especialidad.');
       }

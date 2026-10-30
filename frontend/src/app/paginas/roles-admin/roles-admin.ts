@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
@@ -47,8 +47,8 @@ export class RolesAdminComponent implements OnInit {
   private readonly usuarioService = inject(UsuarioService);
   private readonly notify = inject(NotificationService);
 
-  usuarioEnEdicion: UsuarioDetalle | null = null;
-  guardando: boolean = false;
+  readonly usuarioEnEdicion = signal<UsuarioDetalle | null>(null);
+  readonly guardando = signal<boolean>(false);
 
   roles: RolPerfil[] = [
     {
@@ -113,7 +113,7 @@ export class RolesAdminComponent implements OnInit {
     }
   ];
 
-  rolSeleccionado: RolPerfil = this.roles[0];
+  readonly rolSeleccionado = signal<RolPerfil>(this.roles[0]);
 
   ngOnInit(): void {
     const paramId = this.route.snapshot.paramMap.get('id');
@@ -123,7 +123,7 @@ export class RolesAdminComponent implements OnInit {
       this.usuarioService.buscarPorId(idNum).subscribe({
         next: (u: Usuario) => {
           const rolNombre = u.rol?.nombre || 'Paciente';
-          this.usuarioEnEdicion = {
+          this.usuarioEnEdicion.set({
             id: u.idUsuario,
             username: u.nombreUsuario,
             nombre: u.nombreUsuario,
@@ -132,11 +132,11 @@ export class RolesAdminComponent implements OnInit {
             dni: `USR-${u.idUsuario}`,
             rol: rolNombre,
             avatarUrl: rolNombre.toUpperCase().includes('ADMIN') ? '🛡️' : (rolNombre.toUpperCase().includes('MED') ? '👨‍⚕️' : '👤')
-          };
+          });
 
           const rolActual = this.roles.find(r => r.nombre.toLowerCase() === rolNombre.toLowerCase());
           if (rolActual) {
-            this.rolSeleccionado = rolActual;
+            this.rolSeleccionado.set(rolActual);
           }
         },
         error: (err) => {
@@ -148,34 +148,39 @@ export class RolesAdminComponent implements OnInit {
   }
 
   seleccionarRol(r: RolPerfil): void {
-    this.rolSeleccionado = r;
-    if (this.usuarioEnEdicion) {
-      this.usuarioEnEdicion.rol = r.nombre;
+    this.rolSeleccionado.set(r);
+    const u = this.usuarioEnEdicion();
+    if (u) {
+      this.usuarioEnEdicion.set({
+        ...u,
+        rol: r.nombre
+      });
     }
   }
 
   guardarCambios(): void {
-    if (this.usuarioEnEdicion) {
-      this.guardando = true;
+    const usuario = this.usuarioEnEdicion();
+    if (usuario) {
+      this.guardando.set(true);
       let idRol = 3;
-      if (this.rolSeleccionado.nombre === 'Administrador') {
+      if (this.rolSeleccionado().nombre === 'Administrador') {
         idRol = 1;
-      } else if (this.rolSeleccionado.nombre === 'Médico') {
+      } else if (this.rolSeleccionado().nombre === 'Médico') {
         idRol = 2;
       }
 
-      this.usuarioService.actualizar(this.usuarioEnEdicion.id, {
-        nombreUsuario: this.usuarioEnEdicion.username,
+      this.usuarioService.actualizar(usuario.id, {
+        nombreUsuario: usuario.username,
         idRol: idRol,
         estado: true
       }).subscribe({
         next: () => {
-          this.guardando = false;
-          this.notify.success(`¡Rol de acceso actualizado exitosamente para @${this.usuarioEnEdicion?.username}!`);
+          this.guardando.set(false);
+          this.notify.success(`¡Rol de acceso actualizado exitosamente para @${usuario.username}!`);
           this.router.navigate(['/admin/usuarios']);
         },
         error: (err) => {
-          this.guardando = false;
+          this.guardando.set(false);
           console.error('Error al actualizar rol de usuario:', err);
           this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para actualizar el rol.');
         }

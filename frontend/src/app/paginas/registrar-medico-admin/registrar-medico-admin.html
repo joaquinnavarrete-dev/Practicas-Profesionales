@@ -11,8 +11,8 @@
   <main class="form-content-body">
     <form class="doctor-form-card" (ngSubmit)="guardarMedico()">
 
-      <div *ngIf="errorMessage" class="error-banner">
-        <span>{{ errorMessage }}</span>
+      <div *ngIf="errorMessage()" class="error-banner">
+        <span>{{ errorMessage() }}</span>
       </div>
 
       <div class="form-section">
@@ -58,8 +58,8 @@
           <div class="form-group">
             <label>ESPECIALIDAD MÉDICA ASIGNADA *</label>
             <select [(ngModel)]="medicoForm.idEspecialidad" name="idEspecialidad" required>
-              <option [ngValue]="null" disabled *ngIf="cargandoEspecialidades">Cargando especialidades...</option>
-              <option *ngFor="let esp of especialidades" [ngValue]="esp.idEspecialidad">
+              <option [ngValue]="null" disabled *ngIf="cargandoEspecialidades()">Cargando especialidades...</option>
+              <option *ngFor="let esp of especialidades()" [ngValue]="esp.idEspecialidad">
                 {{ esp.nombre }}
               </option>
             </select>
@@ -69,9 +69,9 @@
 
       <div class="form-actions-footer">
         <button type="button" class="btn-cancel" routerLink="/admin/medicos">Cancelar</button>
-        <button type="submit" class="btn-submit" [disabled]="guardando">
-          <span *ngIf="!guardando">💾 Registrar Profesional</span>
-          <span *ngIf="guardando">Guardando...</span>
+        <button type="submit" class="btn-submit" [disabled]="guardando()">
+          <span *ngIf="!guardando()">💾 Registrar Profesional</span>
+          <span *ngIf="guardando()">Guardando...</span>
         </button>
       </div>
 

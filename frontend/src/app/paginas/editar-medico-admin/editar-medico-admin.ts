@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -21,11 +21,11 @@ export class EditarMedicoAdminComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  medicoId: number | null = null;
-  especialidades: Especialidad[] = [];
-  cargando: boolean = true;
-  guardando: boolean = false;
-  errorMessage: string = '';
+  readonly medicoId = signal<number | null>(null);
+  readonly especialidades = signal<Especialidad[]>([]);
+  readonly cargando = signal<boolean>(true);
+  readonly guardando = signal<boolean>(false);
+  readonly errorMessage = signal<string>('');
 
   medicoForm = {
     nombre: '',
@@ -42,18 +42,21 @@ export class EditarMedicoAdminComponent implements OnInit {
       return;
     }
 
-    this.medicoId = Number(idParam);
+    this.medicoId.set(Number(idParam));
     this.cargarDatos();
   }
 
   cargarDatos(): void {
-    this.cargando = true;
+    const id = this.medicoId();
+    if (!id) return;
+
+    this.cargando.set(true);
 
     this.especialidadService.listar().subscribe({
       next: (esps) => {
-        this.especialidades = esps;
+        this.especialidades.set(esps);
 
-        this.medicoService.buscarPorId(this.medicoId!).subscribe({
+        this.medicoService.buscarPorId(id).subscribe({
           next: (med) => {
             this.medicoForm = {
               nombre: med.nombre,
@@ -62,39 +65,40 @@ export class EditarMedicoAdminComponent implements OnInit {
               telefono: med.telefono,
               idEspecialidad: med.especialidad.idEspecialidad
             };
-            this.cargando = false;
+            this.cargando.set(false);
           },
           error: (err) => {
-            this.cargando = false;
+            this.cargando.set(false);
             console.error('Error al cargar datos del médico:', err);
-            this.errorMessage = 'No se encontró el profesional médico solicitado.';
+            this.errorMessage.set('No se encontró el profesional médico solicitado.');
             this.notify.error('No se encontró el profesional médico solicitado.');
           }
         });
       },
       error: (err) => {
-        this.cargando = false;
+        this.cargando.set(false);
         console.error('Error al cargar especialidades:', err);
       }
     });
   }
 
   guardarCambios(): void {
-    if (!this.medicoId) return;
+    const id = this.medicoId();
+    if (!id) return;
 
-    this.errorMessage = '';
+    this.errorMessage.set('');
 
     if (!this.medicoForm.nombre.trim() ||
       !this.medicoForm.apellido.trim() ||
       !this.medicoForm.matricula.trim() ||
       !this.medicoForm.telefono.trim() ||
       !this.medicoForm.idEspecialidad) {
-      this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
+      this.errorMessage.set('Por favor, complete todos los campos obligatorios.');
       this.notify.warning('Complete todos los campos obligatorios antes de continuar.');
       return;
     }
 
-    this.guardando = true;
+    this.guardando.set(true);
 
     const payload: MedicoRequest = {
       nombre: this.medicoForm.nombre.trim(),
@@ -104,21 +108,21 @@ export class EditarMedicoAdminComponent implements OnInit {
       idEspecialidad: this.medicoForm.idEspecialidad
     };
 
-    this.medicoService.actualizar(this.medicoId, payload).subscribe({
+    this.medicoService.actualizar(id, payload).subscribe({
       next: () => {
-        this.guardando = false;
+        this.guardando.set(false);
         this.notify.success('¡Datos del profesional médico actualizados con éxito!');
         this.router.navigate(['/admin/medicos']);
       },
       error: (err) => {
-        this.guardando = false;
+        this.guardando.set(false);
         console.error('Error al actualizar médico:', err);
         if (err.status === 409) {
-          this.errorMessage = 'Ya existe otro médico registrado con la misma matrícula.';
+          this.errorMessage.set('Ya existe otro médico registrado con la misma matrícula.');
         } else {
-          this.errorMessage = err.error?.message || 'Error al actualizar el profesional. Intente nuevamente.';
+          this.errorMessage.set(err.error?.message || 'Error al actualizar el profesional. Intente nuevamente.');
         }
-        this.notify.error(this.errorMessage);
+        this.notify.error(this.errorMessage());
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -16,7 +16,7 @@ export class RegistrarUsuarioAdminComponent {
   private readonly usuarioService = inject(UsuarioService);
   private readonly notify = inject(NotificationService);
 
-  guardando: boolean = false;
+  readonly guardando = signal<boolean>(false);
 
   usuarioForm = {
     username: '',
@@ -41,7 +41,7 @@ export class RegistrarUsuarioAdminComponent {
       return;
     }
 
-    this.guardando = true;
+    this.guardando.set(true);
 
     let idRol = 3;
     if (this.usuarioForm.rol === 'Administrador') {
@@ -57,12 +57,12 @@ export class RegistrarUsuarioAdminComponent {
       estado: true
     }).subscribe({
       next: (nuevoUsuario) => {
-        this.guardando = false;
+        this.guardando.set(false);
         this.notify.success(`¡Usuario @${nuevoUsuario.nombreUsuario} registrado exitosamente en el sistema!`);
         this.router.navigate(['/admin/usuarios']);
       },
       error: (err) => {
-        this.guardando = false;
+        this.guardando.set(false);
         console.error('Error al registrar usuario en Spring Boot:', err);
         this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para registrar el usuario.');
       }

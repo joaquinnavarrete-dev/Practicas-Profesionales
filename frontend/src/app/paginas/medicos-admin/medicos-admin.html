@@ -10,8 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar por profesional, especialidad o matrícula..." [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()" />
+      <input type="text" placeholder="Buscar por profesional, especialidad o matrícula..." [ngModel]="busquedaGlobal()"
+        (ngModelChange)="busquedaGlobal.set($event)" />
     </div>
 
     <div class="topbar-right">
@@ -42,7 +42,7 @@
         <div class="stat-icon-tile icon-blue">🩺</div>
         <div class="stat-body">
           <span class="stat-caption">Total Profesionales</span>
-          <strong class="stat-number">{{ medicos.length }} Médicos</strong>
+          <strong class="stat-number">{{ medicos().length }} Médicos</strong>
         </div>
       </div>
 
@@ -50,21 +50,21 @@
         <div class="stat-icon-tile icon-green">✓</div>
         <div class="stat-body">
           <span class="stat-caption">Especialidades Cubiertas</span>
-          <strong class="stat-number">{{ especialidades.length }} Áreas</strong>
+          <strong class="stat-number">{{ especialidades().length }} Áreas</strong>
         </div>
       </div>
     </div>
 
-    <div *ngIf="errorMessage" class="error-banner">
-      <span>{{ errorMessage }}</span>
+    <div *ngIf="errorMessage()" class="error-banner">
+      <span>{{ errorMessage() }}</span>
     </div>
 
     <div class="filters-card">
       <div class="filter-group">
         <label>ESPECIALIDAD:</label>
-        <select [(ngModel)]="especialidadFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event)">
           <option value="Todas">Todas las especialidades</option>
-          <option *ngFor="let esp of especialidades" [value]="esp.nombre">
+          <option *ngFor="let esp of especialidades()" [value]="esp.nombre">
             {{ esp.nombre }}
           </option>
         </select>
@@ -88,14 +88,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cargando">
+          <tr *ngIf="cargando()">
             <td colspan="6" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Cargando cuerpo médico desde el servidor...</span>
             </td>
           </tr>
 
-          <tr *ngFor="let m of medicosFiltrados">
+          <tr *ngFor="let m of medicosFiltrados()">
             <td>
               <div class="doctor-cell">
                 <span class="doctor-avatar">👨‍⚕️</span>
@@ -139,7 +139,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando && medicosFiltrados.length === 0">
+          <tr *ngIf="!cargando() && medicosFiltrados().length === 0">
             <td colspan="6" class="empty-table-row">
               <span>🔍 No se encontraron profesionales médicos registrados con los filtros aplicados.</span>
             </td>
@@ -149,7 +149,7 @@
 
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ medicosFiltrados.length }} de {{ medicos.length }} profesionales
+          Mostrando {{ medicosFiltrados().length }} de {{ medicos().length }} profesionales
         </span>
       </div>
     </div>

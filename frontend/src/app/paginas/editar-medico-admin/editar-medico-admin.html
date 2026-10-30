@@ -4,22 +4,22 @@
     <div class="header-titles">
       <span class="back-link" routerLink="/admin/medicos">← Volver al Cuerpo Médico</span>
       <h1 class="main-title">Modificar Datos del Profesional</h1>
-      <p class="sub-title">Actualice la información profesional y especialidad del médico ID #{{ medicoId }}.</p>
+      <p class="sub-title">Actualice la información profesional y especialidad del médico ID #{{ medicoId() }}.</p>
     </div>
   </header>
 
   <main class="form-content-body">
 
-    <div *ngIf="errorMessage" class="error-banner">
-      <span>{{ errorMessage }}</span>
+    <div *ngIf="errorMessage()" class="error-banner">
+      <span>{{ errorMessage() }}</span>
     </div>
 
-    <div *ngIf="cargando" class="loading-state">
+    <div *ngIf="cargando()" class="loading-state">
       <div class="spinner"></div>
       <p>Cargando información del profesional médico...</p>
     </div>
 
-    <form class="doctor-form-card" (ngSubmit)="guardarCambios()" *ngIf="!cargando">
+    <form class="doctor-form-card" (ngSubmit)="guardarCambios()" *ngIf="!cargando()">
 
       <div class="form-section">
         <h3 class="section-title">1. Datos Personales y de Contacto</h3>
@@ -64,7 +64,7 @@
           <div class="form-group">
             <label>ESPECIALIDAD ASIGNADA *</label>
             <select [(ngModel)]="medicoForm.idEspecialidad" name="idEspecialidad" required>
-              <option *ngFor="let esp of especialidades" [ngValue]="esp.idEspecialidad">
+              <option *ngFor="let esp of especialidades()" [ngValue]="esp.idEspecialidad">
                 {{ esp.nombre }}
               </option>
             </select>
@@ -74,9 +74,9 @@
 
       <div class="form-actions-footer">
         <button type="button" class="btn-cancel" routerLink="/admin/medicos">Cancelar</button>
-        <button type="submit" class="btn-submit" [disabled]="guardando">
-          <span *ngIf="!guardando">💾 Guardar Cambios</span>
-          <span *ngIf="guardando">Guardando...</span>
+        <button type="submit" class="btn-submit" [disabled]="guardando()">
+          <span *ngIf="!guardando()">💾 Guardar Cambios</span>
+          <span *ngIf="guardando()">Guardando...</span>
         </button>
       </div>
 

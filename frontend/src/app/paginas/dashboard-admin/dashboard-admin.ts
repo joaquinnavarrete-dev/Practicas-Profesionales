@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TurnoService, MedicoService, PacienteService, AuthService } from '../../services';
@@ -29,30 +29,27 @@ export interface ProximoTurno {
   styleUrl: './dashboard-admin.css'
 })
 export class DashboardAdminComponent implements OnInit {
+  private readonly turnoService = inject(TurnoService);
+  private readonly medicoService = inject(MedicoService);
+  private readonly pacienteService = inject(PacienteService);
+  readonly authService = inject(AuthService);
 
-  cargando: boolean = false;
-  nombreUsuario: string = 'Administrador';
+  readonly cargando = signal<boolean>(false);
   fechaHoyTexto: string = '';
 
-  totalTurnos: number = 0;
-  totalPacientes: number = 0;
-  totalMedicos: number = 0;
-  turnosHoyCount: number = 0;
-  atendidosHoyCount: number = 0;
+  readonly nombreUsuario = computed(() => this.authService.currentUser()?.nombreUsuario || 'Administrador');
 
-  demandaEspecialidades: DemandaEspecialidad[] = [];
-  proximosTurnos: ProximoTurno[] = [];
+  readonly totalTurnos = signal<number>(0);
+  readonly totalPacientes = signal<number>(0);
+  readonly totalMedicos = signal<number>(0);
+  readonly turnosHoyCount = signal<number>(0);
+  readonly atendidosHoyCount = signal<number>(0);
 
-  constructor(
-    private turnoService: TurnoService,
-    private medicoService: MedicoService,
-    private pacienteService: PacienteService,
-    public authService: AuthService
-  ) { }
+  readonly demandaEspecialidades = signal<DemandaEspecialidad[]>([]);
+  readonly proximosTurnos = signal<ProximoTurno[]>([]);
 
   ngOnInit(): void {
     this.formatearFechaHoy();
-    this.obtenerNombreUsuario();
     this.cargarDatosDashboard();
   }
 
@@ -63,68 +60,61 @@ export class DashboardAdminComponent implements OnInit {
     this.fechaHoyTexto = formato.charAt(0).toUpperCase() + formato.slice(1);
   }
 
-  private obtenerNombreUsuario(): void {
-    const user = this.authService.currentUser();
-    if (user?.nombreUsuario) {
-      this.nombreUsuario = user.nombreUsuario;
-    }
-  }
-
   cargarDatosDashboard(): void {
-    this.cargando = true;
+    this.cargando.set(true);
     const fechaHoyIso = new Date().toISOString().split('T')[0];
 
     this.medicoService.listar().subscribe({
       next: (medicos: Medico[]) => {
-        this.totalMedicos = medicos.length;
+        this.totalMedicos.set(medicos.length);
       },
       error: (err) => console.error('Error al cargar médicos en dashboard:', err)
     });
 
     this.pacienteService.listar().subscribe({
       next: (pacientes: Paciente[]) => {
-        this.totalPacientes = pacientes.length;
+        this.totalPacientes.set(pacientes.length);
       },
       error: (err) => console.error('Error al cargar pacientes en dashboard:', err)
     });
 
     this.turnoService.listarTodos().subscribe({
       next: (turnos: Turno[]) => {
-        this.totalTurnos = turnos.length;
+        this.totalTurnos.set(turnos.length);
 
         const turnosDeHoy = turnos.filter(t => t.fecha === fechaHoyIso);
-        this.turnosHoyCount = turnosDeHoy.length;
+        this.turnosHoyCount.set(turnosDeHoy.length);
 
-        this.atendidosHoyCount = turnos.filter(t => t.fecha < fechaHoyIso).length;
+        this.atendidosHoyCount.set(turnos.filter(t => t.fecha < fechaHoyIso).length);
 
         this.calcularDemandaEspecialidades(turnos);
 
         const turnosParaTabla = turnosDeHoy.length > 0 ? turnosDeHoy : turnos.slice(-8);
-        this.proximosTurnos = turnosParaTabla.map(t => ({
+        this.proximosTurnos.set(turnosParaTabla.map(t => ({
           hora: t.hora ? `${t.hora} hs` : '09:00 hs',
           paciente: t.paciente ? `${t.paciente.nombre} ${t.paciente.apellido}` : 'Paciente General',
           dni: t.paciente?.dni || 'Sin DNI',
-          medico: t.medico ? `Dr. ${t.medico.nombre} ${t.medico.apellido}` : 'Médico de Guardia',
+          medico: t.medico ? `Dr(a). ${t.medico.nombre} ${t.medico.apellido}` : 'Médico de Guardia',
           especialidad: t.medico?.especialidad?.nombre || 'Medicina General',
           obraSocial: t.paciente?.obraSocial?.nombre || 'Particular',
           estado: this.calcularEstadoTurno(t.fecha)
-        }));
+        })));
 
-        this.cargando = false;
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('Error al cargar turnos en dashboard:', err);
-        this.cargando = false;
+        this.cargando.set(false);
       }
     });
   }
 
   private calcularDemandaEspecialidades(turnos: Turno[]): void {
     if (turnos.length === 0) {
-      this.demandaEspecialidades = [
+      this.demandaEspecialidades.set([
         { nombre: 'Cardiología', turnos: 0, porcentaje: 0, color: '#004b93' },
         { nombre: 'Pediatría', turnos: 0, porcentaje: 0, color: '#0284c7' }
-      ];
+      ]);
       return;
     }
 
@@ -137,7 +127,7 @@ export class DashboardAdminComponent implements OnInit {
     const colores = ['#004b93', '#0284c7', '#0f766e', '#7e22ce', '#eab308', '#dc2626'];
     let idx = 0;
 
-    this.demandaEspecialidades = Object.keys(conteo).map(esp => {
+    const lista = Object.keys(conteo).map(esp => {
       const cant = conteo[esp];
       const porcentaje = Math.round((cant / turnos.length) * 100);
       const color = colores[idx % colores.length];
@@ -149,6 +139,8 @@ export class DashboardAdminComponent implements OnInit {
         color
       };
     });
+
+    this.demandaEspecialidades.set(lista);
   }
 
   private calcularEstadoTurno(fechaTurno: string): 'En Espera' | 'Confirmado' | 'Atendido' {
@@ -160,5 +152,4 @@ export class DashboardAdminComponent implements OnInit {
     }
     return 'Confirmado';
   }
-
 }

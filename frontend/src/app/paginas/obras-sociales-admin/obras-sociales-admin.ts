@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -29,29 +29,45 @@ export class ObrasSocialesAdminComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
 
-  busquedaGlobal: string = '';
-  estadoFiltro: string = 'Todos';
-  tipoFiltro: string = 'Todos';
+  readonly busquedaGlobal = signal<string>('');
+  readonly estadoFiltro = signal<string>('Todos');
+  readonly tipoFiltro = signal<string>('Todos');
 
-  cargando: boolean = false;
-  obrasSociales: ObraSocialItem[] = [];
-  obrasSocialesFiltradas: ObraSocialItem[] = [];
+  readonly cargando = signal<boolean>(false);
+  readonly obrasSociales = signal<ObraSocialItem[]>([]);
+
+  readonly obrasSocialesFiltradas = computed(() => {
+    const q = this.busquedaGlobal().toLowerCase().trim();
+    const filtroEstado = this.estadoFiltro();
+    const filtroTipo = this.tipoFiltro();
+    const lista = this.obrasSociales();
+
+    return lista.filter(os => {
+      const matchEstado = filtroEstado === 'Todos' || os.estado === filtroEstado;
+      const matchTipo = filtroTipo === 'Todos' || os.tipo === filtroTipo;
+      const matchQuery = !q ||
+                         os.nombre.toLowerCase().includes(q) ||
+                         os.sigla.toLowerCase().includes(q) ||
+                         os.codigoRns.includes(q);
+
+      return matchEstado && matchTipo && matchQuery;
+    });
+  });
 
   ngOnInit(): void {
     this.cargarDatos();
   }
 
   cargarDatos(): void {
-    this.cargando = true;
+    this.cargando.set(true);
     this.obraSocialService.listar().subscribe({
       next: (data: ObraSocialModel[]) => {
-        this.obrasSociales = data.map(item => this.mapearObraSocial(item));
-        this.aplicarFiltros();
-        this.cargando = false;
+        this.obrasSociales.set(data.map(item => this.mapearObraSocial(item)));
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('Error al cargar obras sociales desde la API:', err);
-        this.cargando = false;
+        this.cargando.set(false);
       }
     });
   }
@@ -96,29 +112,17 @@ export class ObrasSocialesAdminComponent implements OnInit {
   }
 
   aplicarFiltros(): void {
-    const q = this.busquedaGlobal.toLowerCase().trim();
-
-    this.obrasSocialesFiltradas = this.obrasSociales.filter(os => {
-      const matchEstado = this.estadoFiltro === 'Todos' || os.estado === this.estadoFiltro;
-      const matchTipo = this.tipoFiltro === 'Todos' || os.tipo === this.tipoFiltro;
-      const matchQuery = !q ||
-                         os.nombre.toLowerCase().includes(q) ||
-                         os.sigla.toLowerCase().includes(q) ||
-                         os.codigoRns.includes(q);
-
-      return matchEstado && matchTipo && matchQuery;
-    });
+    // Computado reactivamente por Signals
   }
 
   contarPorEstado(estado: string): number {
-    return this.obrasSociales.filter(os => os.estado === estado).length;
+    return this.obrasSociales().filter(os => os.estado === estado).length;
   }
 
   resetearFiltros(): void {
-    this.busquedaGlobal = '';
-    this.estadoFiltro = 'Todos';
-    this.tipoFiltro = 'Todos';
-    this.aplicarFiltros();
+    this.busquedaGlobal.set('');
+    this.estadoFiltro.set('Todos');
+    this.tipoFiltro.set('Todos');
   }
 
   async eliminarObraSocial(os: ObraSocialItem): Promise<void> {
@@ -144,15 +148,18 @@ export class ObrasSocialesAdminComponent implements OnInit {
   }
 
   cambiarEstadoConvenio(os: ObraSocialItem): void {
+    let nuevoEstado: 'Activa' | 'En Revisión' | 'Suspendida' = 'Activa';
     if (os.estado === 'Activa') {
-      os.estado = 'Suspendida';
+      nuevoEstado = 'Suspendida';
     } else if (os.estado === 'Suspendida') {
-      os.estado = 'En Revisión';
+      nuevoEstado = 'En Revisión';
     } else {
-      os.estado = 'Activa';
+      nuevoEstado = 'Activa';
     }
-    this.notify.info(`Estado de "${os.sigla}" cambiado a: ${os.estado}`);
-    this.aplicarFiltros();
-  }
 
+    this.obrasSociales.update(lista =>
+      lista.map(item => item.id === os.id ? { ...item, estado: nuevoEstado } : item)
+    );
+    this.notify.info(`Estado de "${os.sigla}" cambiado a: ${nuevoEstado}`);
+  }
 }

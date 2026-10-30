@@ -10,8 +10,8 @@
 
     <div class="topbar-search">
       <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar obra social, prepaga o código..." [(ngModel)]="busquedaGlobal"
-        (input)="aplicarFiltros()" />
+      <input type="text" placeholder="Buscar obra social, prepaga o código..." [ngModel]="busquedaGlobal()"
+        (ngModelChange)="busquedaGlobal.set($event)" />
     </div>
 
     <div class="topbar-right">
@@ -50,7 +50,7 @@
         <div class="stat-icon-tile icon-blue">🛡️</div>
         <div class="stat-body">
           <span class="stat-caption">Total Convenios</span>
-          <strong class="stat-number">{{ obrasSociales.length }} Entidades</strong>
+          <strong class="stat-number">{{ obrasSociales().length }} Entidades</strong>
         </div>
       </div>
 
@@ -75,7 +75,7 @@
     <div class="filters-card">
       <div class="filter-group">
         <label>ESTADO CONVENIO:</label>
-        <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
           <option value="Todos">Todos los estados</option>
           <option value="Activa">Activa</option>
           <option value="En Revisión">En Revisión</option>
@@ -85,7 +85,7 @@
 
       <div class="filter-group">
         <label>TIPO DE COBERTURA:</label>
-        <select [(ngModel)]="tipoFiltro" (change)="aplicarFiltros()">
+        <select [ngModel]="tipoFiltro()" (ngModelChange)="tipoFiltro.set($event)">
           <option value="Todos">Todos los tipos</option>
           <option value="Prepaga">Prepaga</option>
           <option value="Obra Social">Obra Social Nacional/Provincial</option>
@@ -112,13 +112,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cargando">
+          <tr *ngIf="cargando()">
             <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando catálogo de obras sociales y convenios...
             </td>
           </tr>
 
-          <tr *ngFor="let os of obrasSocialesFiltradas">
+          <tr *ngFor="let os of obrasSocialesFiltradas()">
             <td>
               <div class="entity-cell">
                 <span class="entity-logo">{{ os.logoUrl }}</span>
@@ -168,7 +168,7 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando && obrasSocialesFiltradas.length === 0">
+          <tr *ngIf="!cargando() && obrasSocialesFiltradas().length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron obras sociales con los filtros seleccionados.</span>
             </td>
@@ -178,7 +178,7 @@
 
       <div class="table-pagination-footer">
         <span class="pagination-legend">
-          Mostrando {{ obrasSocialesFiltradas.length }} de {{ obrasSociales.length }} entidades registradas
+          Mostrando {{ obrasSocialesFiltradas().length }} de {{ obrasSociales().length }} entidades registradas
         </span>
         <div class="pages-list">
           <button class="page-nav-btn" disabled>&lt;</button>

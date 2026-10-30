@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -18,9 +18,9 @@ export class EditarEspecialidadAdminComponent implements OnInit {
   private readonly especialidadService = inject(EspecialidadService);
   private readonly notify = inject(NotificationService);
 
-  especialidadId: string | null = null;
-  cargando: boolean = false;
-  guardando: boolean = false;
+  readonly especialidadId = signal<string | null>(null);
+  readonly cargando = signal<boolean>(false);
+  readonly guardando = signal<boolean>(false);
 
   especialidadForm = {
     nombre: '',
@@ -31,14 +31,15 @@ export class EditarEspecialidadAdminComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.especialidadId = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
+    this.especialidadId.set(id);
 
-    if (this.especialidadId) {
-      const idNum = Number(this.especialidadId);
-      this.cargando = true;
+    if (id) {
+      const idNum = Number(id);
+      this.cargando.set(true);
       this.especialidadService.buscarPorId(idNum).subscribe({
         next: (esp: Especialidad) => {
-          this.cargando = false;
+          this.cargando.set(false);
           this.especialidadForm = {
             nombre: esp.nombre,
             codigo: `ESP-${esp.idEspecialidad}`,
@@ -48,7 +49,7 @@ export class EditarEspecialidadAdminComponent implements OnInit {
           };
         },
         error: (err: any) => {
-          this.cargando = false;
+          this.cargando.set(false);
           console.error('Error al obtener especialidad de Spring Boot:', err);
           this.notify.error('No se pudo encontrar la especialidad solicitada.');
           this.router.navigate(['/admin/especialidades']);
@@ -63,21 +64,22 @@ export class EditarEspecialidadAdminComponent implements OnInit {
       return;
     }
 
-    if (!this.especialidadId) return;
+    const id = this.especialidadId();
+    if (!id) return;
 
-    this.guardando = true;
-    const idNum = Number(this.especialidadId);
+    this.guardando.set(true);
+    const idNum = Number(id);
 
     this.especialidadService.actualizar(idNum, {
       nombre: this.especialidadForm.nombre.trim()
     }).subscribe({
       next: (espActualizada: Especialidad) => {
-        this.guardando = false;
+        this.guardando.set(false);
         this.notify.success(`¡Especialidad "${espActualizada.nombre}" actualizada con éxito!`);
         this.router.navigate(['/admin/especialidades']);
       },
       error: (err: any) => {
-        this.guardando = false;
+        this.guardando.set(false);
         console.error('Error al actualizar especialidad:', err);
         this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para actualizar la especialidad.');
       }

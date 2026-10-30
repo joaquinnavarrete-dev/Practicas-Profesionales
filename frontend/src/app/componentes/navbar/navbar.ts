@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -13,9 +13,9 @@ import { AuthService } from '../../services/auth.service';
 export class Navbar {
   readonly authService = inject(AuthService);
 
-  get esPersonalClinico(): boolean {
-    return this.authService.isAdmin() || this.authService.isMedico() || this.authService.isRecepcionista();
-  }
+  readonly esPersonalClinico = computed(() => 
+    this.authService.isAdmin() || this.authService.isMedico() || this.authService.isRecepcionista()
+  );
 
   cerrarSesion(): void {
     this.authService.logout();
