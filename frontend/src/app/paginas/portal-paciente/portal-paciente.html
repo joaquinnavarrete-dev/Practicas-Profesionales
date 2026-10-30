@@ -1,0 +1,348 @@
+<div class="patient-portal-wrapper">
+
+  <!-- HERO BANNER DEL PACIENTE -->
+  <header class="patient-hero">
+    <div class="hero-container">
+
+      <div class="hero-identity">
+        <div class="avatar-portal">
+          <span>{{ paciente()?.nombre?.charAt(0)?.toUpperCase() || authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'P' }}</span>
+        </div>
+
+        <div class="identity-text">
+          <div class="welcome-badge">
+            <span class="dot-online"></span>
+            <span>Portal del Paciente • Clínica San Gabriel</span>
+          </div>
+
+          <h1 class="patient-name">
+            ¡Hola, {{ paciente() ? (paciente()?.nombre + ' ' + paciente()?.apellido) : (authService.currentUser()?.nombreUsuario || 'Paciente') }}!
+          </h1>
+          <p class="patient-lead">
+            Gestioná tus turnos médicos, revisá tu agenda de consultas y actualizá tus datos personales de forma sencilla.
+          </p>
+
+          <!-- CHIPS DE INFORMACIÓN RÁPIDA -->
+          <div class="quick-chips-row" *ngIf="paciente() as p">
+            <div class="info-chip">
+              <span class="chip-icon">🪪</span>
+              <span class="chip-label">DNI:</span>
+              <strong class="chip-val">{{ p.dni }}</strong>
+            </div>
+
+            <div class="info-chip">
+              <span class="chip-icon">🛡️</span>
+              <span class="chip-label">Cobertura:</span>
+              <strong class="chip-val">{{ p.obraSocial?.nombre || 'Particular' }}</strong>
+            </div>
+
+            <div class="info-chip" *ngIf="p.telefono">
+              <span class="chip-icon">📱</span>
+              <span class="chip-label">Teléfono:</span>
+              <strong class="chip-val">{{ p.telefono }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTÓN CTA DESTACADO: NUEVO TURNO -->
+      <div class="hero-actions">
+        <a routerLink="/turnos/solicitar" class="btn-new-appointment">
+          <span class="btn-icon">➕</span>
+          <span class="btn-text">Solicitar Nuevo Turno</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL CON PESTAÑAS -->
+  <main class="portal-main-content">
+
+    <!-- NAVEGACIÓN POR PESTAÑAS PRINCIPALES -->
+    <nav class="portal-tabs-nav">
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="tabActiva() === 'turnos'"
+        (click)="cambiarTab('turnos')"
+      >
+        <span class="tab-icon">📅</span>
+        <span>Mis Turnos Médicos</span>
+        <span class="badge-count" *ngIf="turnosActivos().length > 0">{{ turnosActivos().length }}</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="tabActiva() === 'perfil'"
+        (click)="cambiarTab('perfil')"
+      >
+        <span class="tab-icon">👤</span>
+        <span>Mis Datos y Cobertura</span>
+      </button>
+    </nav>
+
+    <!-- ESTADO DE CARGA GLOBAL -->
+    <div *ngIf="cargando()" class="loading-state-card">
+      <div class="spinner"></div>
+      <p>Cargando información de tu portal médico...</p>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PESTAÑA 1: MIS TURNOS MÉDICOS                  -->
+    <!-- ============================================== -->
+    <div class="tab-panel" *ngIf="!cargando() && tabActiva() === 'turnos'">
+
+      <!-- SUB-FILTRO: PRÓXIMOS VS HISTORIAL -->
+      <div class="subtabs-toolbar">
+        <div class="subtabs-group">
+          <button 
+            type="button" 
+            class="subtab-btn" 
+            [class.active]="subtabTurnos() === 'proximos'"
+            (click)="cambiarSubtab('proximos')"
+          >
+            ⏰ Próximos Turnos ({{ turnosActivos().length }})
+          </button>
+
+          <button 
+            type="button" 
+            class="subtab-btn" 
+            [class.active]="subtabTurnos() === 'historial'"
+            (click)="cambiarSubtab('historial')"
+          >
+            📋 Historial de Atenciones ({{ turnosPasados().length }})
+          </button>
+        </div>
+
+        <a routerLink="/turnos/solicitar" class="link-quick-agenda">
+          <span>+ Agendar otra consulta</span>
+        </a>
+      </div>
+
+      <!-- VISTA: PRÓXIMOS TURNOS -->
+      <section *ngIf="subtabTurnos() === 'proximos'" class="turnos-section">
+
+        <!-- ALERTA DE PRÓXIMO TURNO DESTACADO SI HAY AL MENOS 1 -->
+        <div class="highlight-appointment-banner" *ngIf="proximoTurnoDestacado() as proximo">
+          <div class="highlight-icon">🔔</div>
+          <div class="highlight-info">
+            <span class="highlight-label">TU PRÓXIMA ATENCIÓN PROGRAMADA:</span>
+            <strong class="highlight-text">
+              {{ formatearFechaLegible(proximo.fecha) }} a las {{ proximo.hora }} hs con Dr(a). {{ proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
+            </strong>
+          </div>
+          <span class="badge-status-confirmed">Confirmado</span>
+        </div>
+
+        <!-- ESTADO VACÍO SI NO HAY TURNOS ACTIVOS -->
+        <div class="empty-state-card" *ngIf="turnosActivos().length === 0">
+          <div class="empty-illustration">🗓️</div>
+          <h3>No tenés turnos médicos programados</h3>
+          <p>
+            Cuando solicites una cita con nuestros profesionales, aparecerá listada en esta sección con todos los detalles de atención.
+          </p>
+          <a routerLink="/turnos/solicitar" class="btn-empty-action">
+            ➕ Solicitar un Turno Ahora
+          </a>
+        </div>
+
+        <!-- LISTADO DE TARJETAS DE TURNOS ACTIVOS -->
+        <div class="appointments-grid" *ngIf="turnosActivos().length > 0">
+          <div class="appointment-card" *ngFor="let t of turnosActivos()">
+
+            <div class="card-date-badge">
+              <span class="badge-month">{{ obtenerMesAbreviado(t.fecha) }}</span>
+              <strong class="badge-day">{{ obtenerDia(t.fecha) }}</strong>
+              <span class="badge-time">{{ t.hora }} hs</span>
+            </div>
+
+            <div class="card-main-info">
+              <div class="specialty-pill">
+                <span>⚕️ {{ t.especialidad?.nombre || 'Consulta Médica' }}</span>
+              </div>
+
+              <h3 class="doctor-name">
+                Dr(a). {{ t.medico?.nombre }} {{ t.medico?.apellido }}
+              </h3>
+
+              <div class="meta-row">
+                <span class="meta-item">
+                  <span class="icon">🪪</span> Matrícula: {{ t.medico?.matricula || 'No especificada' }}
+                </span>
+                <span class="meta-item">
+                  <span class="icon">📍</span> Sede Central — Consultorios Externos
+                </span>
+              </div>
+
+              <p class="date-full-text">
+                🗓️ <strong>{{ formatearFechaLegible(t.fecha) }}</strong> a las <strong>{{ t.hora }} hs</strong>
+              </p>
+            </div>
+
+            <div class="card-status-actions">
+              <span class="badge-pill-success">✓ Programado</span>
+
+              <button 
+                type="button" 
+                class="btn-cancel-appointment" 
+                (click)="confirmarCancelacionTurno(t)"
+                title="Cancelar este turno"
+              >
+                <span class="trash-icon">✕</span>
+                <span>Cancelar Cita</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- VISTA: HISTORIAL DE TURNOS PASADOS -->
+      <section *ngIf="subtabTurnos() === 'historial'" class="turnos-section">
+
+        <div class="empty-state-card" *ngIf="turnosPasados().length === 0">
+          <div class="empty-illustration">📁</div>
+          <h3>No posees consultas anteriores registradas</h3>
+          <p>Tus turnos concluidos o consultas pasadas se archivarán aquí para tu control histórico.</p>
+        </div>
+
+        <div class="appointments-grid past-grid" *ngIf="turnosPasados().length > 0">
+          <div class="appointment-card card-past" *ngFor="let t of turnosPasados()">
+
+            <div class="card-date-badge past-badge">
+              <span class="badge-month">{{ obtenerMesAbreviado(t.fecha) }}</span>
+              <strong class="badge-day">{{ obtenerDia(t.fecha) }}</strong>
+              <span class="badge-time">{{ t.hora }} hs</span>
+            </div>
+
+            <div class="card-main-info">
+              <div class="specialty-pill gray-pill">
+                <span>{{ t.especialidad?.nombre || 'Consulta' }}</span>
+              </div>
+
+              <h3 class="doctor-name">
+                Dr(a). {{ t.medico?.nombre }} {{ t.medico?.apellido }}
+              </h3>
+
+              <p class="date-full-text muted">
+                Atención finalizada el {{ formatearFechaLegible(t.fecha) }}
+              </p>
+            </div>
+
+            <div class="card-status-actions">
+              <span class="badge-pill-past">Concluido</span>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PESTAÑA 2: MIS DATOS PERSONALES Y COBERTURA    -->
+    <!-- ============================================== -->
+    <div class="tab-panel" *ngIf="!cargando() && tabActiva() === 'perfil'">
+
+      <div class="profile-card-wrapper">
+
+        <div class="profile-card-header">
+          <div class="p-header-icon">🛡️</div>
+          <div>
+            <h2>Mis Datos de Paciente y Cobertura Médica</h2>
+            <p>Mantené actualizada tu información de contacto y prepaga para autorizaciones de turnos sin demoras.</p>
+          </div>
+        </div>
+
+        <form class="profile-form" (ngSubmit)="guardarPerfil()">
+
+          <!-- DATOS FIJOS / NO EDITABLES DIRECTAMENTE -->
+          <div class="fixed-info-bar">
+            <div class="fixed-item">
+              <span class="fixed-label">DOCUMENTO DE IDENTIDAD (DNI)</span>
+              <strong class="fixed-val">{{ paciente()?.dni }}</strong>
+              <small class="fixed-hint">🔒 No modificable (identificador único)</small>
+            </div>
+
+            <div class="fixed-item">
+              <span class="fixed-label">USUARIO DE ACCESO</span>
+              <strong class="fixed-val">@{{ authService.currentUser()?.nombreUsuario }}</strong>
+              <small class="fixed-hint">Credencial del portal web</small>
+            </div>
+          </div>
+
+          <!-- CAMPOS EDITABLES -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>NOMBRE(S) *</label>
+              <input 
+                type="text" 
+                [(ngModel)]="perfilForm.nombre" 
+                name="nombre" 
+                placeholder="Como figura en tu DNI" 
+                required 
+              />
+            </div>
+
+            <div class="form-group">
+              <label>APELLIDO(S) *</label>
+              <input 
+                type="text" 
+                [(ngModel)]="perfilForm.apellido" 
+                name="apellido" 
+                placeholder="Como figura en tu DNI" 
+                required 
+              />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>TELÉFONO / CELULAR DE CONTACTO *</label>
+              <input 
+                type="text" 
+                [(ngModel)]="perfilForm.telefono" 
+                name="telefono" 
+                placeholder="Ej. 3814123456" 
+                required 
+              />
+              <small class="field-hint">Se utilizará para recordatorios de tus citas médicas.</small>
+            </div>
+
+            <div class="form-group">
+              <label>OBRA SOCIAL O PREPAGA *</label>
+              <select [(ngModel)]="perfilForm.idObraSocial" name="idObraSocial" required>
+                <option [ngValue]="null" disabled>Seleccione su cobertura médica</option>
+                <option *ngFor="let os of obrasSociales()" [ngValue]="os.idObraSocial">
+                  {{ os.nombre }}
+                </option>
+              </select>
+              <small class="field-hint">Convenio aplicable a tus consultas.</small>
+            </div>
+          </div>
+
+          <div class="profile-actions-bar">
+            <button 
+              type="submit" 
+              class="btn-save-profile" 
+              [disabled]="guardandoPerfil()"
+            >
+              <span *ngIf="!guardandoPerfil()">💾 Guardar Modificaciones</span>
+              <span *ngIf="guardandoPerfil()">Actualizando datos...</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
