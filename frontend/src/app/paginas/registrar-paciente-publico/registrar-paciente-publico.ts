@@ -107,7 +107,7 @@ export class RegistrarPacientePublicoComponent implements OnInit {
         this.successMessage.set('¡Registro exitoso! Tu cuenta ha sido creada e iniciaste sesión.');
 
         setTimeout(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/mi-portal']);
         }, 1500);
       },
       error: (err) => {

@@ -16,6 +16,7 @@
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
     <a routerLink="/especialidades" routerLinkActive="active">Especialidades</a>
     <a routerLink="/turnos/solicitar" routerLinkActive="active">Solicitar Turno</a>
+    <a *ngIf="esPaciente()" routerLink="/mi-portal" routerLinkActive="active">Mis Turnos</a>
   </nav>
 
   <div class="nav-actions">
@@ -43,6 +44,11 @@
         <span>Panel Admin</span>
       </a>
 
+      <a *ngIf="esPaciente()" routerLink="/mi-portal" class="btn-panel-paciente">
+        <span class="panel-icon">📋</span>
+        <span>Mi Portal</span>
+      </a>
+
       <div class="user-chip">
         <div class="user-avatar-circle">
           {{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'U' }}
@@ -60,5 +66,62 @@
         </button>
       </div>
     </ng-container>
+
+    <!-- BOTÓN HAMBURGUESA PARA PANTALLAS CHICAS / MÓVILES -->
+    <button type="button" class="btn-hamburger-nav" (click)="toggleMenuMovil()" aria-label="Abrir menú de navegación">
+      <svg *ngIf="!menuMovilAbierto()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <svg *ngIf="menuMovilAbierto()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
   </div>
 </header>
+
+<!-- MENÚ DESPLEGABLE MÓVIL (<= 1100px) -->
+<div class="mobile-nav-backdrop" *ngIf="menuMovilAbierto()" (click)="cerrarMenuMovil()"></div>
+
+<nav class="mobile-nav-drawer" *ngIf="menuMovilAbierto()">
+  <div class="mobile-nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="cerrarMenuMovil()">
+      🏠 Inicio
+    </a>
+    <a routerLink="/especialidades" routerLinkActive="active" (click)="cerrarMenuMovil()">
+      ⚕️ Cartilla de Especialidades
+    </a>
+    <a routerLink="/turnos/solicitar" routerLinkActive="active" (click)="cerrarMenuMovil()">
+      📅 Solicitar Turno Online
+    </a>
+    <a *ngIf="esPaciente()" routerLink="/mi-portal" routerLinkActive="active" (click)="cerrarMenuMovil()">
+      📋 Mis Turnos y Perfil
+    </a>
+    <a *ngIf="esPersonalClinico()" routerLink="/admin" class="mobile-link-admin" (click)="cerrarMenuMovil()">
+      ⚙️ Panel Administrativo
+    </a>
+  </div>
+
+  <div class="mobile-nav-footer">
+    <ng-container *ngIf="!authService.isLoggedIn()">
+      <a routerLink="/login" class="mobile-btn-login" (click)="cerrarMenuMovil()">
+        🔑 Iniciar Sesión
+      </a>
+      <a routerLink="/registro" class="mobile-btn-register" (click)="cerrarMenuMovil()">
+        Crear mi Cuenta
+      </a>
+    </ng-container>
+
+    <div *ngIf="authService.isLoggedIn()" class="mobile-user-box">
+      <div class="mobile-user-info">
+        <span class="user-role">{{ authService.userRole()?.replace('ROLE_', '') }}</span>
+        <strong class="user-name">{{ authService.currentUser()?.nombreUsuario }}</strong>
+      </div>
+      <button (click)="cerrarSesion()" class="mobile-btn-logout">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+</nav>

@@ -49,8 +49,16 @@
         </div>
       </div>
 
-      <div class="success-actions">
-        <button class="btn-primary-success" (click)="volverAlInicio()">Volver a la Página Principal</button>
+      <div class="success-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a *ngIf="authService.isLoggedIn()" routerLink="/mi-portal" class="btn-primary-success" style="text-decoration: none;">
+          📋 Ver mis turnos en Mi Portal
+        </a>
+        <button class="btn-primary-success" *ngIf="!authService.isLoggedIn()" (click)="volverAlInicio()">
+          Volver a la Página Principal
+        </button>
+        <button class="btn-secondary-success" *ngIf="authService.isLoggedIn()" (click)="volverAlInicio()">
+          Volver al Inicio
+        </button>
       </div>
     </div>
 

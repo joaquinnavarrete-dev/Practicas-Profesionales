@@ -34,3 +34,106 @@ body {
   background-color: var(--bg-app);
   -webkit-font-smoothing: antialiased;
 }
+
+/* ==========================================================================
+   GLOBAL RESPONSIVE UTILITIES & TABLE ADAPTATIONS
+   ========================================================================== */
+
+/* Contenedores de tablas con scroll horizontal nativo en móviles y tablets */
+.data-table-container,
+.table-card,
+.permissions-card,
+.turnos-table-container,
+.patient-table-wrap,
+.perm-card {
+  width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table,
+.perm-table,
+.admin-table {
+  min-width: 680px;
+}
+
+/* Adaptación responsive para formularios, barras y grillas administrativas */
+@media (max-width: 768px) {
+  .form-grid-2,
+  .form-grid-3,
+  .profile-form .form-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .topbar-admin {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem 1rem !important;
+    height: auto !important;
+  }
+
+  .topbar-left,
+  .topbar-right,
+  .topbar-search {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .topbar-right {
+    justify-content: space-between !important;
+  }
+
+  .page-title-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .header-actions {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+
+  .btn-create-modal,
+  .btn-secondary-action {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .filters-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .filter-search-box,
+  .filter-select-wrapper {
+    width: 100% !important;
+  }
+
+  .stats-overview-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .doctor-form-card,
+  .user-form-card,
+  .os-form-card,
+  .esp-form-card,
+  .auth-form-card {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .form-actions-footer {
+    flex-direction: column-reverse !important;
+    gap: 0.75rem !important;
+  }
+
+  .form-actions-footer button,
+  .form-actions-footer a {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+}

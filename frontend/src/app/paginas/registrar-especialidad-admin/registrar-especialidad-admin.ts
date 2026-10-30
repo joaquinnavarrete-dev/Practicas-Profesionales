@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { EspecialidadService, NotificationService } from '../../services';
+import { EspecialidadService, NotificationService, AuthService } from '../../services';
 
 @Component({
   selector: 'app-registrar-especialidad-admin',
@@ -15,6 +15,7 @@ export class RegistrarEspecialidadAdminComponent {
   private readonly router = inject(Router);
   private readonly especialidadService = inject(EspecialidadService);
   private readonly notify = inject(NotificationService);
+  readonly authService = inject(AuthService);
 
   readonly guardando = signal<boolean>(false);
 

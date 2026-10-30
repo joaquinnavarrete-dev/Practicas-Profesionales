@@ -221,3 +221,23 @@
 .login-link:hover {
   text-decoration: underline;
 }
+
+
+@media (max-width: 768px) {
+  .public-hero-banner {
+    padding: 2.5rem 1rem 3.5rem;
+  }
+  .hero-title {
+    font-size: 1.6rem;
+  }
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+  .public-form-container {
+    padding: 0 1rem;
+    margin-top: -1.75rem;
+  }
+  .auth-form-card {
+    padding: 1.5rem 1rem;
+  }
+}

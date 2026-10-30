@@ -68,70 +68,81 @@
           </svg>
           Reservar Consulta
         </button>
-        <button class="btn-outline-red" routerLink="/guardia">
+        <a class="btn-outline-red" href="#guardia" style="text-decoration: none;">
           <span class="red-star">✱</span>
           Estado de Guardia
-        </button>
-        <button class="btn-outline" routerLink="/obras-sociales">
+        </a>
+        <a class="btn-outline" href="#obras-sociales" style="text-decoration: none;">
           📁 Obras Sociales
-        </button>
+        </a>
       </div>
     </div>
 
-    <!-- TARJETA FLOTANTE DE INICIO DE SESIÓN / MI PORTAL -->
+    <!-- TARJETA DINÁMICA DE ACCESO / MI PORTAL -->
     <div class="hero-card-wrapper">
       <div class="login-card">
-        <!-- Pestañas Iniciar Sesión / Registrarme -->
-        <div class="card-tabs">
-          <button class="tab-btn active">Iniciar Sesión</button>
-          <button class="tab-btn" routerLink="paciente/registrar">Registrarme</button>
-        </div>
 
-        <!-- Selector de Perfil -->
-        <div class="role-selector">
-          <button class="role-chip active">Paciente</button>
-          <button class="role-chip">Médico</button>
-          <button class="role-chip">Personal</button>
-        </div>
-
-        <form class="login-form">
-          <div class="form-group">
-            <label>DNI O CORREO</label>
-            <div class="input-icon-wrap">
-              <span class="input-icon">👤</span>
-              <input type="text" placeholder="Ej: 34567890" />
+        <!-- SI EL USUARIO YA INICIÓ SESIÓN -->
+        <ng-container *ngIf="authService.isLoggedIn()">
+          <div class="user-logged-hero" style="text-align: center; padding: 1.5rem 0 1rem;">
+            <div class="logged-avatar" style="width: 64px; height: 64px; border-radius: 50%; background: #004b93; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 700; margin: 0 auto 0.75rem;">
+              {{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'U' }}
             </div>
+            <h3 style="color: #0f172a; font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem;">
+              ¡Hola, {{ authService.currentUser()?.nombreUsuario }}!
+            </h3>
+            <span style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+              {{ authService.userRole()?.replace('ROLE_', '') }}
+            </span>
+            <p style="color: #64748b; font-size: 0.85rem; margin: 0.75rem 0 1.5rem;">
+              Tenés acceso a tus turnos, agenda médica y consultas activas.
+            </p>
           </div>
 
-          <div class="form-group">
-            <div class="label-row">
-              <label>CONTRASEÑA</label>
-              <a href="#olvide" class="forgot-link">¿Olvidaste clave?</a>
-            </div>
-            <div class="input-icon-wrap">
-              <span class="input-icon">🔒</span>
-              <input type="password" value="••••••••••••" />
-              <button type="button" class="toggle-pwd">👁</button>
-            </div>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a *ngIf="esPaciente()" routerLink="/mi-portal" class="btn-submit-portal" style="text-decoration: none; text-align: center; display: block;">
+              📋 Ir a Mi Portal de Paciente →
+            </a>
+            <a *ngIf="esPersonalClinico()" routerLink="/admin" class="btn-submit-portal" style="text-decoration: none; text-align: center; display: block;">
+              ⚙️ Ir al Panel Administrativo →
+            </a>
+            <a routerLink="/turnos/solicitar" style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.9rem;">
+              ➕ Solicitar Nuevo Turno
+            </a>
+          </div>
+        </ng-container>
+
+        <!-- SI NO HA INICIADO SESIÓN -->
+        <ng-container *ngIf="!authService.isLoggedIn()">
+          <div class="card-tabs">
+            <button class="tab-btn active" routerLink="/login">Iniciar Sesión</button>
+            <button class="tab-btn" routerLink="/registro">Registrarme</button>
           </div>
 
-          <div class="form-footer-check">
-            <label class="check-container">
-              <input type="checkbox" checked />
-              <span>Recordar sesión</span>
-            </label>
-            <span class="tls-security">🛡 TLS 256-bit</span>
+          <div style="text-align: center; padding: 1.5rem 0.5rem 1rem;">
+            <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">🏥</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0 0 0.4rem;">
+              Portal de Salud San Gabriel
+            </h3>
+            <p style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin: 0 0 1.5rem;">
+              Accedé a tus turnos programados, descargá recetas y gestioná tu cartilla de forma rápida y segura.
+            </p>
           </div>
 
-          <button type="submit" class="btn-submit-portal">
-            Entrar al Portal →
-          </button>
-        </form>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a routerLink="/login" class="btn-submit-portal" style="text-decoration: none; text-align: center; display: block;">
+              Ingresar al Portal →
+            </a>
+            <a routerLink="/registro" style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #004b93; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.88rem;">
+              Crear mi Cuenta de Paciente
+            </a>
+          </div>
+        </ng-container>
 
-        <div class="quick-turno-box">
+        <div class="quick-turno-box" style="margin-top: 1.25rem;">
           <div class="quick-text">
             <span class="bolt-icon">⚡</span>
-            <span>¿Turno rápido sin cuenta?</span>
+            <span>¿Turno rápido sin espera?</span>
           </div>
           <button class="btn-pedir" routerLink="/turnos/solicitar">Pedir</button>
         </div>
@@ -140,7 +151,7 @@
   </section>
 
   <!-- ================= BARRA DE OBRAS SOCIALES ================= -->
-  <section class="prepagas-bar">
+  <section class="prepagas-bar" id="obras-sociales">
     <div class="prepagas-header">
       <span class="prepagas-title">OBRAS SOCIALES & PREPAGAS</span>
       <span class="badge-convenio">Convenio directo</span>
@@ -155,7 +166,7 @@
       <span class="tag-prepaga">IOMA</span>
       <span class="tag-prepaga">ACCORD</span>
     </div>
-    <a routerLink="/obras-sociales" class="link-ver-planes">Ver planes →</a>
+    <span class="link-ver-planes">Cartilla de Coberturas Habilitadas</span>
   </section>
 
   <!-- ================= CARTILLA DE ESPECIALIDADES ================= -->
@@ -260,7 +271,7 @@
   </section>
 
   <!-- ================= MONITOREO DE INSTALACIONES 24HS ================= -->
-  <section class="instalaciones-section">
+  <section class="instalaciones-section" id="guardia">
     <div class="section-heading">
       <div>
         <span class="section-tagline red">MONITOREO OPERATIVO</span>

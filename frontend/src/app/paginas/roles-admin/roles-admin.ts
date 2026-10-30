@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { UsuarioService, NotificationService } from '../../services';
+import { UsuarioService, NotificationService, AuthService } from '../../services';
 import { Usuario } from '../../models';
 
 export interface PermisoModulo {
@@ -46,6 +46,7 @@ export class RolesAdminComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly usuarioService = inject(UsuarioService);
   private readonly notify = inject(NotificationService);
+  readonly authService = inject(AuthService);
 
   readonly usuarioEnEdicion = signal<UsuarioDetalle | null>(null);
   readonly guardando = signal<boolean>(false);

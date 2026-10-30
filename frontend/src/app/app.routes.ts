@@ -23,6 +23,7 @@ import { RegistrarPacientePublicoComponent } from './paginas/registrar-paciente-
 import { RegistrarObraSocialAdminComponent } from './paginas/registrar-obra-social-admin/registrar-obra-social-admin';
 import { RegistrarEspecialidadAdminComponent } from './paginas/registrar-especialidad-admin/registrar-especialidad-admin';
 import { EditarEspecialidadAdminComponent } from './paginas/editar-especialidad-admin/editar-especialidad-admin';
+import { PortalPacienteComponent } from './paginas/portal-paciente/portal-paciente';
 
 export const routes: Routes = [
   {
@@ -34,7 +35,9 @@ export const routes: Routes = [
       { path: 'especialidades', component: EspecialidadesPublicaComponent },
       { path: 'turnos/solicitar', component: SolicitarTurnoComponent },
       { path: 'registro', component: RegistrarPacientePublicoComponent },
-      { path: 'paciente/registrar', component: RegistrarPacientePublicoComponent }
+      { path: 'paciente/registrar', redirectTo: 'registro', pathMatch: 'full' },
+      { path: 'mi-portal', component: PortalPacienteComponent, canActivate: [authGuard] },
+      { path: 'mis-turnos', redirectTo: 'mi-portal', pathMatch: 'full' }
     ]
   },
 

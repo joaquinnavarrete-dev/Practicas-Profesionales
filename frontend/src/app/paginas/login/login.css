@@ -242,3 +242,16 @@
   height: 15px;
   color: #475569;
 }
+
+
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 1.5rem 1rem;
+  }
+  .login-card {
+    padding: 2rem 1.25rem 1.5rem;
+  }
+  .login-title {
+    font-size: 1.5rem;
+  }
+}

@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { EspecialidadService, NotificationService } from '../../services';
+import { EspecialidadService, NotificationService, AuthService } from '../../services';
 import { Especialidad } from '../../models';
 
 @Component({
@@ -17,6 +17,7 @@ export class EditarEspecialidadAdminComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly especialidadService = inject(EspecialidadService);
   private readonly notify = inject(NotificationService);
+  readonly authService = inject(AuthService);
 
   readonly especialidadId = signal<string | null>(null);
   readonly cargando = signal<boolean>(false);

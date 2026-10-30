@@ -1,9 +1,35 @@
-<div class="layout-admin-contenedor">
-  <!-- Columna lateral fija a la izquierda -->
-  <app-sidebar></app-sidebar>
+<div class="layout-admin-contenedor" [class.sidebar-open]="sidebarAbierto()">
 
-  <!-- Área derecha donde Angular va a renderizar EspecialidadesAdmin -->
-  <div class="admin-main-area">
+  <!-- BARRA SUPERIOR PARA MÓVILES (<= 900px) -->
+  <header class="mobile-admin-bar">
+    <button type="button" class="btn-hamburger" (click)="toggleSidebar()" aria-label="Abrir menú de navegación">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="mobile-admin-brand">
+      <span class="mobile-brand-title">SAN GABRIEL</span>
+      <span class="mobile-brand-sub">Panel de Gestión</span>
+    </div>
+
+    <div class="mobile-avatar-circle">
+      {{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'A' }}
+    </div>
+  </header>
+
+  <!-- TELÓN DE FONDO PARA EL DRAWER MÓVIL -->
+  <div class="sidebar-backdrop" *ngIf="sidebarAbierto()" (click)="cerrarSidebar()"></div>
+
+  <!-- CONTENEDOR LATERAL (Sidebar en Desktop, Drawer en Móvil) -->
+  <aside class="sidebar-wrapper" [class.open]="sidebarAbierto()" (click)="onSidebarContentClick($event)">
+    <app-sidebar></app-sidebar>
+  </aside>
+
+  <!-- ÁREA DERECHA PRINCIPAL -->
+  <main class="admin-main-area">
     <router-outlet></router-outlet>
-  </div>
+  </main>
 </div>

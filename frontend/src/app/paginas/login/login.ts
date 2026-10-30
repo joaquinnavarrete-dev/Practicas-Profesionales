@@ -51,7 +51,7 @@ export class LoginComponent {
         if (res.rol === 'ADMINISTRADOR' || res.rol === 'MEDICO' || res.rol === 'RECEPCIONISTA') {
           this.router.navigate(['/admin']);
         } else {
-          this.router.navigate(['/']);
+          this.router.navigate(['/mi-portal']);
         }
       },
       error: (err) => {

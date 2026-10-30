@@ -270,3 +270,207 @@
   width: 16px;
   height: 16px;
 }
+
+
+.btn-panel-paciente {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 0.95rem;
+  background-color: #1e3a8a;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-panel-paciente:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+
+/* BOTÓN HAMBURGUESA PÚBLICO */
+.btn-hamburger-nav {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.btn-hamburger-nav svg {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-hamburger-nav:hover {
+  background-color: #f1f5f9;
+}
+
+/* MENÚ MÓVIL DESPLEGABLE */
+.mobile-nav-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 199;
+}
+
+.mobile-nav-drawer {
+  display: none;
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-bottom: 2px solid #e2e8f0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem;
+  gap: 1.25rem;
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
+  animation: slideDown 0.2s ease-out;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.mobile-nav-links a:hover,
+.mobile-nav-links a.active {
+  background-color: #eff6ff;
+  color: #004b93;
+}
+
+.mobile-nav-links .mobile-link-admin {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+.mobile-nav-footer {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobile-btn-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #004b93;
+  color: #ffffff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mobile-btn-register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #004b93;
+  color: #004b93;
+  padding: 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mobile-user-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8fafc;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.mobile-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-user-info .user-role {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.mobile-user-info .user-name {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.mobile-btn-logout {
+  background: transparent;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .btn-hamburger-nav {
+    display: flex;
+  }
+  .mobile-nav-backdrop {
+    display: block;
+  }
+  .mobile-nav-drawer {
+    display: flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .badge-guardia {
+    display: none;
+  }
+  .btn-registro-nav {
+    display: none;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

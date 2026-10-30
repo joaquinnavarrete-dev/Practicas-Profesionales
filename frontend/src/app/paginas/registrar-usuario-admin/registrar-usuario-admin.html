@@ -11,10 +11,10 @@
 
     <div class="topbar-right">
       <div class="profile-card">
-        <div class="avatar-ph">👩‍⚕️</div>
+        <div class="avatar-ph">{{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'A' }}</div>
         <div class="profile-info">
-          <span class="profile-name">Dra. Mariana Gómez</span>
-          <span class="profile-role">Directora Médica ▾</span>
+          <span class="profile-name">{{ authService.currentUser()?.nombreUsuario || 'Administrador' }}</span>
+          <span class="profile-role">{{ authService.userRole()?.replace('ROLE_', '') || 'Gestión Médica' }}</span>
         </div>
       </div>
     </div>

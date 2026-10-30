@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UsuarioService, NotificationService } from '../../services';
+import { UsuarioService, NotificationService, AuthService } from '../../services';
 
 @Component({
   selector: 'app-registrar-usuario-admin',
@@ -15,6 +15,7 @@ export class RegistrarUsuarioAdminComponent {
   private readonly router = inject(Router);
   private readonly usuarioService = inject(UsuarioService);
   private readonly notify = inject(NotificationService);
+  readonly authService = inject(AuthService);
 
   readonly guardando = signal<boolean>(false);
 
