@@ -122,17 +122,20 @@ public class TurnoServiceImpl implements TurnoService {
         for (DiaAtencion franja : franjas) {
             LocalTime slot = franja.getHoraInicio();
             while (slot.plusMinutes(30).compareTo(franja.getHoraFin()) <= 0) {
-                if (!horasOcupadas.contains(slot)) {
-                    if (!fecha.isEqual(LocalDate.now()) || slot.isAfter(LocalTime.now())) {
-                        disponibles.add(TurnoDisponibleResponseDto.builder()
-                                .idMedico(medico.getIdMedico())
-                                .nombreMedico(nombreCompleto)
-                                .fecha(fecha)
-                                .hora(slot)
-                                .diaSemana(nombreDia)
-                                .build());
-                    }
-                }
+                boolean estaOcupado = horasOcupadas.contains(slot);
+                boolean esPasado = fecha.isBefore(LocalDate.now())
+                        || (fecha.isEqual(LocalDate.now()) && !slot.isAfter(LocalTime.now()));
+                boolean disponible = !estaOcupado && !esPasado;
+
+                disponibles.add(TurnoDisponibleResponseDto.builder()
+                        .idMedico(medico.getIdMedico())
+                        .nombreMedico(nombreCompleto)
+                        .fecha(fecha)
+                        .hora(slot)
+                        .diaSemana(nombreDia)
+                        .disponible(disponible)
+                        .build());
+
                 slot = slot.plusMinutes(30);
             }
         }
