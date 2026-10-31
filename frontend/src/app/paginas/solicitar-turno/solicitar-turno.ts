@@ -8,6 +8,7 @@ import { TurnoService } from '../../services/turno.service';
 import { PacienteService } from '../../services/paciente.service';
 import { DiaAtencionService } from '../../services/dia-atencion.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion } from '../../models';
 
 export interface DiaCalendario {
@@ -33,6 +34,7 @@ export class SolicitarTurnoComponent implements OnInit {
   private readonly turnoService = inject(TurnoService);
   private readonly pacienteService = inject(PacienteService);
   private readonly diaAtencionService = inject(DiaAtencionService);
+  private readonly notify = inject(NotificationService);
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
@@ -55,7 +57,6 @@ export class SolicitarTurnoComponent implements OnInit {
   fechaMinima: string = '';
   readonly cargandoReserva = signal<boolean>(false);
   readonly reservaExitosa = signal<boolean>(false);
-  readonly errorMessage = signal<string>('');
   readonly turnoConfirmado = signal<Turno | null>(null);
 
   readonly medicosFiltrados = computed(() => {
@@ -215,6 +216,7 @@ export class SolicitarTurnoComponent implements OnInit {
       error: (err) => {
         this.cargandoEspecialidades.set(false);
         console.error('Error al cargar especialidades:', err);
+        this.notify.error('No se pudo cargar la cartilla de especialidades.', 'Error de Carga');
       }
     });
   }
@@ -253,6 +255,7 @@ export class SolicitarTurnoComponent implements OnInit {
       error: (err) => {
         this.cargandoMedicos.set(false);
         console.error('Error al cargar médicos:', err);
+        this.notify.error('No se pudieron obtener los médicos para la especialidad seleccionada.', 'Error de Carga');
       }
     });
   }
@@ -379,6 +382,7 @@ export class SolicitarTurnoComponent implements OnInit {
       error: (err) => {
         this.cargandoDisponibles.set(false);
         console.error('Error al consultar turnos disponibles:', err);
+        this.notify.error('No se pudieron consultar los horarios disponibles.', 'Error');
       }
     });
   }
@@ -411,20 +415,18 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   avanzar(): void {
-    this.errorMessage.set('');
-
     if (this.pasoActual() === 1 && !this.turnoBorrador.especialidad) {
-      this.errorMessage.set('Debe seleccionar una especialidad para continuar.');
+      this.notify.warning('Debe seleccionar una especialidad médica para continuar.', 'Especialidad requerida');
       return;
     }
 
     if (this.pasoActual() === 2 && !this.turnoBorrador.medico) {
-      this.errorMessage.set('Debe seleccionar un profesional médico para continuar.');
+      this.notify.warning('Debe seleccionar un profesional médico para continuar.', 'Profesional requerido');
       return;
     }
 
     if (this.pasoActual() === 3 && !this.turnoBorrador.hora) {
-      this.errorMessage.set('Debe seleccionar un horario disponible para continuar.');
+      this.notify.warning('Debe seleccionar un horario disponible para continuar.', 'Horario no seleccionado');
       return;
     }
 
@@ -440,7 +442,6 @@ export class SolicitarTurnoComponent implements OnInit {
   }
 
   retroceder(): void {
-    this.errorMessage.set('');
     if (this.pasoActual() > 1) {
       this.pasoActual.update(p => p - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -452,21 +453,18 @@ export class SolicitarTurnoComponent implements OnInit {
   irAlPaso(paso: number): void {
     if (paso < this.pasoActual()) {
       this.pasoActual.set(paso);
-      this.errorMessage.set('');
     }
   }
 
   confirmarReservaFinal(): void {
-    this.errorMessage.set('');
-
     if (!this.authService.isLoggedIn()) {
-      alert('Para confirmar tu turno médico necesitas iniciar sesión o registrarte como paciente.');
+      this.notify.warning('Para confirmar tu turno médico necesitas iniciar sesión o registrarte como paciente.', 'Acceso requerido');
       this.router.navigate(['/login'], { queryParams: { returnUrl: '/turnos/solicitar' } });
       return;
     }
 
     if (!this.turnoBorrador.medico || !this.turnoBorrador.especialidad || !this.turnoBorrador.fecha || !this.turnoBorrador.hora) {
-      this.errorMessage.set('Faltan datos para procesar la reserva del turno.');
+      this.notify.warning('Faltan datos obligatorios para procesar la reserva del turno.', 'Datos incompletos');
       return;
     }
 
@@ -482,14 +480,15 @@ export class SolicitarTurnoComponent implements OnInit {
         this.cargandoReserva.set(false);
         this.reservaExitosa.set(true);
         this.turnoConfirmado.set(res);
+        this.notify.success('Tu cita médica ha sido agendada con éxito.', '¡Turno Confirmado!');
       },
       error: (err) => {
         this.cargandoReserva.set(false);
         console.error('Error al reservar turno:', err);
         if (err.status === 409) {
-          this.errorMessage.set('El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.');
+          this.notify.warning('El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.', 'Turno no disponible');
         } else {
-          this.errorMessage.set(err.error?.message || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.');
+          this.notify.error(err.error?.message || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.', 'Error al reservar');
         }
       }
     });
