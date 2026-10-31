@@ -30,6 +30,12 @@ public class DiaAtencionController {
 
     private final DiaAtencionService diaAtencionService;
 
+    @GetMapping
+    @Operation(summary = "Listar todos los días y horarios de atención")
+    public ResponseEntity<List<DiaAtencionResponseDto>> listarTodos() {
+        return ResponseEntity.ok(diaAtencionService.listarTodos());
+    }
+
     @GetMapping("/medico/{idMedico}")
     @Operation(summary = "Listar días y horarios de atención de un médico")
     public ResponseEntity<List<DiaAtencionResponseDto>> listarPorMedico(@PathVariable Integer idMedico) {
