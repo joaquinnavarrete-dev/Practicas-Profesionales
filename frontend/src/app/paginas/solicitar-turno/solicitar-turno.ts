@@ -6,8 +6,19 @@ import { EspecialidadService } from '../../services/especialidad.service';
 import { MedicoService } from '../../services/medico.service';
 import { TurnoService } from '../../services/turno.service';
 import { PacienteService } from '../../services/paciente.service';
+import { DiaAtencionService } from '../../services/dia-atencion.service';
 import { AuthService } from '../../services/auth.service';
-import { Especialidad, Medico, TurnoDisponible, Turno } from '../../models';
+import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion } from '../../models';
+
+export interface DiaCalendario {
+  fechaStr: string;
+  numeroDia: number;
+  esMesActual: boolean;
+  esPasado: boolean;
+  esHoy: boolean;
+  atiendeMedico: boolean;
+  estaSeleccionado: boolean;
+}
 
 @Component({
   selector: 'app-solicitar-turno',
@@ -21,6 +32,7 @@ export class SolicitarTurnoComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly turnoService = inject(TurnoService);
   private readonly pacienteService = inject(PacienteService);
+  private readonly diaAtencionService = inject(DiaAtencionService);
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
@@ -32,6 +44,10 @@ export class SolicitarTurnoComponent implements OnInit {
   readonly medicos = signal<Medico[]>([]);
   readonly cargandoMedicos = signal<boolean>(false);
   readonly filtroNombreMedico = signal<string>('');
+
+  readonly diasAtencionMedico = signal<DiaAtencion[]>([]);
+  readonly cargandoDiasAtencion = signal<boolean>(false);
+  readonly fechaMesVisual = signal<Date>(new Date());
 
   readonly turnosDisponibles = signal<TurnoDisponible[]>([]);
   readonly cargandoDisponibles = signal<boolean>(false);
@@ -50,6 +66,99 @@ export class SolicitarTurnoComponent implements OnInit {
       `${m.nombre} ${m.apellido}`.toLowerCase().includes(q) ||
       m.matricula.toLowerCase().includes(q)
     );
+  });
+
+  readonly diasSemanaAtencion = computed(() => {
+    return new Set(this.diasAtencionMedico().map(d => Number(d.diaSemana)));
+  });
+
+  readonly nombreMesVisual = computed(() => {
+    const d = this.fechaMesVisual();
+    const meses = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    return `${meses[d.getMonth()]} ${d.getFullYear()}`;
+  });
+
+  readonly puedeRetrocederMes = computed(() => {
+    const visual = this.fechaMesVisual();
+    const hoy = new Date();
+    return visual.getFullYear() > hoy.getFullYear() ||
+      (visual.getFullYear() === hoy.getFullYear() && visual.getMonth() > hoy.getMonth());
+  });
+
+  readonly diasCalendario = computed<DiaCalendario[]>(() => {
+    const mesVisual = this.fechaMesVisual();
+    const year = mesVisual.getFullYear();
+    const month = mesVisual.getMonth();
+
+    const hoy = new Date();
+    const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+
+    const diasSet = this.diasSemanaAtencion();
+    const fechaSeleccionada = this.turnoBorrador.fecha;
+
+    const primerDiaMes = new Date(year, month, 1);
+    const diaSemanaInicio = primerDiaMes.getDay() === 0 ? 7 : primerDiaMes.getDay();
+
+    const diasTotalesMes = new Date(year, month + 1, 0).getDate();
+    const diasMesAnterior = new Date(year, month, 0).getDate();
+
+    const dias: DiaCalendario[] = [];
+
+    const paddingInicio = diaSemanaInicio - 1;
+    for (let i = paddingInicio - 1; i >= 0; i--) {
+      const numDia = diasMesAnterior - i;
+      const prevDate = new Date(year, month - 1, numDia);
+      const fechaStr = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}-${String(numDia).padStart(2, '0')}`;
+      dias.push({
+        fechaStr,
+        numeroDia: numDia,
+        esMesActual: false,
+        esPasado: true,
+        esHoy: false,
+        atiendeMedico: false,
+        estaSeleccionado: false
+      });
+    }
+
+    for (let d = 1; d <= diasTotalesMes; d++) {
+      const fechaDia = new Date(year, month, d);
+      const isoDay = fechaDia.getDay() === 0 ? 7 : fechaDia.getDay();
+      const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const esPasado = fechaStr < hoyStr;
+      const esHoy = fechaStr === hoyStr;
+      const atiende = diasSet.has(isoDay) && !esPasado;
+      const estaSeleccionado = fechaStr === fechaSeleccionada;
+
+      dias.push({
+        fechaStr,
+        numeroDia: d,
+        esMesActual: true,
+        esPasado,
+        esHoy,
+        atiendeMedico: atiende,
+        estaSeleccionado
+      });
+    }
+
+    const celdasFaltantes = (7 - (dias.length % 7)) % 7;
+    for (let nextDay = 1; nextDay <= celdasFaltantes; nextDay++) {
+      const nextDate = new Date(year, month + 1, nextDay);
+      const fechaStr = `${nextDate.getFullYear()}-${String(nextDate.getMonth() + 1).padStart(2, '0')}-${String(nextDay).padStart(2, '0')}`;
+      dias.push({
+        fechaStr,
+        numeroDia: nextDay,
+        esMesActual: false,
+        esPasado: false,
+        esHoy: false,
+        atiendeMedico: false,
+        estaSeleccionado: false
+      });
+    }
+
+    return dias;
   });
 
   readonly horariosManana = computed(() => {
@@ -90,6 +199,7 @@ export class SolicitarTurnoComponent implements OnInit {
     const dd = String(hoy.getDate()).padStart(2, '0');
     this.fechaMinima = `${yyyy}-${mm}-${dd}`;
     this.turnoBorrador.fecha = this.fechaMinima;
+    this.fechaMesVisual.set(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
 
     this.cargarEspecialidades();
     this.precargarDatosPaciente();
@@ -113,6 +223,8 @@ export class SolicitarTurnoComponent implements OnInit {
     this.turnoBorrador.especialidad = esp;
     this.turnoBorrador.medico = null;
     this.turnoBorrador.hora = '';
+    this.diasAtencionMedico.set([]);
+    this.turnosDisponibles.set([]);
     this.cargarMedicosPorEspecialidad(esp.idEspecialidad);
     this.avanzar();
   }
@@ -148,8 +260,106 @@ export class SolicitarTurnoComponent implements OnInit {
   seleccionarMedico(med: Medico): void {
     this.turnoBorrador.medico = med;
     this.turnoBorrador.hora = '';
-    this.cargarDisponibilidad();
+    this.cargarDiasAtencionMedico(med.idMedico);
     this.avanzar();
+  }
+
+  cargarDiasAtencionMedico(idMedico: number): void {
+    this.cargandoDiasAtencion.set(true);
+    this.diaAtencionService.buscarPorMedico(idMedico).subscribe({
+      next: (dias) => {
+        this.diasAtencionMedico.set(dias);
+        this.cargandoDiasAtencion.set(false);
+        this.autoSeleccionarPrimerDiaDisponible(dias);
+      },
+      error: (err) => {
+        this.cargandoDiasAtencion.set(false);
+        console.error('Error al cargar días de atención:', err);
+        this.cargarDisponibilidad();
+      }
+    });
+  }
+
+  autoSeleccionarPrimerDiaDisponible(dias: DiaAtencion[]): void {
+    if (!dias || dias.length === 0) {
+      this.cargarDisponibilidad();
+      return;
+    }
+    const diasSet = new Set(dias.map(d => Number(d.diaSemana)));
+    const hoy = new Date();
+    let seleccionado = false;
+
+    for (let i = 0; i < 35; i++) {
+      const candidato = new Date(hoy);
+      candidato.setDate(hoy.getDate() + i);
+      const iso = candidato.getDay() === 0 ? 7 : candidato.getDay();
+      if (diasSet.has(iso)) {
+        const yyyy = candidato.getFullYear();
+        const mm = String(candidato.getMonth() + 1).padStart(2, '0');
+        const dd = String(candidato.getDate()).padStart(2, '0');
+        const fechaStr = `${yyyy}-${mm}-${dd}`;
+        this.turnoBorrador.fecha = fechaStr;
+        this.fechaMesVisual.set(new Date(candidato.getFullYear(), candidato.getMonth(), 1));
+        seleccionado = true;
+        break;
+      }
+    }
+
+    if (!seleccionado) {
+      this.turnoBorrador.fecha = this.fechaMinima;
+    }
+
+    this.cargarDisponibilidad();
+  }
+
+  mesAnterior(): void {
+    if (!this.puedeRetrocederMes()) return;
+    const cur = this.fechaMesVisual();
+    this.fechaMesVisual.set(new Date(cur.getFullYear(), cur.getMonth() - 1, 1));
+  }
+
+  mesSiguiente(): void {
+    const cur = this.fechaMesVisual();
+    this.fechaMesVisual.set(new Date(cur.getFullYear(), cur.getMonth() + 1, 1));
+  }
+
+  seleccionarDiaCalendario(dia: DiaCalendario): void {
+    if (dia.esPasado || !dia.esMesActual || !dia.atiendeMedico) return;
+    this.turnoBorrador.fecha = dia.fechaStr;
+    this.turnoBorrador.hora = '';
+    this.cargarDisponibilidad();
+  }
+
+  onFechaManualCambio(nuevaFecha: string): void {
+    this.turnoBorrador.fecha = nuevaFecha;
+    this.turnoBorrador.hora = '';
+    if (nuevaFecha) {
+      const partes = nuevaFecha.split('-');
+      if (partes.length === 3) {
+        this.fechaMesVisual.set(new Date(Number(partes[0]), Number(partes[1]) - 1, 1));
+      }
+    }
+    this.cargarDisponibilidad();
+  }
+
+  getTooltipDia(dia: DiaCalendario): string {
+    if (!dia.esMesActual) return '';
+    if (dia.esPasado) return 'Fecha anterior a hoy';
+    if (dia.atiendeMedico) return `Atención disponible (${dia.fechaStr})`;
+    return 'El profesional no atiende este día';
+  }
+
+  getNombreDiaSemana(diaNumero: string | number): string {
+    const map: Record<string, string> = {
+      '1': 'Lunes',
+      '2': 'Martes',
+      '3': 'Miércoles',
+      '4': 'Jueves',
+      '5': 'Viernes',
+      '6': 'Sábado',
+      '7': 'Domingo'
+    };
+    return map[String(diaNumero)] || `Día ${diaNumero}`;
   }
 
   cargarDisponibilidad(): void {
@@ -158,7 +368,12 @@ export class SolicitarTurnoComponent implements OnInit {
     this.cargandoDisponibles.set(true);
     this.turnoService.consultarDisponibles(this.turnoBorrador.medico.idMedico, this.turnoBorrador.fecha).subscribe({
       next: (slots) => {
-        this.turnosDisponibles.set(slots);
+        const formateados = (slots || []).map(s => ({
+          ...s,
+          hora: typeof s.hora === 'string' && s.hora.length > 5 ? s.hora.substring(0, 5) : s.hora,
+          disponible: s.disponible !== undefined ? Boolean(s.disponible) : true
+        }));
+        this.turnosDisponibles.set(formateados);
         this.cargandoDisponibles.set(false);
       },
       error: (err) => {
