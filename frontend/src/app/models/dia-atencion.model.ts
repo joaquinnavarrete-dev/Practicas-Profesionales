@@ -2,6 +2,7 @@ export interface DiaAtencion {
   idDiaAtencion: number;
   idMedico: number;
   diaSemana: string;
+  nombreDia?: string;
   horaInicio: string;
   horaFin: string;
   nombreMedico?: string;

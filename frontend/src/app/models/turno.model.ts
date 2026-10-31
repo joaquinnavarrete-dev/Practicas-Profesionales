@@ -32,7 +32,10 @@ export interface ReprogramarTurnoRequest {
 }
 
 export interface TurnoDisponible {
+  idMedico?: number;
+  nombreMedico?: string;
   fecha: string;
   hora: string;
+  diaSemana?: string;
   disponible: boolean;
 }
