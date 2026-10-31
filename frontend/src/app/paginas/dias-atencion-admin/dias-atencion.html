@@ -2,10 +2,10 @@
 
   <header class="header-section">
     <div class="header-titles">
-      <span class="badge-cat">PORTAL DEL PACIENTE</span>
+      <span class="badge-cat">GESTIÓN DE ATENCIÓN MÉDICA</span>
       <h1 class="main-title">Días y Horarios de Atención</h1>
       <p class="subtitle">
-        Consultá la disponibilidad semanal de nuestro staff médico y especialidades en Sede Central.
+        Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.
       </p>
     </div>
 
@@ -33,6 +33,8 @@
           <option value="Miércoles">Miércoles</option>
           <option value="Jueves">Jueves</option>
           <option value="Viernes">Viernes</option>
+          <option value="Sábado">Sábado</option>
+          <option value="Domingo">Domingo</option>
         </select>
       </div>
 
@@ -55,40 +57,39 @@
             <span class="rating">★ {{ item.calificacion }}</span>
           </div>
           <span class="esp-tag">{{ item.especialidad }}</span>
-          <p class="subesp-text">{{ item.subespecialidad }}</p>
           <span class="mat-text">Mat. {{ item.matricula }}</span>
         </div>
       </div>
 
       <div class="schedule-days-col">
-        <span class="col-caption">DÍAS DE CONSULTORIO ACTIVO:</span>
-        <div class="days-chips-row">
-          <div class="day-chip" [class.active]="item.diasSemana.includes('Lunes')">
-            <span class="day-name">Lun</span>
-            <span class="status-dot"></span>
-          </div>
-          <div class="day-chip" [class.active]="item.diasSemana.includes('Martes')">
-            <span class="day-name">Mar</span>
-            <span class="status-dot"></span>
-          </div>
-          <div class="day-chip" [class.active]="item.diasSemana.includes('Miércoles')">
-            <span class="day-name">Mié</span>
-            <span class="status-dot"></span>
-          </div>
-          <div class="day-chip" [class.active]="item.diasSemana.includes('Jueves')">
-            <span class="day-name">Jue</span>
-            <span class="status-dot"></span>
-          </div>
-          <div class="day-chip" [class.active]="item.diasSemana.includes('Viernes')">
-            <span class="day-name">Vie</span>
-            <span class="status-dot"></span>
+        <span class="col-caption">DÍAS DE ATENCIÓN:</span>
+        <div class="days-squares-row">
+          <div
+            *ngFor="let d of item.diasSemanaCuadritos"
+            class="day-square"
+            [class.active]="d.activo"
+            [attr.title]="d.activo ? (d.nombre + ': ' + d.horario + ' hs') : (d.nombre + ': Sin atención')"
+          >
+            <span class="day-code">{{ d.abrev }}</span>
+            <span class="day-dot" *ngIf="d.activo"></span>
           </div>
         </div>
-        <p class="shift-range">🕒 <strong>Franja horaria:</strong> {{ item.franjaHoraria }} • {{ item.consultorio }}</p>
+
+        <div class="schedule-hours-row">
+          <ng-container *ngIf="item.franjasDetalle.length > 0">
+            <span class="hours-chip" *ngFor="let f of item.franjasDetalle">
+              <strong>{{ f.dia }}:</strong> {{ f.horas }}
+            </span>
+          </ng-container>
+          <span class="hours-empty" *ngIf="item.franjasDetalle.length === 0">
+            Sin días configurados
+          </span>
+          <span class="office-tag">📍 {{ item.consultorio }}</span>
+        </div>
       </div>
 
       <div class="action-col">
-        <span class="next-turn-badge">{{ item.proximoDisponible }}</span>
+        <span class="next-turn-badge" [class.badge-empty]="item.diasSemana.length === 0">{{ item.proximoDisponible }}</span>
         <a [routerLink]="['/turnos/solicitar']" [queryParams]="{ idMedico: item.id }" class="btn-solicitar">
           Sacar Turno →
         </a>
