@@ -1,21 +1,18 @@
-<div class="inicio-container">
+<div class="inicio-container" id="inicio">
 
-  <!-- ================= SECCIÓN HERO ================= -->
   <section class="hero-section">
     <div class="hero-content">
-      <!-- Tag superior -->
       <div class="hero-badge">
         <span class="badge-dot"></span>
-        <span>Centro de Alta Complejidad Médica</span>
+        <span>Centro de Alta Complejidad Médica • Acreditación Oro ITAES</span>
       </div>
 
-      <!-- Título principal y subtítulo -->
       <h1 class="hero-title">Tu salud coordinada al instante.</h1>
       <p class="hero-subtitle">
-        Gestión digital de turnos médicos, historial unificado y guardia activa con especialistas las 24 horas.
+        Gestión digital de turnos médicos, cartilla multidisciplinaria y servicio de guardia activa permanente las 24
+        horas.
       </p>
 
-      <!-- Métricas rápidas -->
       <div class="hero-metrics">
         <div class="metric-item">
           <span class="metric-num">+45</span>
@@ -27,7 +24,7 @@
         </div>
         <div class="metric-item">
           <span class="metric-num">24/7</span>
-          <span class="metric-label">GUARDIA</span>
+          <span class="metric-label">GUARDIA ACTIVA</span>
         </div>
         <div class="metric-item">
           <span class="metric-num">98%</span>
@@ -35,13 +32,12 @@
         </div>
       </div>
 
-      <!-- Pastillas de características -->
       <div class="hero-features">
         <div class="feature-chip">
           <span class="feature-icon blue">📅</span>
           <div>
             <strong>Turnos Inmediatos</strong>
-            <small>WhatsApp & Recordatorio</small>
+            <small>Reserva online sin esperas</small>
           </div>
         </div>
         <div class="feature-chip">
@@ -55,19 +51,22 @@
           <span class="feature-icon green">📊</span>
           <div>
             <strong>Resultados en el Día</strong>
-            <small>Laboratorio & Imágenes</small>
+            <small>Laboratorio & Imágenes 3.0T</small>
           </div>
         </div>
       </div>
 
-      <!-- Botones de acción inferior -->
       <div class="hero-buttons">
         <button class="btn-primary" routerLink="/turnos/solicitar">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+            <path
+              d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" />
           </svg>
           Reservar Consulta
         </button>
+        <a class="btn-outline" href="#nosotros" style="text-decoration: none;">
+          🏛️ La Clínica
+        </a>
         <a class="btn-outline-red" href="#guardia" style="text-decoration: none;">
           <span class="red-star">✱</span>
           Estado de Guardia
@@ -78,41 +77,43 @@
       </div>
     </div>
 
-    <!-- TARJETA DINÁMICA DE ACCESO / MI PORTAL -->
     <div class="hero-card-wrapper">
       <div class="login-card">
 
-        <!-- SI EL USUARIO YA INICIÓ SESIÓN -->
         <ng-container *ngIf="authService.isLoggedIn()">
           <div class="user-logged-hero" style="text-align: center; padding: 1.5rem 0 1rem;">
-            <div class="logged-avatar" style="width: 64px; height: 64px; border-radius: 50%; background: #004b93; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 700; margin: 0 auto 0.75rem;">
+            <div class="logged-avatar"
+              style="width: 64px; height: 64px; border-radius: 50%; background: #004b93; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 700; margin: 0 auto 0.75rem;">
               {{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'U' }}
             </div>
             <h3 style="color: #0f172a; font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem;">
               ¡Hola, {{ authService.currentUser()?.nombreUsuario }}!
             </h3>
-            <span style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+            <span
+              style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
               {{ authService.userRole()?.replace('ROLE_', '') }}
             </span>
             <p style="color: #64748b; font-size: 0.85rem; margin: 0.75rem 0 1.5rem;">
-              Tenés acceso a tus turnos, agenda médica y consultas activas.
+              Tenés acceso inmediato a tus turnos, historial y consultas activas.
             </p>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a *ngIf="esPaciente()" routerLink="/mi-portal" class="btn-submit-portal" style="text-decoration: none; text-align: center; display: block;">
+            <a *ngIf="esPaciente()" routerLink="/mi-portal" class="btn-submit-portal"
+              style="text-decoration: none; text-align: center; display: block;">
               📋 Ir a Mi Portal de Paciente →
             </a>
-            <a *ngIf="esPersonalClinico()" routerLink="/admin" class="btn-submit-portal" style="text-decoration: none; text-align: center; display: block;">
+            <a *ngIf="esPersonalClinico()" routerLink="/admin" class="btn-submit-portal"
+              style="text-decoration: none; text-align: center; display: block;">
               ⚙️ Ir al Panel Administrativo →
             </a>
-            <a routerLink="/turnos/solicitar" style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.9rem;">
+            <a routerLink="/turnos/solicitar"
+              style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.9rem;">
               ➕ Solicitar Nuevo Turno
             </a>
           </div>
         </ng-container>
 
-        <!-- SI NO HA INICIADO SESIÓN -->
         <ng-container *ngIf="!authService.isLoggedIn()">
           <div class="card-tabs">
             <button class="tab-btn active" routerLink="/login">Iniciar Sesión</button>
@@ -125,15 +126,17 @@
               Portal de Salud San Gabriel
             </h3>
             <p style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin: 0 0 1.5rem;">
-              Accedé a tus turnos programados, descargá recetas y gestioná tu cartilla de forma rápida y segura.
+              Accedé a tus turnos programados, historial médico y recetas de forma rápida y segura.
             </p>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a routerLink="/login" class="btn-submit-portal" style="text-decoration: none; text-align: center; display: block;">
+            <a routerLink="/login" class="btn-submit-portal"
+              style="text-decoration: none; text-align: center; display: block;">
               Ingresar al Portal →
             </a>
-            <a routerLink="/registro" style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #004b93; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.88rem;">
+            <a routerLink="/registro"
+              style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #004b93; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.88rem;">
               Crear mi Cuenta de Paciente
             </a>
           </div>
@@ -150,7 +153,6 @@
     </div>
   </section>
 
-  <!-- ================= BARRA DE OBRAS SOCIALES ================= -->
   <section class="prepagas-bar" id="obras-sociales">
     <div class="prepagas-header">
       <span class="prepagas-title">OBRAS SOCIALES & PREPAGAS</span>
@@ -165,125 +167,184 @@
       <span class="tag-prepaga">OMINT</span>
       <span class="tag-prepaga">IOMA</span>
       <span class="tag-prepaga">ACCORD</span>
+      <span class="tag-prepaga">PARTICULAR</span>
     </div>
-    <span class="link-ver-planes">Cartilla de Coberturas Habilitadas</span>
+    <span class="link-ver-planes">Atención con o sin cobertura médica • Consultorios y guardia habilitados</span>
   </section>
 
-  <!-- ================= CARTILLA DE ESPECIALIDADES ================= -->
-  <section class="especialidades-section">
+  <section class="nosotros-section" id="nosotros">
+    <div class="section-heading-center">
+      <span class="section-tagline blue">LA INSTITUCIÓN • ACREDITACIÓN ORO</span>
+      <h2 class="section-title">Excelencia Médica y Calidez Humana</h2>
+      <p class="section-desc">
+        Con más de 30 años de compromiso con la comunidad, la Clínica Privada San Gabriel conjuga infraestructura de
+        última generación, profesionales de prestigio y un modelo de atención centrado en el bienestar integral del
+        paciente.
+      </p>
+    </div>
+
+    <div class="nosotros-grid">
+      <div class="nosotros-card">
+        <div class="nosotros-icon-wrapper blue">
+          <span>🔬</span>
+        </div>
+        <span class="nosotros-badge blue">Tecnología de Punta</span>
+        <h3>Diagnóstico Avanzado & Quirófanos</h3>
+        <p>
+          Contamos con Resonancia Magnética 3.0 Tesla, Tomografía Multicorte, Quirófanos inteligentes con flujo laminar
+          y laboratorio digital con entrega de resultados en el día.
+        </p>
+      </div>
+
+      <div class="nosotros-card">
+        <div class="nosotros-icon-wrapper purple">
+          <span>👨‍⚕️</span>
+        </div>
+        <span class="nosotros-badge purple">Plantel Profesional</span>
+        <h3>Cuerpo Médico Especializado</h3>
+        <p>
+          Más de 120 médicos y cirujanos formados en los principales centros universitarios, organizados en comités
+          interdisciplinarios para brindar diagnósticos seguros y tratamientos personalizados.
+        </p>
+      </div>
+
+      <div class="nosotros-card">
+        <div class="nosotros-icon-wrapper green">
+          <span>🛡️</span>
+        </div>
+        <span class="nosotros-badge green">Seguridad del Paciente</span>
+        <h3>Certificación ITAES & Calidad</h3>
+        <p>
+          Acreditados con la máxima distinción por el Instituto Técnico para la Acreditación de Establecimientos de
+          Salud (ITAES), asegurando rigurosos estándares de seguridad y bioseguridad.
+        </p>
+      </div>
+    </div>
+
+    <div class="cifras-strip">
+      <div class="cifra-item">
+        <strong class="cifra-num">+30</strong>
+        <span class="cifra-label">Años de Trayectoria</span>
+      </div>
+      <div class="cifra-item">
+        <strong class="cifra-num">4</strong>
+        <span class="cifra-label">Quirófanos de Alta Complejidad</span>
+      </div>
+      <div class="cifra-item">
+        <strong class="cifra-num">+250k</strong>
+        <span class="cifra-label">Consultas Anuales</span>
+      </div>
+      <div class="cifra-item">
+        <strong class="cifra-num">100%</strong>
+        <span class="cifra-label">Digitalización de Historias Clínicas</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="especialidades-section" id="especialidades">
     <div class="section-heading">
       <div>
         <span class="section-tagline">CARTILLA MÉDICA</span>
         <h2 class="section-title">Especialidades con Turnos Disponibles</h2>
       </div>
-      <span class="instruction-text">Seleccioná y reservá al instante</span>
+      <a routerLink="/especialidades" class="instruction-text link-hover">Ver cartilla completa →</a>
     </div>
 
     <div class="cards-grid">
-      <!-- Card 1 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
           <div class="icon-bubble blue">💙</div>
           <span class="pill-badge pill-blue">Hoy</span>
         </div>
         <h3>Cardiología</h3>
-        <p class="card-tags">Holter • Doppler</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Holter • Doppler • Ergometría</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 2 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
           <div class="icon-bubble cyan">🍼</div>
           <span class="pill-badge pill-green">24hs</span>
         </div>
         <h3>Pediatría</h3>
-        <p class="card-tags">Guardia • Controles</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Guardia • Controles • Vacunas</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 3 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
           <div class="icon-bubble green">🦴</div>
           <span class="pill-badge pill-cyan">Disponible</span>
         </div>
         <h3>Traumatología</h3>
-        <p class="card-tags">Artroscopía • Columna</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Artroscopía • Columna • Yesos</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 4 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
           <div class="icon-bubble purple">🧠</div>
           <span class="pill-badge pill-gray">Semanal</span>
         </div>
         <h3>Neurología</h3>
-        <p class="card-tags">Cefaleas • EEG</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Cefaleas • EEG • Memoria</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 5 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
-          <div class="icon-bubble blue">👁</div>
+          <div class="icon-bubble blue">👁️</div>
           <span class="pill-badge pill-blue">Láser</span>
         </div>
         <h3>Oftalmología</h3>
-        <p class="card-tags">OCT • Refractiva</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">OCT • Refractiva • Fondo de Ojo</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 6 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
           <div class="icon-bubble cyan">🦷</div>
           <span class="pill-badge pill-green">3D Scan</span>
         </div>
         <h3>Odontología</h3>
-        <p class="card-tags">Implantes • Alineadores</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Implantes • Prótesis • Urgencias</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 7 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
-          <div class="icon-bubble purple">♀️</div>
+          <div class="icon-bubble purple">🌸</div>
           <span class="pill-badge pill-cyan">Eco 5D</span>
         </div>
         <h3>Ginecología</h3>
-        <p class="card-tags">Obstetricia • Fertilidad</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Obstetricia • Fertilidad • PAP</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
 
-      <!-- Card 8 -->
       <div class="card-item" routerLink="/turnos/solicitar">
         <div class="card-top">
           <div class="icon-bubble blue">📷</div>
           <span class="pill-badge pill-green">Digital</span>
         </div>
         <h3>Imágenes</h3>
-        <p class="card-tags">Resonancia • Tomografía</p>
-        <span class="card-action">Reservar →</span>
+        <p class="card-tags">Resonancia • Tomografía • Rayos</p>
+        <span class="card-action">Reservar Turno →</span>
       </div>
     </div>
   </section>
 
-  <!-- ================= MONITOREO DE INSTALACIONES 24HS ================= -->
   <section class="instalaciones-section" id="guardia">
     <div class="section-heading">
       <div>
-        <span class="section-tagline red">MONITOREO OPERATIVO</span>
-        <h2 class="section-title">Instalaciones & Estado 24hs</h2>
+        <span class="section-tagline red">MONITOREO OPERATIVO EN TIEMPO REAL</span>
+        <h2 class="section-title">Instalaciones & Servicio de Guardia 24hs</h2>
       </div>
       <div class="location-chip">
-        📍 Av. San Gabriel 1420
+        📍 Av. San Gabriel 1420 — Ingreso Guardia PB
       </div>
     </div>
 
     <div class="instalaciones-grid">
-      <!-- Tarjeta 1: Triage -->
       <div class="inst-card">
         <div class="inst-img-placeholder img-triage">
           <span class="floating-badge badge-red">Guardia Adultos 24h</span>
@@ -295,73 +356,169 @@
           </div>
           <div class="inst-row-sub">
             <span class="sub-text">Emergentología presencial</span>
-            <span class="sector-text">Ingreso A</span>
+            <span class="sector-text">Ingreso Urgencias A</span>
           </div>
         </div>
       </div>
 
-      <!-- Tarjeta 2: Espera -->
       <div class="inst-card">
         <div class="inst-img-placeholder img-espera">
-          <span class="floating-badge badge-blue">Sector Pediátrico</span>
+          <span class="floating-badge badge-blue">Sector Pediátrico 24h</span>
         </div>
         <div class="inst-info">
           <div class="inst-row">
             <strong>Espera Climatizada</strong>
-            <span class="status-metric text-green">Normal</span>
+            <span class="status-metric text-green">Operativa</span>
           </div>
           <div class="inst-row-sub">
             <span class="sub-text">Pediatras permanentes</span>
-            <span class="sector-text">Sector B</span>
+            <span class="sector-text">Sector Niños B</span>
           </div>
         </div>
       </div>
 
-      <!-- Tarjeta 3: Quirófano -->
       <div class="inst-card">
         <div class="inst-img-placeholder img-quirofano">
           <span class="floating-badge badge-blue">4 Quirófanos</span>
         </div>
         <div class="inst-info">
           <div class="inst-row">
-            <strong>Cirugía & UTI</strong>
+            <strong>Cirugía & UTI Adultos</strong>
             <span class="status-metric text-green">Activo</span>
           </div>
           <div class="inst-row-sub">
-            <span class="sub-text">Suites individuales</span>
+            <span class="sub-text">Terapia intensiva continua</span>
             <span class="sector-text">Piso 2</span>
           </div>
         </div>
       </div>
 
-      <!-- Tarjeta 4: Diagnóstico -->
       <div class="inst-card">
         <div class="inst-img-placeholder img-resonador">
           <span class="floating-badge badge-green">Resonador 3.0T</span>
         </div>
         <div class="inst-info">
           <div class="inst-row">
-            <strong>Diagnóstico Digital</strong>
+            <strong>Diagnóstico & Laboratorio</strong>
             <span class="time-metric">Entrega 24h</span>
           </div>
           <div class="inst-row-sub">
-            <span class="sub-text">Vacunatorio 07-20hs</span>
-            <span class="sector-text">PB</span>
+            <span class="sub-text">Guardia de imágenes activa</span>
+            <span class="sector-text">Subsuelo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="emergency-call-banner">
+      <div class="emergency-left">
+        <span class="emergency-ico">🚨</span>
+        <div>
+          <h4>Línea Telefónica Exclusiva de Guardia y Emergencias</h4>
+          <p>Para urgencias que comprometan la vida, el ingreso por rampa de ambulancias está habilitado en todo momento
+            sin turno previo.</p>
+        </div>
+      </div>
+      <a href="tel:01145678999" class="btn-emergency-call">
+        📞 (011) 4567-8999
+      </a>
+    </div>
+  </section>
+
+  <section class="contacto-section" id="contacto">
+    <div class="section-heading-center">
+      <span class="section-tagline blue">CANALES DE ATENCIÓN</span>
+      <h2 class="section-title">Ubicación, Sedes y Contacto</h2>
+      <p class="section-desc">
+        Estamos a tu disposición en nuestra sede central y a través de todos los canales de consulta directa.
+      </p>
+    </div>
+
+    <div class="contacto-grid">
+      <div class="contacto-card">
+        <div class="contacto-card-header">
+          <span class="contacto-header-icon">📍</span>
+          <div>
+            <h3>Sede Central</h3>
+            <small>Edificio San Gabriel</small>
+          </div>
+        </div>
+        <div class="contacto-card-body">
+          <p class="contacto-main-text">Av. San Gabriel 1420, CABA</p>
+          <ul class="contacto-list">
+            <li>🚗 Estacionamiento propio para pacientes (ingreso por calle lateral).</li>
+            <li>♿ Accesibilidad integral: rampas y ascensores camilleros.</li>
+            <li>🚌 Paradas de transporte público a menos de 50 metros.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="contacto-card">
+        <div class="contacto-card-header">
+          <span class="contacto-header-icon">🕒</span>
+          <div>
+            <h3>Horarios de Atención</h3>
+            <small>Consultorios y Servicios</small>
+          </div>
+        </div>
+        <div class="contacto-card-body">
+          <div class="schedule-item">
+            <strong>Guardia Médica:</strong>
+            <span>24 horas (Abierto todo el año)</span>
+          </div>
+          <div class="schedule-item">
+            <strong>Consultorios Externos:</strong>
+            <span>Lun a Vie: 07:00 a 20:00 hs | Sáb: 08:00 a 13:00 hs</span>
+          </div>
+          <div class="schedule-item">
+            <strong>Laboratorio de Análisis:</strong>
+            <span>Lun a Vie: 06:30 a 19:00 hs | Sáb: 07:00 a 12:00 hs</span>
+          </div>
+          <div class="schedule-item">
+            <strong>Diagnóstico por Imágenes:</strong>
+            <span>Lun a Sáb: 07:00 a 21:00 hs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contacto-card">
+        <div class="contacto-card-header">
+          <span class="contacto-header-icon">📞</span>
+          <div>
+            <h3>Canales de Comunicación</h3>
+            <small>Atención Telefónica y Digital</small>
+          </div>
+        </div>
+        <div class="contacto-card-body">
+          <div class="contact-line">
+            <span class="contact-lbl">Conmutador Central:</span>
+            <strong>(011) 4567-8900</strong>
+          </div>
+          <div class="contact-line">
+            <span class="contact-lbl">Guardia Médica 24hs:</span>
+            <strong class="text-red">(011) 4567-8999</strong>
+          </div>
+          <div class="contact-line">
+            <span class="contact-lbl">WhatsApp Turnos:</span>
+            <strong>+54 9 11 2345-6789</strong>
+          </div>
+          <div class="contact-line">
+            <span class="contact-lbl">Correo Electrónico:</span>
+            <a href="mailto:contacto@clinicasangabriel.com" class="link-mail">contacto@clinicasangabriel.com</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= BANNER ACCESO DIGITAL UNIFICADO ================= -->
   <section class="banner-cta">
     <div class="banner-content">
-      <h2>Acceso digital unificado</h2>
-      <p>Turnos, recetas y analíticas en tu celular.</p>
+      <h2>Acceso digital unificado a tu salud</h2>
+      <p>Reservá tu consulta con nuestros especialistas en tiempo real y gestioná tus estudios online.</p>
     </div>
     <div class="banner-actions">
-      <button class="btn-banner-white" routerLink="/registro">Registrarme Gratis</button>
-      <button class="btn-banner-outline" routerLink="/especialidades">Ver Cartilla</button>
+      <button class="btn-banner-white" routerLink="/turnos/solicitar">Reservar Turno Online</button>
+      <button class="btn-banner-outline" routerLink="/especialidades">Ver Cartilla Médica</button>
     </div>
   </section>
 
