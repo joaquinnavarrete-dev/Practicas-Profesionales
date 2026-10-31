@@ -209,15 +209,77 @@
         <div class="datetime-grid">
 
           <div class="calendar-card">
-            <h4 class="cal-title">Fecha del Turno</h4>
-            <div class="date-picker-box">
-              <label>Seleccione el día:</label>
-              <input type="date" class="input-date-control" [min]="fechaMinima" [(ngModel)]="turnoBorrador.fecha"
-                (change)="onFechaCambio()" />
+            <!-- Header con mes/año y flechas de navegación -->
+            <div class="cal-nav">
+              <h4 class="cal-title">{{ nombreMesVisual() }}</h4>
+              <div class="cal-arrows">
+                <button type="button" (click)="mesAnterior()" [disabled]="!puedeRetrocederMes()" title="Mes anterior">◀</button>
+                <button type="button" (click)="mesSiguiente()" title="Mes siguiente">▶</button>
+              </div>
             </div>
 
+            <!-- Días de atención configurados para el médico -->
+            <div class="medico-dias-resumen" *ngIf="diasAtencionMedico().length > 0">
+              <span class="dias-resumen-label">🩺 Días de atención:</span>
+              <div class="dias-chips-container">
+                <span class="chip-dia-mini" *ngFor="let dia of diasAtencionMedico()">
+                  <strong>{{ getNombreDiaSemana(dia.diaSemana) }}</strong> ({{ dia.horaInicio.substring(0, 5) }} - {{ dia.horaFin.substring(0, 5) }} hs)
+                </span>
+              </div>
+            </div>
+
+            <div class="medico-dias-resumen empty" *ngIf="!cargandoDiasAtencion() && diasAtencionMedico().length === 0">
+              <span>⚠️ Este profesional no tiene días de atención asignados en este momento.</span>
+            </div>
+
+            <!-- Cabecera de la semana -->
+            <div class="cal-week-labels">
+              <span>Lun</span>
+              <span>Mar</span>
+              <span>Mié</span>
+              <span>Jue</span>
+              <span>Vie</span>
+              <span>Sáb</span>
+              <span>Dom</span>
+            </div>
+
+            <!-- Grilla interactiva de días del mes -->
+            <div class="cal-days-grid">
+              <div
+                *ngFor="let dia of diasCalendario()"
+                class="cal-day-cell"
+                [class.other-month]="!dia.esMesActual"
+                [class.past]="dia.esPasado"
+                [class.working-day]="dia.atiendeMedico"
+                [class.non-working]="dia.esMesActual && !dia.esPasado && !dia.atiendeMedico"
+                [class.today]="dia.esHoy"
+                [class.selected-day]="dia.estaSeleccionado"
+                (click)="seleccionarDiaCalendario(dia)"
+                [attr.title]="getTooltipDia(dia)"
+              >
+                <span class="day-number">{{ dia.numeroDia }}</span>
+                <span class="day-dot" *ngIf="dia.atiendeMedico && !dia.estaSeleccionado"></span>
+              </div>
+            </div>
+
+            <!-- Selector de fecha manual / fallback -->
+            <div class="manual-date-opt">
+              <label for="inputFechaManual">O elija manualmente:</label>
+              <input
+                id="inputFechaManual"
+                type="date"
+                class="input-date-control"
+                [min]="fechaMinima"
+                [ngModel]="turnoBorrador.fecha"
+                (ngModelChange)="onFechaManualCambio($event)"
+              />
+            </div>
+
+            <!-- Leyenda explicativa -->
             <div class="cal-legend">
-              <p>ℹ️ Seleccione cualquier fecha a partir de hoy para consultar los turnos disponibles.</p>
+              <span><i class="dot-green"></i> Con atención</span>
+              <span><i class="dot-gray"></i> Sin atención</span>
+              <span><i class="dot-blue"></i> Seleccionado</span>
             </div>
           </div>
 
