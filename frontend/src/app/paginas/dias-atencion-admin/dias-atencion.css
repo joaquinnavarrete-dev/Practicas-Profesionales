@@ -349,3 +349,46 @@
     align-items: center;
   }
 }
+
+@media (max-width: 768px) {
+  .dias-atencion-wrapper {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .main-title {
+    font-size: 1.7rem;
+  }
+  .filter-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  .search-input-group {
+    width: 100%;
+    flex: none;
+  }
+  .select-group select {
+    width: 100%;
+  }
+  .btn-reset {
+    width: 100%;
+    text-align: center;
+  }
+  .days-squares-row {
+    gap: 0.3rem;
+  }
+  .day-square {
+    width: 32px;
+    height: 32px;
+    font-size: 0.7rem;
+  }
+  .action-col {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+  .btn-solicitar {
+    width: 100%;
+    text-align: center;
+  }
+}

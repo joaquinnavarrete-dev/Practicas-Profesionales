@@ -1,18 +1,15 @@
 :root {
-  /* Paleta Institucional San Gabriel */
   --primary-blue: #004b93;
   --primary-blue-hover: #00376d;
   --primary-blue-dark: #002b55;
   --primary-light-blue: #e8f1fa;
   --sidebar-active: #dbeafe;
-  
-  /* Estados y acentos */
+
   --emergency-red-bg: #fee2e2;
   --emergency-red-text: #dc2626;
   --success-green: #10b981;
   --success-green-bg: #d1fae5;
-  
-  /* Escala de grises y bordes */
+
   --bg-app: #f8fafc;
   --bg-card: #ffffff;
   --border-light: #e2e8f0;
@@ -35,14 +32,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ==========================================================================
-   GLOBAL RESPONSIVE UTILITIES & TABLE ADAPTATIONS
-   ========================================================================== */
-
-/* Contenedores de tablas con scroll horizontal nativo en móviles y tablets */
 .data-table-container,
 .table-card,
-.permissions-card,
+.table-responsive,
+.perm-table-responsive,
 .turnos-table-container,
 .patient-table-wrap,
 .perm-card {
@@ -53,12 +46,52 @@ body {
 
 .data-table,
 .perm-table,
-.admin-table {
+.admin-table,
+.dash-table {
   min-width: 680px;
 }
 
-/* Adaptación responsive para formularios, barras y grillas administrativas */
+.table-pagination-footer {
+  position: sticky;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .topbar-admin {
+    height: auto !important;
+    padding: 0.75rem 1rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+  }
+
+  .topbar-left {
+    width: 100% !important;
+  }
+
+  .topbar-search {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .topbar-right {
+    display: none !important;
+  }
+
+  .roles-cards-grid,
+  .kpi-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.85rem !important;
+  }
+}
+
 @media (max-width: 768px) {
+  .admin-main-body {
+    padding: 1.25rem 1rem 2.5rem !important;
+    gap: 1.2rem !important;
+  }
+
   .form-grid-2,
   .form-grid-3,
   .profile-form .form-grid-2 {
@@ -66,40 +99,24 @@ body {
     gap: 1rem !important;
   }
 
-  .topbar-admin {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0.75rem !important;
-    padding: 0.75rem 1rem !important;
-    height: auto !important;
-  }
-
-  .topbar-left,
-  .topbar-right,
-  .topbar-search {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .topbar-right {
-    justify-content: space-between !important;
-  }
-
   .page-title-row {
     flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 1rem !important;
+    align-items: stretch !important;
+    gap: 0.85rem !important;
   }
 
   .header-actions {
     width: 100% !important;
     flex-direction: column !important;
+    gap: 0.5rem !important;
   }
 
   .btn-create-modal,
-  .btn-secondary-action {
+  .btn-secondary-action,
+  .btn-export {
     width: 100% !important;
     justify-content: center !important;
+    text-align: center !important;
   }
 
   .filters-card {
@@ -109,11 +126,17 @@ body {
   }
 
   .filter-search-box,
-  .filter-select-wrapper {
+  .filter-select-wrapper,
+  .select-doctor-box,
+  .date-picker-box,
+  .select-status-box,
+  .btn-reset-filters {
     width: 100% !important;
   }
 
-  .stats-overview-grid {
+  .stats-overview-grid,
+  .roles-cards-grid,
+  .kpi-cards-grid {
     grid-template-columns: 1fr !important;
   }
 
@@ -135,5 +158,17 @@ body {
     width: 100% !important;
     justify-content: center !important;
     text-align: center !important;
+  }
+
+  .user-editing-card,
+  .doctor-summary-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .user-meta-grid {
+    flex-direction: column !important;
+    gap: 0.4rem !important;
   }
 }

@@ -1,7 +1,3 @@
-/* ==========================================================================
-   PORTAL DEL PACIENTE — CLÍNICA SAN GABRIEL
-   ========================================================================== */
-
 :host {
   display: block;
   background-color: #f8fafc;
@@ -15,9 +11,6 @@
   flex-direction: column;
 }
 
-/* --------------------------------------------------------------------------
-   HERO BANNER DEL PACIENTE
-   -------------------------------------------------------------------------- */
 .patient-hero {
   background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
   color: #ffffff;
@@ -55,7 +48,8 @@
   align-items: center;
   gap: 1.75rem;
   flex: 1;
-  min-width: 320px;
+  min-width: 0;
+  width: 100%;
 }
 
 .avatar-portal {
@@ -114,7 +108,6 @@
   max-width: 600px;
 }
 
-/* CHIPS RÁPIDOS */
 .quick-chips-row {
   display: flex;
   flex-wrap: wrap;
@@ -148,7 +141,6 @@
   font-weight: 600;
 }
 
-/* BOTÓN CTA HERO */
 .hero-actions {
   display: flex;
   align-items: center;
@@ -183,9 +175,6 @@
   font-size: 1.1rem;
 }
 
-/* --------------------------------------------------------------------------
-   CONTENIDO PRINCIPAL
-   -------------------------------------------------------------------------- */
 .portal-main-content {
   max-width: 1200px;
   margin: -1.75rem auto 4rem;
@@ -195,7 +184,6 @@
   z-index: 2;
 }
 
-/* PESTAÑAS PRINCIPALES */
 .portal-tabs-nav {
   display: flex;
   gap: 0.5rem;
@@ -248,7 +236,6 @@
   color: #1e3a8a;
 }
 
-/* ESTADO DE CARGA */
 .loading-state-card {
   background: #ffffff;
   padding: 4rem 2rem;
@@ -269,12 +256,11 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* --------------------------------------------------------------------------
-   TOOLBAR DE SUB-PESTAÑAS (PRÓXIMOS VS HISTORIAL)
-   -------------------------------------------------------------------------- */
 .subtabs-toolbar {
   display: flex;
   align-items: center;
@@ -328,9 +314,6 @@
   text-decoration: underline;
 }
 
-/* --------------------------------------------------------------------------
-   BANNER PRÓXIMO TURNO DESTACADO
-   -------------------------------------------------------------------------- */
 .highlight-appointment-banner {
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border: 1px solid #bfdbfe;
@@ -379,9 +362,6 @@
   letter-spacing: 0.05em;
 }
 
-/* --------------------------------------------------------------------------
-   ESTADOS VACÍOS
-   -------------------------------------------------------------------------- */
 .empty-state-card {
   background: #ffffff;
   padding: 4.5rem 2rem;
@@ -432,9 +412,6 @@
   transform: translateY(-1px);
 }
 
-/* --------------------------------------------------------------------------
-   GRILLA Y TARJETAS DE TURNOS
-   -------------------------------------------------------------------------- */
 .appointments-grid {
   display: flex;
   flex-direction: column;
@@ -459,7 +436,6 @@
   border-color: #cbd5e1;
 }
 
-/* BADGE DE FECHA / CALENDARIO */
 .card-date-badge {
   background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
   color: #ffffff;
@@ -506,7 +482,6 @@
   color: #cbd5e1;
 }
 
-/* INFORMACIÓN DEL TURNO */
 .card-main-info {
   flex: 1;
   display: flex;
@@ -563,7 +538,6 @@
   color: #64748b;
 }
 
-/* ACCIONES DE LA TARJETA */
 .card-status-actions {
   display: flex;
   flex-direction: column;
@@ -619,9 +593,6 @@
   font-size: 0.9rem;
 }
 
-/* --------------------------------------------------------------------------
-   PESTAÑA 2: MI PERFIL Y COBERTURA
-   -------------------------------------------------------------------------- */
 .profile-card-wrapper {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -665,7 +636,6 @@
   font-size: 0.9rem;
 }
 
-/* BARRA DE DATOS FIJOS */
 .fixed-info-bar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -701,7 +671,6 @@
   color: #94a3b8;
 }
 
-/* GRILLA DE FORMULARIO */
 .profile-form {
   display: flex;
   flex-direction: column;
@@ -785,10 +754,42 @@
   cursor: not-allowed;
 }
 
-/* --------------------------------------------------------------------------
-   RESPONSIVE DESIGN
-   -------------------------------------------------------------------------- */
 @media (max-width: 868px) {
+  .patient-hero {
+    padding: 2rem 1.25rem 2.5rem;
+  }
+
+  .patient-portal-body {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .patient-name {
+    font-size: 1.5rem;
+  }
+
+  .avatar-portal {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+
+  .portal-tabs-nav {
+    width: 100%;
+    display: flex;
+  }
+
+  .portal-tabs-nav .tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.65rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .meta-row {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
   .hero-container {
     flex-direction: column;
     align-items: flex-start;
@@ -821,5 +822,9 @@
   .form-grid-2 {
     grid-template-columns: 1fr;
   }
-}
 
+  .btn-save-profile {
+    width: 100%;
+    justify-content: center;
+  }
+}

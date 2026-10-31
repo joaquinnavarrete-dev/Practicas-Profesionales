@@ -202,3 +202,30 @@
 .btn-submit:hover {
   background-color: #00366a;
 }
+
+@media (max-width: 768px) {
+  .form-content-body {
+    padding: 0 1rem;
+    margin-top: 1rem;
+  }
+  .user-form-card {
+    padding: 1.25rem 1rem;
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+  .form-header-bar {
+    padding: 1rem 1.25rem;
+  }
+  .form-actions-footer {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

@@ -512,3 +512,59 @@
   color: #ffffff;
   border-color: #004b93;
 }
+
+@media (max-width: 900px) {
+  .doctor-summary-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .doc-stats-pills {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main-body {
+    padding: 1.25rem 1rem 2rem;
+  }
+  .page-title-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .filters-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .select-doctor-box,
+  .date-picker-box,
+  .select-status-box {
+    width: 100%;
+    flex: none;
+  }
+  .btn-reset-filters {
+    width: 100%;
+    text-align: center;
+  }
+  .doc-stats-pills {
+    flex-direction: column;
+  }
+  .pill-stat {
+    width: 100%;
+  }
+  .data-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table {
+    min-width: 720px;
+  }
+}

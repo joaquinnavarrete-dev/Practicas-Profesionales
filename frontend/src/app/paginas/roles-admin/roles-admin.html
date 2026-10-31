@@ -1,6 +1,5 @@
 <div class="admin-view-wrapper">
 
-  <!-- Topbar Administrativo -->
   <header class="topbar-admin">
     <div class="topbar-left">
       <div class="module-title-box">
@@ -24,17 +23,17 @@
     </div>
   </header>
 
-  <!-- Cuerpo Principal -->
   <section class="admin-main-body">
 
-    <!-- Encabezado de Página -->
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">
-          {{ usuarioEnEdicion() ? 'Permisos del Usuario: ' + usuarioEnEdicion()!.nombre + ' ' + usuarioEnEdicion()!.apellido : 'Matriz de Control de Acceso (RBAC)' }}
+          {{ usuarioEnEdicion() ? 'Permisos del Usuario: ' + usuarioEnEdicion()!.nombre + ' ' +
+          usuarioEnEdicion()!.apellido : 'Matriz de Control de Acceso (RBAC)' }}
         </h1>
         <p class="sub-heading">
-          {{ usuarioEnEdicion() ? 'Modifique el rol asignado y ajuste los privilegios específicos para esta cuenta.' : 'Defina los perfiles de usuario y los permisos de acceso por cada módulo de la clínica.' }}
+          {{ usuarioEnEdicion() ? 'Modifique el rol asignado y ajuste los privilegios específicos para esta cuenta.' :
+          'Defina los perfiles de usuario y los permisos de acceso por cada módulo de la clínica.' }}
         </p>
       </div>
 
@@ -45,7 +44,6 @@
       </div>
     </div>
 
-    <!-- FICHA DEL USUARIO EN EDICIÓN (Se muestra si venimos desde el lápiz de un usuario) -->
     <div class="user-editing-card" *ngIf="usuarioEnEdicion()">
       <div class="user-avatar-big">{{ usuarioEnEdicion()!.avatarUrl }}</div>
       <div class="user-details">
@@ -56,19 +54,15 @@
         <div class="user-meta-grid">
           <span>📧 <strong>Email:</strong> {{ usuarioEnEdicion()!.email }}</span>
           <span>🪪 <strong>DNI:</strong> {{ usuarioEnEdicion()!.dni }}</span>
-          <span>🛡️ <strong>Rol Actual:</strong> <span class="current-role-badge">{{ usuarioEnEdicion()!.rol }}</span></span>
+          <span>🛡️ <strong>Rol Actual:</strong> <span class="current-role-badge">{{ usuarioEnEdicion()!.rol
+              }}</span></span>
         </div>
       </div>
     </div>
 
-    <!-- TARJETAS DE ROLES DEFINIDOS -->
     <div class="roles-cards-grid">
-      <div 
-        class="role-card" 
-        *ngFor="let r of roles"
-        [class.selected]="r.nombre === rolSeleccionado().nombre"
-        (click)="seleccionarRol(r)"
-      >
+      <div class="role-card" *ngFor="let r of roles" [class.selected]="r.nombre === rolSeleccionado().nombre"
+        (click)="seleccionarRol(r)">
         <div class="role-card-header">
           <span class="role-icon">{{ r.icono }}</span>
           <span class="users-count-badge">{{ r.cantidadUsuarios }} usuarios</span>
@@ -78,52 +72,54 @@
       </div>
     </div>
 
-    <!-- GRILLA DETALLADA DE PERMISOS PARA EL ROL SELECCIONADO -->
     <div class="permissions-card">
       <div class="perm-card-header">
         <div>
           <h3>
-            Permisos asignados a 
-            <span class="highlight-role">{{ usuarioEnEdicion() ? usuarioEnEdicion()!.nombre + ' ' + usuarioEnEdicion()!.apellido : 'Perfil' }}</span> 
+            Permisos asignados a
+            <span class="highlight-role">{{ usuarioEnEdicion() ? usuarioEnEdicion()!.nombre + ' ' +
+              usuarioEnEdicion()!.apellido : 'Perfil' }}</span>
             bajo el rol: <span class="highlight-role">{{ rolSeleccionado().nombre }}</span>
           </h3>
           <p class="sub-perm">Marque o desmarque los privilegios de lectura, escritura y eliminación.</p>
         </div>
       </div>
 
-      <table class="perm-table">
-        <thead>
-          <tr>
-            <th>MÓDULO DE LA CLÍNICA</th>
-            <th class="text-center">VER / CONSULTAR</th>
-            <th class="text-center">CREAR / AGENDAR</th>
-            <th class="text-center">EDITAR / MODIFICAR</th>
-            <th class="text-center">ELIMINAR / CANCELAR</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let m of rolSeleccionado().modulos">
-            <td>
-              <div class="module-cell">
-                <strong>{{ m.nombreModulo }}</strong>
-                <small>{{ m.descripcion }}</small>
-              </div>
-            </td>
-            <td class="text-center">
-              <input type="checkbox" [(ngModel)]="m.leer" />
-            </td>
-            <td class="text-center">
-              <input type="checkbox" [(ngModel)]="m.crear" />
-            </td>
-            <td class="text-center">
-              <input type="checkbox" [(ngModel)]="m.editar" />
-            </td>
-            <td class="text-center">
-              <input type="checkbox" [(ngModel)]="m.eliminar" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="perm-table-responsive">
+        <table class="perm-table">
+          <thead>
+            <tr>
+              <th>MÓDULO DE LA CLÍNICA</th>
+              <th class="text-center">VER / CONSULTAR</th>
+              <th class="text-center">CREAR / AGENDAR</th>
+              <th class="text-center">EDITAR / MODIFICAR</th>
+              <th class="text-center">ELIMINAR / CANCELAR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of rolSeleccionado().modulos">
+              <td>
+                <div class="module-cell">
+                  <strong>{{ m.nombreModulo }}</strong>
+                  <small>{{ m.descripcion }}</small>
+                </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="m.leer" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="m.crear" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="m.editar" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="m.eliminar" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </section>

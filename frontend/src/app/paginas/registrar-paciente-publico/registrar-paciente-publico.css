@@ -239,5 +239,24 @@
   }
   .auth-form-card {
     padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .form-actions-footer {
+    flex-direction: column-reverse;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .btn-submit-public {
+    width: 100%;
+    justify-content: center;
+  }
+  .login-already {
+    justify-content: center;
+    width: 100%;
+    text-align: center;
   }
 }

@@ -223,8 +223,15 @@
   margin: 0.2rem 0 1.25rem;
 }
 
+.perm-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .perm-table {
   width: 100%;
+  min-width: 620px;
   border-collapse: collapse;
 }
 
@@ -254,4 +261,39 @@
   height: 18px;
   accent-color: #004b93;
   cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .roles-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-main-body {
+    padding: 1.25rem 1rem 2rem;
+  }
+  .page-title-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .btn-create-modal {
+    width: 100%;
+    justify-content: center;
+  }
+  .roles-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .user-editing-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .user-meta-grid {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .permissions-card {
+    padding: 1rem;
+  }
 }
