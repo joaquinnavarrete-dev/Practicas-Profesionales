@@ -115,6 +115,44 @@
   line-height: 1;
 }
 
+.btn-turno-nav {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.15rem;
+  background-color: #004b93;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-turno-nav:hover {
+  background-color: #00366a;
+  box-shadow: 0 2px 8px rgba(0, 75, 147, 0.25);
+}
+
+.mobile-link-turno {
+  background-color: #eff6ff !important;
+  color: #004b93 !important;
+  font-weight: 700 !important;
+  border-radius: 8px;
+}
+
+.mobile-portal-note {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.mobile-portal-note p {
+  margin: 0 0 0.25rem;
+  color: #0f172a;
+}
+
 .btn-portal-blue {
   display: inline-flex;
   align-items: center;
