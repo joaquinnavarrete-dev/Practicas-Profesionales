@@ -100,7 +100,7 @@ export class UsuariosAdminComponent implements OnInit {
       dni: `USR-${u.idUsuario}`,
       rol: rolNormalizado,
       ultimoIngreso: 'Reciente',
-      estado: u.estado ? 'Activo' : 'Bloqueado',
+      estado: (u.activo ?? u.estado) ? 'Activo' : 'Bloqueado',
       avatarUrl: avatar
     };
   }
@@ -133,13 +133,8 @@ export class UsuariosAdminComponent implements OnInit {
 
   bloquearDesbloquear(u: UsuarioSistema): void {
     const nuevoEstado = u.estado !== 'Activo';
-    const idRol = u.rol === 'Administrador' ? 1 : (u.rol === 'Médico' ? 2 : 3);
 
-    this.usuarioService.actualizar(u.id, {
-      nombreUsuario: u.username,
-      estado: nuevoEstado,
-      idRol: idRol
-    }).subscribe({
+    this.usuarioService.cambiarEstado(u.id, nuevoEstado).subscribe({
       next: () => {
         this.usuarios.update(lista =>
           lista.map(item => item.id === u.id ? { ...item, estado: nuevoEstado ? 'Activo' : 'Bloqueado' } : item)
