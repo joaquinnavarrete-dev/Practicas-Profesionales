@@ -28,6 +28,14 @@ public class DiaAtencionServiceImpl implements DiaAtencionService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<DiaAtencionResponseDto> listarTodos() {
+        return diaAtencionRepository.findAll().stream()
+                .map(this::mapToResponseDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<DiaAtencionResponseDto> listarPorMedico(Integer idMedico) {
         if (!medicoRepository.existsById(idMedico)) {
             throw new ResourceNotFoundException("Médico no encontrado con id: " + idMedico);

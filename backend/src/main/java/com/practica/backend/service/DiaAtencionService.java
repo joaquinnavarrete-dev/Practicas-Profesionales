@@ -7,6 +7,8 @@ import com.practica.backend.dto.DiaAtencionResponseDto;
 
 public interface DiaAtencionService {
 
+    List<DiaAtencionResponseDto> listarTodos();
+
     List<DiaAtencionResponseDto> listarPorMedico(Integer idMedico);
 
     DiaAtencionResponseDto buscarPorId(Integer id);
