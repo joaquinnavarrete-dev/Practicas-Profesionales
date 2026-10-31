@@ -1328,26 +1328,6 @@
   }
 }
 
-.wizard-alert-error {
-  background-color: #fee2e2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
-  padding: 0.85rem 1.25rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-.alert-ico {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
 .success-screen-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
