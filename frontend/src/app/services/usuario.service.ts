@@ -40,8 +40,8 @@ export class UsuarioService {
     return this.http.put<Usuario>(`${this.apiUrl}/${id}`, payload);
   }
 
-  cambiarEstado(id: number, estado: boolean): Observable<Usuario> {
-    const params = new HttpParams().set('estado', estado.toString());
+  cambiarEstado(id: number, activo: boolean): Observable<Usuario> {
+    const params = new HttpParams().set('activo', activo.toString());
     return this.http.patch<Usuario>(`${this.apiUrl}/${id}/estado`, {}, { params });
   }
 
