@@ -3,6 +3,8 @@ package com.practica.backend.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +21,12 @@ public class TurnoDisponibleResponseDto {
     private Integer idMedico;
     private String nombreMedico;
     private LocalDate fecha;
+
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime hora;
+
     private String diaSemana;
+
+    @Builder.Default
+    private Boolean disponible = true;
 }
