@@ -745,19 +745,6 @@
   margin-top: 2px;
 }
 
-.manual-date-opt {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #f1f5f9;
-}
-
-.manual-date-opt label {
-  display: block;
-  font-size: 0.75rem;
-  color: #64748b;
-  margin-bottom: 0.35rem;
-}
-
 .cal-legend {
   display: flex;
   justify-content: space-between;
