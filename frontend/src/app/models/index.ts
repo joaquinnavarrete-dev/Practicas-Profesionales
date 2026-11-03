@@ -6,3 +6,7 @@ export * from './paciente.model';
 export * from './dia-atencion.model';
 export * from './turno.model';
 export * from './usuario.model';
+export * from './dashboard.model';
+export * from './rol.model';
+export * from './calendario.model';
+export * from './ui.model';
