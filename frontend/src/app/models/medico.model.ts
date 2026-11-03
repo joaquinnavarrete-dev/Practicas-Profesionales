@@ -18,3 +18,13 @@ export interface MedicoRequest {
   idEspecialidad: number;
   idUsuario?: number;
 }
+
+export interface MedicoInfo {
+  id: number;
+  nombre: string;
+  especialidad: string;
+  subespecialidad: string;
+  matricula: string;
+  consultorio: string;
+  fotoUrl: string;
+}

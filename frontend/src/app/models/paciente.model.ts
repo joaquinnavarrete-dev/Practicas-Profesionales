@@ -25,3 +25,18 @@ export interface ActualizarPerfilPacienteRequest {
   telefono: string;
   idObraSocial: number;
 }
+
+export interface PacienteCita {
+  id: number;
+  medicoId: number;
+  hora: string;
+  nombre: string;
+  dni: string;
+  numHistoriaClinica: string;
+  telefono: string;
+  obraSocial: string;
+  planAfiliado: string;
+  motivo: string;
+  estado: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente';
+  fecha: string;
+}

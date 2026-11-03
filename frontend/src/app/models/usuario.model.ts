@@ -23,3 +23,16 @@ export interface UsuarioRequest {
   activo?: boolean;
   estado?: boolean;
 }
+
+export interface UsuarioSistema {
+  id: number;
+  username: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  dni: string;
+  rol: string;
+  ultimoIngreso: string;
+  estado: 'Activo' | 'Bloqueado';
+  avatarUrl: string;
+}
