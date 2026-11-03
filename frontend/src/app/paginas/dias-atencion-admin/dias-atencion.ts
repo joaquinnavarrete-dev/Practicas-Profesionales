@@ -3,36 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MedicoService, DiaAtencionService, EspecialidadService } from '../../services';
-import { Medico, DiaAtencion, Especialidad } from '../../models';
-
-export interface HorarioDiaSemana {
-  numero: number;
-  abrev: string;
-  nombre: string;
-  activo: boolean;
-  horario?: string;
-}
-
-export interface FranjaDetalle {
-  dia: string;
-  horas: string;
-}
-
-export interface MedicoAtencion {
-  id: number;
-  nombre: string;
-  especialidad: string;
-  subespecialidad: string;
-  matricula: string;
-  calificacion: number;
-  fotoUrl: string;
-  diasSemana: string[];
-  diasSemanaCuadritos: HorarioDiaSemana[];
-  franjasDetalle: FranjaDetalle[];
-  franjaHoraria: string;
-  consultorio: string;
-  proximoDisponible: string;
-}
+import { Medico, DiaAtencion, Especialidad, HorarioDiaSemana, FranjaDetalle, MedicoAtencion } from '../../models';
 
 @Component({
   selector: 'app-dias-atencion',

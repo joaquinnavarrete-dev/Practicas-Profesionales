@@ -27,7 +27,7 @@
         </div>
         <div class="v-row">
           <span>Fecha y Hora:</span>
-          <strong>{{ turnoConfirmado()?.fecha }} a las {{ turnoConfirmado()?.hora }} hs</strong>
+          <strong>{{ turnoConfirmado()?.fecha | fechaFormato:'larga' }} a las {{ turnoConfirmado()?.hora }} hs</strong>
         </div>
         <div class="v-row">
           <span>Paciente:</span>
@@ -276,7 +276,7 @@
 
           <div class="hours-card">
             <div class="hours-header">
-              <h4>Horarios para el día {{ turnoBorrador.fecha }}</h4>
+              <h4>Horarios para el día {{ turnoBorrador.fecha | fechaFormato:'larga' }}</h4>
               <span class="badge-avail-count">{{ totalDisponibles() }} disponibles</span>
             </div>
 
@@ -327,7 +327,7 @@
             <span class="check-circle-green">✓</span>
             <div>
               <small>Turno seleccionado:</small>
-              <strong>{{ turnoBorrador.fecha }} a las {{ turnoBorrador.hora }} hs con Dr(a). {{
+              <strong>{{ turnoBorrador.fecha | fechaFormato:'larga' }} a las {{ turnoBorrador.hora }} hs con Dr(a). {{
                 turnoBorrador.medico?.nombre }} {{ turnoBorrador.medico?.apellido }}</strong>
             </div>
           </div>
@@ -390,8 +390,8 @@
               <span class="card-sub-title">📅 FECHA Y HORARIO DE LA CITA</span>
               <div class="date-flex-row">
                 <div class="date-badge-box">
-                  <span class="month">FECHA</span>
-                  <span class="day">{{ turnoBorrador.fecha }}</span>
+                  <span class="month">{{ turnoBorrador.fecha | fechaFormato:'mesAbrev' }}</span>
+                  <span class="day">{{ turnoBorrador.fecha | fechaFormato:'dia' }}</span>
                 </div>
                 <div class="time-badge-box">
                   <span class="clock-ico">🕒</span>

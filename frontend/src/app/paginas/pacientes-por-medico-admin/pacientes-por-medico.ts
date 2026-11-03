@@ -2,32 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MedicoService, TurnoService, NotificationService } from '../../services';
-import { Medico, Turno } from '../../models';
-
-export interface MedicoInfo {
-  id: number;
-  nombre: string;
-  especialidad: string;
-  subespecialidad: string;
-  matricula: string;
-  consultorio: string;
-  fotoUrl: string;
-}
-
-export interface PacienteCita {
-  id: number;
-  medicoId: number;
-  hora: string;
-  nombre: string;
-  dni: string;
-  numHistoriaClinica: string;
-  telefono: string;
-  obraSocial: string;
-  planAfiliado: string;
-  motivo: string;
-  estado: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente';
-  fecha: string;
-}
+import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 
 @Component({
   selector: 'app-pacientes-por-medico',

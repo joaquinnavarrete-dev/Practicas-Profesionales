@@ -1,16 +1,7 @@
 import { Injectable, signal } from '@angular/core';
+import { ConfirmOptions, ConfirmModalState } from '../models';
 
-export interface ConfirmOptions {
-  titulo?: string;
-  mensaje: string;
-  textoConfirmar?: string;
-  textoCancelar?: string;
-  tipo?: 'danger' | 'warning' | 'info';
-}
-
-export interface ConfirmModalState extends ConfirmOptions {
-  resolve: (value: boolean) => void;
-}
+export type { ConfirmOptions, ConfirmModalState };
 
 @Injectable({
   providedIn: 'root'

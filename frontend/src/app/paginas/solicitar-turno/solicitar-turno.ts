@@ -9,22 +9,13 @@ import { PacienteService } from '../../services/paciente.service';
 import { DiaAtencionService } from '../../services/dia-atencion.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
-import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion } from '../../models';
-
-export interface DiaCalendario {
-  fechaStr: string;
-  numeroDia: number;
-  esMesActual: boolean;
-  esPasado: boolean;
-  esHoy: boolean;
-  atiendeMedico: boolean;
-  estaSeleccionado: boolean;
-}
+import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion, DiaCalendario } from '../../models';
+import { FechaFormatoPipe } from '../../pipes';
 
 @Component({
   selector: 'app-solicitar-turno',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe],
   templateUrl: './solicitar-turno.html',
   styleUrl: './solicitar-turno.css'
 })

@@ -3,20 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { UsuarioService, NotificationService, ConfirmModalService } from '../../services';
-import { Usuario } from '../../models';
-
-export interface UsuarioSistema {
-  id: number;
-  username: string;
-  nombre: string;
-  apellido: string;
-  email: string;
-  dni: string;
-  rol: string;
-  ultimoIngreso: string;
-  estado: 'Activo' | 'Bloqueado';
-  avatarUrl: string;
-}
+import { Usuario, UsuarioSistema } from '../../models';
 
 @Component({
   selector: 'app-usuarios-admin',

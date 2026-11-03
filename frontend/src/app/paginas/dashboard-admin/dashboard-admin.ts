@@ -2,24 +2,8 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TurnoService, MedicoService, PacienteService, AuthService } from '../../services';
-import { Turno, Medico, Paciente } from '../../models';
-
-export interface DemandaEspecialidad {
-  nombre: string;
-  turnos: number;
-  porcentaje: number;
-  color: string;
-}
-
-export interface ProximoTurno {
-  hora: string;
-  paciente: string;
-  dni: string;
-  medico: string;
-  especialidad: string;
-  obraSocial: string;
-  estado: 'En Espera' | 'Confirmado' | 'Atendido';
-}
+import { Turno, Medico, Paciente, DemandaEspecialidad, ProximoTurno } from '../../models';
+import { formatearFecha } from '../../utils/date.utils';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -54,10 +38,7 @@ export class DashboardAdminComponent implements OnInit {
   }
 
   private formatearFechaHoy(): void {
-    const hoy = new Date();
-    const opciones: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    const formato = hoy.toLocaleDateString('es-AR', opciones);
-    this.fechaHoyTexto = formato.charAt(0).toUpperCase() + formato.slice(1);
+    this.fechaHoyTexto = formatearFecha(new Date(), 'completa');
   }
 
   cargarDatosDashboard(): void {

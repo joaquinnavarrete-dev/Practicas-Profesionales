@@ -9,11 +9,13 @@ import { ObraSocialService } from '../../services/obra-social.service';
 import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Turno, Paciente, ObraSocial, ActualizarPerfilPacienteRequest } from '../../models';
+import { FechaFormatoPipe } from '../../pipes';
+import { obtenerDia, obtenerMesAbreviado, formatearFechaLegible } from '../../utils/date.utils';
 
 @Component({
   selector: 'app-portal-paciente',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe],
   templateUrl: './portal-paciente.html',
   styleUrl: './portal-paciente.css'
 })
@@ -204,37 +206,15 @@ export class PortalPacienteComponent implements OnInit {
   }
 
   obtenerDia(fecha: string): string {
-    if (!fecha) return '';
-    const partes = fecha.split('-');
-    return partes[2] || '';
+    return obtenerDia(fecha);
   }
 
   obtenerMesAbreviado(fecha: string): string {
-    if (!fecha) return '';
-    const meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-    const partes = fecha.split('-');
-    const mesIdx = parseInt(partes[1], 10) - 1;
-    return meses[mesIdx] || '';
+    return obtenerMesAbreviado(fecha);
   }
 
   formatearFechaLegible(fecha: string): string {
-    if (!fecha) return '';
-    const partes = fecha.split('-');
-    if (partes.length < 3) return fecha;
-
-    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const meses = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ];
-
-    const d = new Date(parseInt(partes[0], 10), parseInt(partes[1], 10) - 1, parseInt(partes[2], 10));
-    const diaSem = diasSemana[d.getDay()];
-    const diaNum = partes[2];
-    const mesNom = meses[parseInt(partes[1], 10) - 1];
-    const anio = partes[0];
-
-    return `${diaSem} ${diaNum} de ${mesNom}, ${anio}`;
+    return formatearFechaLegible(fecha);
   }
 }
 

@@ -3,18 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { EspecialidadService, MedicoService, NotificationService, ConfirmModalService } from '../../services';
-import { Especialidad, Medico } from '../../models';
-
-export interface EspecialidadRow {
-  id: number;
-  nombre: string;
-  departamento: string;
-  duracion: number;
-  medicos: number;
-  estado: string;
-  icono: string;
-  bgClase: string;
-}
+import { Especialidad, Medico, EspecialidadRow } from '../../models';
 
 @Component({
   selector: 'app-especialidades-admin',

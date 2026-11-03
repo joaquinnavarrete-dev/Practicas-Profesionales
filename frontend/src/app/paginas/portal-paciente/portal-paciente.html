@@ -130,7 +130,7 @@
           <div class="highlight-info">
             <span class="highlight-label">TU PRÓXIMA ATENCIÓN PROGRAMADA:</span>
             <strong class="highlight-text">
-              {{ formatearFechaLegible(proximo.fecha) }} a las {{ proximo.hora }} hs con Dr(a). {{ proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
+              {{ proximo.fecha | fechaFormato:'completa' }} a las {{ proximo.hora }} hs con Dr(a). {{ proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
             </strong>
           </div>
           <span class="badge-status-confirmed">Confirmado</span>
@@ -153,8 +153,8 @@
           <div class="appointment-card" *ngFor="let t of turnosActivos()">
 
             <div class="card-date-badge">
-              <span class="badge-month">{{ obtenerMesAbreviado(t.fecha) }}</span>
-              <strong class="badge-day">{{ obtenerDia(t.fecha) }}</strong>
+              <span class="badge-month">{{ t.fecha | fechaFormato:'mesAbrev' }}</span>
+              <strong class="badge-day">{{ t.fecha | fechaFormato:'dia' }}</strong>
               <span class="badge-time">{{ t.hora }} hs</span>
             </div>
 
@@ -177,7 +177,7 @@
               </div>
 
               <p class="date-full-text">
-                🗓️ <strong>{{ formatearFechaLegible(t.fecha) }}</strong> a las <strong>{{ t.hora }} hs</strong>
+                🗓️ <strong>{{ t.fecha | fechaFormato:'completa' }}</strong> a las <strong>{{ t.hora }} hs</strong>
               </p>
             </div>
 
@@ -213,8 +213,8 @@
           <div class="appointment-card card-past" *ngFor="let t of turnosPasados()">
 
             <div class="card-date-badge past-badge">
-              <span class="badge-month">{{ obtenerMesAbreviado(t.fecha) }}</span>
-              <strong class="badge-day">{{ obtenerDia(t.fecha) }}</strong>
+              <span class="badge-month">{{ t.fecha | fechaFormato:'mesAbrev' }}</span>
+              <strong class="badge-day">{{ t.fecha | fechaFormato:'dia' }}</strong>
               <span class="badge-time">{{ t.hora }} hs</span>
             </div>
 
@@ -228,7 +228,7 @@
               </h3>
 
               <p class="date-full-text muted">
-                Atención finalizada el {{ formatearFechaLegible(t.fecha) }}
+                Atención finalizada el {{ t.fecha | fechaFormato:'completa' }}
               </p>
             </div>
 

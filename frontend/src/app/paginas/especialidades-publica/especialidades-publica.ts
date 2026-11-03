@@ -3,17 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { EspecialidadService } from '../../services';
-import { Especialidad } from '../../models';
-
-interface EspecialidadItem {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  atencion24hs: boolean;
-  icono: string;
-  colorClase: string;
-  etiquetas: string[];
-}
+import { Especialidad, EspecialidadItem } from '../../models';
 
 @Component({
   selector: 'app-especialidades-publica',

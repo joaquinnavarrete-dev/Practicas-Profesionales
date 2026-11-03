@@ -3,19 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ObraSocialService, NotificationService, ConfirmModalService } from '../../services';
-import { ObraSocial as ObraSocialModel } from '../../models';
-
-export interface ObraSocialItem {
-  id: number;
-  nombre: string;
-  sigla: string;
-  tipo: 'Prepaga' | 'Obra Social' | 'Sindical';
-  codigoRns: string;
-  planesAdmitidos: string;
-  copagoSugerido: string;
-  estado: 'Activa' | 'En Revisión' | 'Suspendida';
-  logoUrl: string;
-}
+import { ObraSocial as ObraSocialModel, ObraSocialItem } from '../../models';
 
 @Component({
   selector: 'app-obras-sociales-admin',
