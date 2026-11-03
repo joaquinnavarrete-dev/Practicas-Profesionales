@@ -41,6 +41,7 @@ export class SolicitarTurnoComponent implements OnInit {
   readonly diasAtencionMedico = signal<DiaAtencion[]>([]);
   readonly cargandoDiasAtencion = signal<boolean>(false);
   readonly fechaMesVisual = signal<Date>(new Date());
+  readonly fechaSeleccionada = signal<string>('');
 
   readonly turnosDisponibles = signal<TurnoDisponible[]>([]);
   readonly cargandoDisponibles = signal<boolean>(false);
@@ -89,7 +90,7 @@ export class SolicitarTurnoComponent implements OnInit {
     const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
 
     const diasSet = this.diasSemanaAtencion();
-    const fechaSeleccionada = this.turnoBorrador.fecha;
+    const fechaSeleccionada = this.fechaSeleccionada();
 
     const primerDiaMes = new Date(year, month, 1);
     const diaSemanaInicio = primerDiaMes.getDay() === 0 ? 7 : primerDiaMes.getDay();
@@ -190,6 +191,7 @@ export class SolicitarTurnoComponent implements OnInit {
     const mm = String(hoy.getMonth() + 1).padStart(2, '0');
     const dd = String(hoy.getDate()).padStart(2, '0');
     this.fechaMinima = `${yyyy}-${mm}-${dd}`;
+    this.fechaSeleccionada.set(this.fechaMinima);
     this.turnoBorrador.fecha = this.fechaMinima;
     this.fechaMesVisual.set(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
 
@@ -292,6 +294,7 @@ export class SolicitarTurnoComponent implements OnInit {
         const mm = String(candidato.getMonth() + 1).padStart(2, '0');
         const dd = String(candidato.getDate()).padStart(2, '0');
         const fechaStr = `${yyyy}-${mm}-${dd}`;
+        this.fechaSeleccionada.set(fechaStr);
         this.turnoBorrador.fecha = fechaStr;
         this.fechaMesVisual.set(new Date(candidato.getFullYear(), candidato.getMonth(), 1));
         seleccionado = true;
@@ -300,6 +303,7 @@ export class SolicitarTurnoComponent implements OnInit {
     }
 
     if (!seleccionado) {
+      this.fechaSeleccionada.set(this.fechaMinima);
       this.turnoBorrador.fecha = this.fechaMinima;
     }
 
@@ -319,20 +323,9 @@ export class SolicitarTurnoComponent implements OnInit {
 
   seleccionarDiaCalendario(dia: DiaCalendario): void {
     if (dia.esPasado || !dia.esMesActual || !dia.atiendeMedico) return;
+    this.fechaSeleccionada.set(dia.fechaStr);
     this.turnoBorrador.fecha = dia.fechaStr;
     this.turnoBorrador.hora = '';
-    this.cargarDisponibilidad();
-  }
-
-  onFechaManualCambio(nuevaFecha: string): void {
-    this.turnoBorrador.fecha = nuevaFecha;
-    this.turnoBorrador.hora = '';
-    if (nuevaFecha) {
-      const partes = nuevaFecha.split('-');
-      if (partes.length === 3) {
-        this.fechaMesVisual.set(new Date(Number(partes[0]), Number(partes[1]) - 1, 1));
-      }
-    }
     this.cargarDisponibilidad();
   }
 
