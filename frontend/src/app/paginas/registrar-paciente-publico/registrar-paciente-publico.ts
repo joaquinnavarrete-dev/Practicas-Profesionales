@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ObraSocialService } from '../../services/obra-social.service';
+import { NotificationService } from '../../services/notification.service';
 import { ObraSocial, RegistroPacienteRequest } from '../../models';
 
 @Component({
@@ -16,13 +17,13 @@ import { ObraSocial, RegistroPacienteRequest } from '../../models';
 export class RegistrarPacientePublicoComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly obraSocialService = inject(ObraSocialService);
+  private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
 
   readonly obrasSociales = signal<ObraSocial[]>([]);
   readonly cargandoObrasSociales = signal<boolean>(true);
   readonly cargandoRegistro = signal<boolean>(false);
-  readonly errorMessage = signal<string>('');
-  readonly successMessage = signal<string>('');
+  readonly intentoEnvio = signal<boolean>(false);
 
   pacienteForm = {
     nombre: '',
@@ -65,27 +66,52 @@ export class RegistrarPacientePublicoComponent implements OnInit {
     });
   }
 
-  registrarUsuarioPublico(): void {
-    this.errorMessage.set('');
-    this.successMessage.set('');
+  campoInvalido(campo: string): boolean {
+    if (!this.intentoEnvio()) return false;
+    switch (campo) {
+      case 'nombre':
+        return !this.pacienteForm.nombre.trim();
+      case 'apellido':
+        return !this.pacienteForm.apellido.trim();
+      case 'dni':
+        return !this.pacienteForm.dni.trim();
+      case 'telefono':
+        return !this.pacienteForm.telefono.trim();
+      case 'nombreUsuario':
+        return !this.pacienteForm.nombreUsuario.trim();
+      case 'password':
+        return !this.pacienteForm.password || this.pacienteForm.password.length < 6;
+      case 'confirmPassword':
+        return !this.pacienteForm.confirmPassword || this.pacienteForm.password !== this.pacienteForm.confirmPassword;
+      case 'idObraSocial':
+        return !this.pacienteForm.idObraSocial;
+      default:
+        return false;
+    }
+  }
 
-    if (!this.pacienteForm.nombre.trim() ||
+  registrarUsuarioPublico(): void {
+    this.intentoEnvio.set(true);
+
+    if (
+      !this.pacienteForm.nombre.trim() ||
       !this.pacienteForm.apellido.trim() ||
       !this.pacienteForm.dni.trim() ||
       !this.pacienteForm.telefono.trim() ||
       !this.pacienteForm.nombreUsuario.trim() ||
-      !this.pacienteForm.idObraSocial) {
-      this.errorMessage.set('Por favor, complete todos los campos obligatorios marcados con (*).');
+      !this.pacienteForm.idObraSocial
+    ) {
+      this.notify.show('warning', 'Por favor, complete todos los campos obligatorios marcados con (*).', 'Campos Incompletos');
       return;
     }
 
     if (this.pacienteForm.password.length < 6) {
-      this.errorMessage.set('La contraseña debe tener un mínimo de 6 caracteres.');
+      this.notify.show('warning', 'La contraseña debe tener un mínimo de 6 caracteres.', 'Contraseña Inválida');
       return;
     }
 
     if (this.pacienteForm.password !== this.pacienteForm.confirmPassword) {
-      this.errorMessage.set('Las contraseñas ingresadas no coinciden. Por favor, verifíquelas.');
+      this.notify.show('warning', 'Las contraseñas ingresadas no coinciden. Por favor, verifíquelas.', 'Contraseñas Diferentes');
       return;
     }
 
@@ -104,21 +130,23 @@ export class RegistrarPacientePublicoComponent implements OnInit {
     this.authService.registroPaciente(payload).subscribe({
       next: () => {
         this.cargandoRegistro.set(false);
-        this.successMessage.set('¡Registro exitoso! Tu cuenta ha sido creada e iniciaste sesión.');
+        this.notify.show('success', '¡Registro exitoso! Tu cuenta ha sido creada e iniciaste sesión.', '¡Bienvenido!');
 
         setTimeout(() => {
           this.router.navigate(['/mi-portal']);
-        }, 1500);
+        }, 1200);
       },
       error: (err) => {
         this.cargandoRegistro.set(false);
         console.error('Error en auto-registro:', err);
         if (err.status === 409) {
-          this.errorMessage.set(err.error?.message || 'Ya existe un paciente con el mismo DNI o un usuario con ese nombre de usuario.');
+          const mensaje = err.error?.message || 'Ya existe un paciente con el mismo DNI o un usuario con ese nombre de usuario.';
+          this.notify.show('error', mensaje, 'Datos Ya Registrados');
         } else if (err.status === 0) {
-          this.errorMessage.set('No se pudo conectar con el servidor. Verifique que el backend esté en ejecución.');
+          this.notify.show('error', 'No se pudo conectar con el servidor. Verifique que el backend esté en ejecución.', 'Error de Conexión');
         } else {
-          this.errorMessage.set(err.error?.message || 'Ocurrió un error al procesar el registro. Intente nuevamente.');
+          const mensaje = err.error?.message || 'Ocurrió un error al procesar el registro. Intente nuevamente.';
+          this.notify.show('error', mensaje, 'Error de Registro');
         }
       }
     });
