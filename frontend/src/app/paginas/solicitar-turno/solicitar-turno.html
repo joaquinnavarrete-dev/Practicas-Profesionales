@@ -253,19 +253,6 @@
               </div>
             </div>
 
-            <!-- Selector de fecha manual / fallback -->
-            <div class="manual-date-opt">
-              <label for="inputFechaManual">O elija manualmente:</label>
-              <input
-                id="inputFechaManual"
-                type="date"
-                class="input-date-control"
-                [min]="fechaMinima"
-                [ngModel]="turnoBorrador.fecha"
-                (ngModelChange)="onFechaManualCambio($event)"
-              />
-            </div>
-
             <!-- Leyenda explicativa -->
             <div class="cal-legend">
               <span><i class="dot-green"></i> Con atención</span>
