@@ -12,23 +12,6 @@
   <main class="public-form-container">
     <form class="auth-form-card" (ngSubmit)="registrarUsuarioPublico()">
 
-      <div *ngIf="errorMessage()" class="register-alert error">
-        <svg viewBox="0 0 24 24" class="alert-icon" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <span>{{ errorMessage() }}</span>
-      </div>
-
-      <div *ngIf="successMessage()" class="register-alert success">
-        <svg viewBox="0 0 24 24" class="alert-icon" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-        <span>{{ successMessage() }}</span>
-      </div>
-
       <div class="form-section">
         <h3 class="section-title">1. Datos de Acceso al Portal</h3>
         <p class="section-desc">Estas credenciales te servirán para iniciar sesión en tu panel personal.</p>
@@ -37,13 +20,14 @@
           <div class="form-group">
             <label>NOMBRE DE USUARIO / EMAIL *</label>
             <input type="text" [(ngModel)]="pacienteForm.nombreUsuario" name="nombreUsuario"
-              placeholder="Ej: juanperez o juan@email.com" autocomplete="username" required />
+              placeholder="Ej: juanperez o juan@email.com" autocomplete="username"
+              [class.is-invalid]="campoInvalido('nombreUsuario')" required />
           </div>
 
           <div class="form-group">
             <label>TELÉFONO / CELULAR *</label>
             <input type="text" [(ngModel)]="pacienteForm.telefono" name="telefono" placeholder="Ej: 3814123456"
-              autocomplete="tel" required />
+              autocomplete="tel" [class.is-invalid]="campoInvalido('telefono')" required />
           </div>
         </div>
 
@@ -51,13 +35,14 @@
           <div class="form-group">
             <label>CONTRASEÑA (MÍNIMO 6 CARACTERES) *</label>
             <input type="password" [(ngModel)]="pacienteForm.password" name="password" placeholder="••••••••"
-              autocomplete="new-password" required />
+              autocomplete="new-password" [class.is-invalid]="campoInvalido('password')" required />
           </div>
 
           <div class="form-group">
             <label>REPETIR CONTRASEÑA *</label>
             <input type="password" [(ngModel)]="pacienteForm.confirmPassword" name="confirmPassword"
-              placeholder="••••••••" autocomplete="new-password" required />
+              placeholder="••••••••" autocomplete="new-password"
+              [class.is-invalid]="campoInvalido('confirmPassword')" required />
           </div>
         </div>
       </div>
@@ -69,13 +54,13 @@
           <div class="form-group">
             <label>NOMBRE(S) *</label>
             <input type="text" [(ngModel)]="pacienteForm.nombre" name="nombre" placeholder="Como figura en tu DNI"
-              required />
+              [class.is-invalid]="campoInvalido('nombre')" required />
           </div>
 
           <div class="form-group">
             <label>APELLIDO(S) *</label>
             <input type="text" [(ngModel)]="pacienteForm.apellido" name="apellido" placeholder="Como figura en tu DNI"
-              required />
+              [class.is-invalid]="campoInvalido('apellido')" required />
           </div>
         </div>
 
@@ -83,7 +68,7 @@
           <div class="form-group">
             <label>DNI / DOCUMENTO *</label>
             <input type="text" [(ngModel)]="pacienteForm.dni" name="dni" placeholder="Ej: 42333444 (sin puntos)"
-              required />
+              [class.is-invalid]="campoInvalido('dni')" required />
           </div>
 
           <div class="form-group">
@@ -114,7 +99,8 @@
         <div class="form-grid-2">
           <div class="form-group">
             <label>OBRA SOCIAL / PREPAGA *</label>
-            <select [(ngModel)]="pacienteForm.idObraSocial" name="idObraSocial" required>
+            <select [(ngModel)]="pacienteForm.idObraSocial" name="idObraSocial"
+              [class.is-invalid]="campoInvalido('idObraSocial')" required>
               <option [ngValue]="null" disabled *ngIf="cargandoObrasSociales()">Cargando coberturas disponibles...
               </option>
               <option [ngValue]="null" disabled *ngIf="!cargandoObrasSociales()">Seleccione su cobertura médica</option>
