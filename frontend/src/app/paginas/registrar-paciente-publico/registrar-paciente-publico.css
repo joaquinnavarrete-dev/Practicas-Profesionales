@@ -136,6 +136,18 @@
   box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
 }
 
+.form-group input.is-invalid,
+.form-group select.is-invalid {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+.form-group input.is-invalid:focus,
+.form-group select.is-invalid:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
 .form-actions-footer {
   display: flex;
   flex-direction: column;
