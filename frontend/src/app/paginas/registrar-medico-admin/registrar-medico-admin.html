@@ -21,13 +21,13 @@
         <div class="form-grid-2">
           <div class="form-group">
             <label>NOMBRE(S) *</label>
-            <input type="text" [(ngModel)]="medicoForm.nombre" name="nombre" placeholder="Ej. Roberto Carlos"
+            <input type="text" [(ngModel)]="medicoForm.nombre" (blur)="autoGenerarUsuario()" name="nombre" placeholder="Ej. Roberto Carlos"
               required />
           </div>
 
           <div class="form-group">
             <label>APELLIDO(S) *</label>
-            <input type="text" [(ngModel)]="medicoForm.apellido" name="apellido" placeholder="Ej. Giménez" required />
+            <input type="text" [(ngModel)]="medicoForm.apellido" (blur)="autoGenerarUsuario()" name="apellido" placeholder="Ej. Giménez" required />
           </div>
         </div>
 
@@ -63,6 +63,49 @@
                 {{ esp.nombre }}
               </option>
             </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-header-row">
+          <div>
+            <h3 class="section-title">3. Cuenta de Usuario para Acceso al Sistema</h3>
+            <p class="section-sub">Credenciales que utilizará el profesional para iniciar sesión y acceder a su agenda.</p>
+          </div>
+          <label class="toggle-user-account">
+            <input type="checkbox" [(ngModel)]="medicoForm.crearCuentaUsuario" name="crearCuentaUsuario" />
+            <span>Crear cuenta de acceso</span>
+          </label>
+        </div>
+
+        <div *ngIf="medicoForm.crearCuentaUsuario" class="user-account-fields">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>NOMBRE DE USUARIO *</label>
+              <input type="text" [(ngModel)]="medicoForm.nombreUsuario" name="nombreUsuario" placeholder="Ej. dr.gimenez"
+                required />
+              <small class="field-help">Identificador único para login (mínimo 3 caracteres, sin espacios).</small>
+            </div>
+
+            <div class="form-group">
+              <label>ROL ASIGNADO</label>
+              <input type="text" value="MÉDICO (Agenda, Pacientes y Turnos)" disabled />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>CONTRASEÑA INICIAL *</label>
+              <input type="password" [(ngModel)]="medicoForm.contrasena" name="contrasena" placeholder="Mínimo 6 caracteres"
+                required />
+            </div>
+
+            <div class="form-group">
+              <label>CONFIRMAR CONTRASEÑA *</label>
+              <input type="password" [(ngModel)]="medicoForm.confirmarContrasena" name="confirmarContrasena"
+                placeholder="Repita la contraseña" required />
+            </div>
           </div>
         </div>
       </div>
