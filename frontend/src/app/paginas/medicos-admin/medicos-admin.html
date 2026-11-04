@@ -104,7 +104,8 @@
                 <span class="doctor-avatar">👨‍⚕️</span>
                 <div class="doctor-info">
                   <strong class="doctor-name">Dr(a). {{ m.nombre }} {{ m.apellido }}</strong>
-                  <small class="doctor-email">ID #{{ m.idMedico }}</small>
+                  <small class="doctor-email" *ngIf="m.idUsuario">👤 Usuario: {{ m.nombreUsuario || ('ID #' + m.idUsuario) }}</small>
+                  <small class="doctor-email" *ngIf="!m.idUsuario">ID #{{ m.idMedico }} • Sin cuenta</small>
                 </div>
               </div>
             </td>

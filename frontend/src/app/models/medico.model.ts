@@ -8,6 +8,7 @@ export interface Medico {
   telefono: string;
   especialidad: Especialidad;
   idUsuario?: number;
+  nombreUsuario?: string;
 }
 
 export interface MedicoRequest {
