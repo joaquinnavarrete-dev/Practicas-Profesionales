@@ -6,7 +6,6 @@
   min-height: 100vh;
 }
 
-/* TOPBAR */
 .topbar-admin {
   height: 64px;
   background-color: #ffffff;
@@ -31,7 +30,9 @@
   gap: 0.6rem;
 }
 
-.module-icon { font-size: 1.15rem; }
+.module-icon {
+  font-size: 1.15rem;
+}
 
 .module-title {
   font-size: 0.98rem;
@@ -120,7 +121,6 @@
   color: #64748b;
 }
 
-/* CUERPO PRINCIPAL */
 .admin-main-body {
   padding: 2rem 2.25rem 3rem;
   display: flex;
@@ -165,7 +165,6 @@
   border-color: #94a3b8;
 }
 
-/* FILTROS */
 .filters-card {
   display: flex;
   align-items: flex-end;
@@ -177,7 +176,7 @@
 }
 
 .search-patient-box {
-  flex: 1.5;
+  flex: 2.4;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -209,7 +208,7 @@
 }
 
 .select-doctor-box {
-  flex: 2;
+  flex: 1.3;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -253,7 +252,6 @@
   height: 38px;
 }
 
-/* FICHA DEL MÉDICO */
 .doctor-summary-banner {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -340,10 +338,14 @@
   color: #0f172a;
 }
 
-.kpi-mini.green strong { color: #16a34a; }
-.kpi-mini.blue strong { color: #004b93; }
+.kpi-mini.green strong {
+  color: #16a34a;
+}
 
-/* TABLA DE DATOS */
+.kpi-mini.blue strong {
+  color: #004b93;
+}
+
 .data-table-container {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -449,7 +451,6 @@
   color: #475569;
 }
 
-/* ESTADOS */
 .badge-status {
   display: inline-flex;
   align-items: center;
@@ -479,7 +480,9 @@
   color: #b91c1c;
 }
 
-.col-actions { text-align: right; }
+.col-actions {
+  text-align: right;
+}
 
 .action-buttons-group {
   display: inline-flex;
@@ -505,7 +508,6 @@
   color: #64748b;
 }
 
-/* PAGINACIÓN */
 .table-pagination-footer {
   display: flex;
   align-items: center;
@@ -551,6 +553,7 @@
     align-items: flex-start;
     gap: 1rem;
   }
+
   .doc-stats-pills {
     width: 100%;
     flex-wrap: wrap;
@@ -561,41 +564,50 @@
   .admin-main-body {
     padding: 1.25rem 1rem 2rem;
   }
+
   .page-title-row {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
+
   .btn-export {
     width: 100%;
     justify-content: center;
     text-align: center;
   }
+
   .filters-card {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
+
   .select-doctor-box,
   .date-picker-box,
   .select-status-box {
     width: 100%;
     flex: none;
   }
+
   .btn-reset-filters {
     width: 100%;
     text-align: center;
   }
+
   .doc-stats-pills {
     flex-direction: column;
   }
+
   .pill-stat {
     width: 100%;
   }
+
   .data-table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+
   .data-table {
     min-width: 720px;
   }
