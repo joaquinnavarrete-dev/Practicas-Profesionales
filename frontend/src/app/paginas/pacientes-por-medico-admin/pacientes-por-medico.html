@@ -48,8 +48,9 @@
       <div class="select-doctor-box">
         <label>MÉDICO PROFESIONAL:</label>
         <select [ngModel]="medicoSeleccionadoId()" (ngModelChange)="onSeleccionarMedico($event)">
+          <option [value]="0">Seleccione un profesional...</option>
           <option *ngFor="let med of medicos()" [value]="med.id">
-            {{ med.nombre }} — {{ med.especialidad }} ({{ med.consultorio }})
+            {{ med.nombre }}
           </option>
         </select>
       </div>
@@ -180,7 +181,13 @@
             </td>
           </tr>
 
-          <tr *ngIf="!cargando() && pacientesFiltrados().length === 0">
+          <tr *ngIf="!cargando() && !medicoSeleccionadoId()">
+            <td colspan="7" class="empty-table-row">
+              <span>👨‍⚕️ Por favor, seleccione un profesional médico para consultar su nómina de pacientes citados.</span>
+            </td>
+          </tr>
+
+          <tr *ngIf="!cargando() && medicoSeleccionadoId() && pacientesFiltrados().length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron pacientes agendados para este profesional con los filtros aplicados.</span>
             </td>
@@ -188,7 +195,7 @@
         </tbody>
       </table>
 
-      <div class="table-pagination-footer">
+      <div class="table-pagination-footer" *ngIf="medicoSeleccionadoId()">
         <span class="pagination-legend">
           Mostrando {{ pacientesFiltrados().length }} pacientes citados
         </span>
