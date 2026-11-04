@@ -8,12 +8,6 @@
       </div>
     </div>
 
-    <div class="topbar-search">
-      <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar por nombre, apellido, DNI o cobertura..." [ngModel]="busquedaGlobal()"
-        (ngModelChange)="busquedaGlobal.set($event)" />
-    </div>
-
     <div class="topbar-right">
       <a routerLink="/registro" class="btn-create-modal">
         <span class="plus-symbol">+</span> Nuevo Paciente
@@ -59,6 +53,15 @@
     </div>
 
     <div class="filters-card">
+      <div class="filter-group filter-search-group">
+        <label>BUSCAR:</label>
+        <div class="input-search-inner">
+          <span class="search-lens">🔍</span>
+          <input type="text" placeholder="Buscar por nombre, apellido, DNI o cobertura..." [ngModel]="busquedaGlobal()"
+            (ngModelChange)="busquedaGlobal.set($event)" />
+        </div>
+      </div>
+
       <div class="filter-group">
         <label>OBRA SOCIAL / PREPAGA:</label>
         <select [ngModel]="obraSocialFiltro()" (ngModelChange)="obraSocialFiltro.set($event)">

@@ -176,6 +176,38 @@
   border-radius: 12px;
 }
 
+.search-patient-box {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.input-search-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.input-search-inner:focus-within {
+  border-color: #004b93;
+  box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+}
+
+.input-search-inner input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.84rem;
+  color: #0f172a;
+  background: transparent;
+}
+
 .select-doctor-box {
   flex: 2;
   display: flex;

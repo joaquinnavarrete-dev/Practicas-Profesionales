@@ -8,12 +8,6 @@
       </div>
     </div>
 
-    <div class="topbar-search">
-      <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar especialidad, código, departamento..." [ngModel]="terminoGlobal()"
-        (ngModelChange)="terminoGlobal.set($event)" />
-    </div>
-
     <div class="topbar-right">
       <div class="profile-card">
         <div class="avatar-ph">👩‍⚕️</div>
@@ -41,7 +35,7 @@
     <div class="filters-card">
       <div class="filter-search-box">
         <span class="lens-icon">🔍</span>
-        <input type="text" placeholder="Buscar especialidad por nombre..." [ngModel]="filtroNombre()"
+        <input type="text" placeholder="Buscar por especialidad o departamento..." [ngModel]="filtroNombre()"
           (ngModelChange)="filtroNombre.set($event)" />
       </div>
 

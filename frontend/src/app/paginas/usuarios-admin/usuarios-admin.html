@@ -8,12 +8,6 @@
       </div>
     </div>
 
-    <div class="topbar-search">
-      <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar usuario por nombre o username..." [ngModel]="busquedaGlobal()"
-        (ngModelChange)="busquedaGlobal.set($event)" />
-    </div>
-
     <div class="topbar-right">
       <div class="profile-card">
         <div class="avatar-ph">👩‍⚕️</div>
@@ -70,6 +64,15 @@
     </div>
 
     <div class="filters-card">
+      <div class="filter-group filter-search-group">
+        <label>BUSCAR:</label>
+        <div class="input-search-inner">
+          <span class="search-lens">🔍</span>
+          <input type="text" placeholder="Buscar usuario por nombre o username..." [ngModel]="busquedaGlobal()"
+            (ngModelChange)="busquedaGlobal.set($event)" />
+        </div>
+      </div>
+
       <div class="filter-group">
         <label>ROL DE ACCESO:</label>
         <select [ngModel]="rolFiltro()" (ngModelChange)="rolFiltro.set($event)">

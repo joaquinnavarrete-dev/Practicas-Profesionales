@@ -8,12 +8,6 @@
       </div>
     </div>
 
-    <div class="topbar-search">
-      <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar por profesional, especialidad o matrícula..." [ngModel]="busquedaGlobal()"
-        (ngModelChange)="busquedaGlobal.set($event)" />
-    </div>
-
     <div class="topbar-right">
       <button class="btn-create-modal" (click)="abrirModalCrear()">
         <span class="plus-symbol">+</span> Nuevo Médico
@@ -60,6 +54,15 @@
     </div>
 
     <div class="filters-card">
+      <div class="filter-group filter-search-group">
+        <label>BUSCAR:</label>
+        <div class="input-search-inner">
+          <span class="search-lens">🔍</span>
+          <input type="text" placeholder="Buscar por profesional, especialidad o matrícula..." [ngModel]="busquedaGlobal()"
+            (ngModelChange)="busquedaGlobal.set($event)" />
+        </div>
+      </div>
+
       <div class="filter-group">
         <label>ESPECIALIDAD:</label>
         <select [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event)">

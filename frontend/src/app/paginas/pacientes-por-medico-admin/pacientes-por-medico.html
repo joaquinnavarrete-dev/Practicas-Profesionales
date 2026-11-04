@@ -1,22 +1,11 @@
 <div class="admin-view-wrapper">
 
-  <!-- Topbar administrativo superior -->
   <header class="topbar-admin">
     <div class="topbar-left">
       <div class="module-title-box">
         <span class="module-icon">👥</span>
         <h2 class="module-title">Gestión de Pacientes por Médico</h2>
       </div>
-    </div>
-
-    <div class="topbar-search">
-      <span class="search-lens">🔍</span>
-      <input 
-        type="text" 
-        placeholder="Buscar paciente, DNI, número de historia clínica..." 
-        [ngModel]="busquedaGlobal()"
-        (ngModelChange)="busquedaGlobal.set($event)"
-      />
     </div>
 
     <div class="topbar-right">
@@ -30,10 +19,8 @@
     </div>
   </header>
 
-  <!-- Contenido principal -->
   <section class="admin-main-body">
 
-    <!-- Encabezado de página -->
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">Nómina de Pacientes Citados</h1>
@@ -47,10 +34,17 @@
       </div>
     </div>
 
-    <!-- Panel de Selección de Médico y Filtros -->
     <div class="filters-card">
-      
-      <!-- Selector de Médico -->
+
+      <div class="search-patient-box">
+        <label>BUSCAR PACIENTE:</label>
+        <div class="input-search-inner">
+          <span class="search-lens">🔍</span>
+          <input type="text" placeholder="Buscar por nombre, DNI, historia clínica..." [ngModel]="busquedaGlobal()"
+            (ngModelChange)="busquedaGlobal.set($event)" />
+        </div>
+      </div>
+
       <div class="select-doctor-box">
         <label>MÉDICO PROFESIONAL:</label>
         <select [ngModel]="medicoSeleccionadoId()" (ngModelChange)="onSeleccionarMedico($event)">
@@ -60,13 +54,11 @@
         </select>
       </div>
 
-      <!-- Selector de Fecha -->
       <div class="date-picker-box">
         <label>FECHA DE CITA:</label>
         <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event)" />
       </div>
 
-      <!-- Filtro Estado -->
       <div class="select-status-box">
         <label>ESTADO:</label>
         <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
@@ -83,7 +75,6 @@
       </button>
     </div>
 
-    <!-- Ficha Resumen del Médico Seleccionado -->
     <div class="doctor-summary-banner" *ngIf="medicoActual() as med">
       <div class="doc-avatar-large">{{ med.fotoUrl }}</div>
       <div class="doc-meta-info">
@@ -115,7 +106,6 @@
       </div>
     </div>
 
-    <!-- Tabla de Pacientes -->
     <div class="data-table-container">
       <table class="data-table">
         <thead>
@@ -138,12 +128,10 @@
           </tr>
 
           <tr *ngFor="let p of pacientesFiltrados()">
-            <!-- Hora -->
             <td>
               <span class="time-tag">🕒 {{ p.hora }}</span>
             </td>
 
-            <!-- Nombre Paciente -->
             <td>
               <div class="patient-cell">
                 <strong class="patient-name">{{ p.nombre }}</strong>
@@ -151,7 +139,6 @@
               </div>
             </td>
 
-            <!-- DNI / HC -->
             <td>
               <div class="hc-cell">
                 <span>DNI {{ p.dni }}</span>
@@ -159,7 +146,6 @@
               </div>
             </td>
 
-            <!-- Obra Social -->
             <td>
               <div class="coverage-cell">
                 <strong class="os-name">{{ p.obraSocial }}</strong>
@@ -167,27 +153,21 @@
               </div>
             </td>
 
-            <!-- Motivo -->
             <td>
               <span class="motivo-text" [title]="p.motivo">{{ p.motivo || 'Control de rutina' }}</span>
             </td>
 
-            <!-- Estado -->
             <td>
-              <span 
-                class="badge-status" 
-                [ngClass]="{
+              <span class="badge-status" [ngClass]="{
                   'status-confirmado': p.estado === 'Confirmado',
                   'status-espera': p.estado === 'En Espera',
                   'status-atendido': p.estado === 'Atendido',
                   'status-ausente': p.estado === 'Ausente'
-                }"
-              >
+                }">
                 ● {{ p.estado }}
               </span>
             </td>
 
-            <!-- Acciones -->
             <td class="col-actions">
               <div class="action-buttons-group">
                 <button class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
@@ -200,7 +180,6 @@
             </td>
           </tr>
 
-          <!-- Estado Vacío -->
           <tr *ngIf="!cargando() && pacientesFiltrados().length === 0">
             <td colspan="7" class="empty-table-row">
               <span>🔍 No se encontraron pacientes agendados para este profesional con los filtros aplicados.</span>
@@ -209,7 +188,6 @@
         </tbody>
       </table>
 
-      <!-- Footer Paginación -->
       <div class="table-pagination-footer">
         <span class="pagination-legend">
           Mostrando {{ pacientesFiltrados().length }} pacientes citados

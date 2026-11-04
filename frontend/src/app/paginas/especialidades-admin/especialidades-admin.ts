@@ -19,7 +19,6 @@ export class EspecialidadesAdminComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
 
-  readonly terminoGlobal = signal<string>('');
   readonly filtroNombre = signal<string>('');
   readonly filtroDepto = signal<string>('Todos');
   readonly filtroEstado = signal<string>('Todas');
@@ -29,20 +28,18 @@ export class EspecialidadesAdminComponent implements OnInit {
   readonly totalMedicosRegistrados = signal<number>(0);
 
   readonly listaFiltrada = computed(() => {
-    const qGlobal = this.terminoGlobal().toLowerCase().trim();
     const qNombre = this.filtroNombre().toLowerCase().trim();
     const fDepto = this.filtroDepto();
     const fEstado = this.filtroEstado();
     const lista = this.especialidades();
 
     return lista.filter(item => {
-      const matchGlobal = !qGlobal ||
-        item.nombre.toLowerCase().includes(qGlobal) ||
-        (qGlobal.length >= 3 && item.departamento.toLowerCase().includes(qGlobal));
-      const matchNombre = !qNombre || item.nombre.toLowerCase().includes(qNombre);
+      const matchNombre = !qNombre ||
+        item.nombre.toLowerCase().includes(qNombre) ||
+        item.departamento.toLowerCase().includes(qNombre);
       const matchDepto = fDepto === 'Todos' || item.departamento === fDepto;
       const matchEstado = fEstado === 'Todas' || item.estado === fEstado;
-      return matchGlobal && matchNombre && matchDepto && matchEstado;
+      return matchNombre && matchDepto && matchEstado;
     });
   });
 
@@ -102,7 +99,6 @@ export class EspecialidadesAdminComponent implements OnInit {
   }
 
   resetearFiltros(): void {
-    this.terminoGlobal.set('');
     this.filtroNombre.set('');
     this.filtroDepto.set('Todos');
     this.filtroEstado.set('Todas');

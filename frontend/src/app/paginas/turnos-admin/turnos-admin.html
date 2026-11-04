@@ -8,12 +8,6 @@
       </div>
     </div>
 
-    <div class="topbar-search">
-      <span class="search-lens">🔍</span>
-      <input type="text" placeholder="Buscar por paciente, DNI, médico o especialidad..." [ngModel]="busquedaGlobal()"
-        (ngModelChange)="busquedaGlobal.set($event)" />
-    </div>
-
     <div class="topbar-right">
       <a routerLink="/turnos/solicitar" class="btn-create-modal">
         <span class="plus-symbol">+</span> Nuevo Turno
@@ -59,6 +53,15 @@
     </div>
 
     <div class="filters-card">
+      <div class="filter-group filter-search-group">
+        <label>BUSCAR:</label>
+        <div class="input-search-inner">
+          <span class="search-lens">🔍</span>
+          <input type="text" placeholder="Buscar por paciente, DNI, médico o especialidad..." [ngModel]="busquedaGlobal()"
+            (ngModelChange)="busquedaGlobal.set($event)" />
+        </div>
+      </div>
+
       <div class="filter-group">
         <label>FECHA:</label>
         <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event)" />
