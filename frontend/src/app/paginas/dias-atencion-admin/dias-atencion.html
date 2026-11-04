@@ -64,12 +64,8 @@
       <div class="schedule-days-col">
         <span class="col-caption">DÍAS DE ATENCIÓN:</span>
         <div class="days-squares-row">
-          <div
-            *ngFor="let d of item.diasSemanaCuadritos"
-            class="day-square"
-            [class.active]="d.activo"
-            [attr.title]="d.activo ? (d.nombre + ': ' + d.horario + ' hs') : (d.nombre + ': Sin atención')"
-          >
+          <div *ngFor="let d of item.diasSemanaCuadritos" class="day-square" [class.active]="d.activo"
+            [attr.title]="d.activo ? (d.nombre + ': ' + d.horario + ' hs') : (d.nombre + ': Sin atención')">
             <span class="day-code">{{ d.abrev }}</span>
             <span class="day-dot" *ngIf="d.activo"></span>
           </div>
@@ -89,10 +85,12 @@
       </div>
 
       <div class="action-col">
-        <span class="next-turn-badge" [class.badge-empty]="item.diasSemana.length === 0">{{ item.proximoDisponible }}</span>
-        <a [routerLink]="['/turnos/solicitar']" [queryParams]="{ idMedico: item.id }" class="btn-solicitar">
-          Sacar Turno →
-        </a>
+        <span class="next-turn-badge" [class.badge-empty]="item.diasSemana.length === 0">{{ item.proximoDisponible
+          }}</span>
+        <button type="button" class="btn-configurar-dias" (click)="abrirModalGestion(item)"
+          title="Modificar días y horarios de atención">
+          ✏️ Modificar Días
+        </button>
       </div>
 
     </div>
@@ -102,5 +100,110 @@
       <p>No se encontraron médicos que coincidan con los filtros seleccionados.</p>
     </div>
   </section>
+
+  <div class="modal-backdrop-overlay" *ngIf="modalAbierto()" (click)="cerrarModal()">
+    <div class="modal-dialog-card" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-header-info" *ngIf="medicoSeleccionado() as med">
+          <div class="modal-avatar">{{ med.fotoUrl }}</div>
+          <div>
+            <h2>Gestión de Días de Atención</h2>
+            <p class="modal-sub">
+              <strong>{{ med.nombre }}</strong> • {{ med.especialidad }} (Mat. {{ med.matricula }})
+            </p>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="cerrarModal()" title="Cerrar ventana">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="modal-section">
+          <h3 class="section-heading">📅 Días y Horarios Asignados</h3>
+          <p class="section-desc">Modifique las horas de inicio y fin de cada jornada o elimine un día asignado.</p>
+
+          <div *ngIf="cargandoAccion()" class="modal-loading-box">
+            <div class="spinner-small"></div>
+            <span>Guardando cambios en tiempo real...</span>
+          </div>
+
+          <div *ngIf="diasEdicion().length === 0 && !cargandoAccion()" class="empty-dias-box">
+            <span>⚠️ Este profesional no posee ningún día de atención configurado actualmente.</span>
+          </div>
+
+          <div class="dias-table-list" *ngIf="diasEdicion().length > 0">
+            <div class="dia-row-card" *ngFor="let dia of diasEdicion()">
+              <div class="dia-name-box">
+                <span class="calendar-ico">🗓️</span>
+                <strong>{{ dia.nombreDia }}</strong>
+              </div>
+
+              <div class="time-inputs-box">
+                <div class="time-field">
+                  <label>Desde:</label>
+                  <input type="time" [(ngModel)]="dia.horaInicio" class="time-control" />
+                </div>
+                <span class="time-sep">a</span>
+                <div class="time-field">
+                  <label>Hasta:</label>
+                  <input type="time" [(ngModel)]="dia.horaFin" class="time-control" />
+                </div>
+              </div>
+
+              <div class="dia-actions-box">
+                <button type="button" class="btn-save-dia" (click)="guardarHorarioDia(dia)"
+                  [disabled]="cargandoAccion()" title="Guardar horario de este día">
+                  💾 Guardar
+                </button>
+                <button type="button" class="btn-delete-dia" (click)="eliminarDiaAtencion(dia)"
+                  [disabled]="cargandoAccion()" title="Quitar este día de atención">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-section add-section">
+          <h3 class="section-heading">➕ Asignar Nuevo Día de Atención</h3>
+          <p class="section-desc">Seleccione el día de la semana y configure el rango horario disponible.</p>
+
+          <div class="add-day-form">
+            <div class="add-field">
+              <label>DÍA DE LA SEMANA:</label>
+              <select [(ngModel)]="nuevoDiaForm.diaSemana" class="form-control">
+                <option *ngFor="let d of DIAS_BASE" [value]="d.numero">
+                  {{ d.nombre }}
+                </option>
+              </select>
+            </div>
+
+            <div class="add-field">
+              <label>HORA INICIO:</label>
+              <input type="time" [(ngModel)]="nuevoDiaForm.horaInicio" class="form-control" />
+            </div>
+
+            <div class="add-field">
+              <label>HORA FIN:</label>
+              <input type="time" [(ngModel)]="nuevoDiaForm.horaFin" class="form-control" />
+            </div>
+
+            <div class="add-btn-wrapper">
+              <button type="button" class="btn-add-schedule" (click)="agregarNuevoDia()" [disabled]="cargandoAccion()">
+                ➕ Asignar Día
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-dismiss" (click)="cerrarModal()">Listo / Cerrar</button>
+      </div>
+
+    </div>
+  </div>
 
 </div>
