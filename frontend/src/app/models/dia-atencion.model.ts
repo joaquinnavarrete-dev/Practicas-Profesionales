@@ -42,4 +42,5 @@ export interface MedicoAtencion {
   franjaHoraria: string;
   consultorio: string;
   proximoDisponible: string;
+  diasAtencionOriginales?: DiaAtencion[];
 }
