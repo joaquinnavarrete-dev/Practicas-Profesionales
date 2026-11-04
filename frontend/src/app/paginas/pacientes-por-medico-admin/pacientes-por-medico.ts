@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MedicoService, TurnoService, NotificationService } from '../../services';
+import { MedicoService, TurnoService, NotificationService, AuthService } from '../../services';
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 
 @Component({
@@ -15,6 +15,7 @@ export class PacientesPorMedicoComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly turnoService = inject(TurnoService);
   private readonly notify = inject(NotificationService);
+  readonly authService = inject(AuthService);
 
   readonly busquedaGlobal = signal<string>('');
   readonly medicoSeleccionadoId = signal<number>(0);
@@ -27,12 +28,15 @@ export class PacientesPorMedicoComponent implements OnInit {
 
   readonly medicoActual = computed(() => {
     const id = Number(this.medicoSeleccionadoId());
+    if (!id) return undefined;
     return this.medicos().find(m => m.id === id);
   });
 
   readonly pacientesFiltrados = computed(() => {
-    const query = this.busquedaGlobal().toLowerCase().trim();
     const idMed = Number(this.medicoSeleccionadoId());
+    if (!idMed) return [];
+
+    const query = this.busquedaGlobal().toLowerCase().trim();
     const fFecha = this.fechaFiltro();
     const fEstado = this.estadoFiltro();
     const lista = this.pacientes();
@@ -69,12 +73,12 @@ export class PacientesPorMedicoComponent implements OnInit {
           fotoUrl: '👨‍⚕️'
         }));
         this.medicos.set(mapped);
+        this.cargando.set(false);
 
-        if (mapped.length > 0) {
-          this.medicoSeleccionadoId.set(mapped[0].id);
-          this.cargarTurnosDelMedico(mapped[0].id);
-        } else {
-          this.cargando.set(false);
+        const currentMedId = this.authService.currentUser()?.idMedico;
+        if (this.authService.isMedico() && currentMedId) {
+          this.medicoSeleccionadoId.set(currentMedId);
+          this.cargarTurnosDelMedico(currentMedId);
         }
       },
       error: (err: any) => {
@@ -87,11 +91,18 @@ export class PacientesPorMedicoComponent implements OnInit {
   onSeleccionarMedico(idStr: any): void {
     const id = Number(idStr);
     this.medicoSeleccionadoId.set(id);
-    this.cargarTurnosDelMedico(id);
+    if (id > 0) {
+      this.cargarTurnosDelMedico(id);
+    } else {
+      this.pacientes.set([]);
+    }
   }
 
   cargarTurnosDelMedico(idMedico: number): void {
-    if (!idMedico) return;
+    if (!idMedico) {
+      this.pacientes.set([]);
+      return;
+    }
 
     this.cargando.set(true);
     this.turnoService.listarTodos().subscribe({
@@ -147,6 +158,10 @@ export class PacientesPorMedicoComponent implements OnInit {
     this.busquedaGlobal.set('');
     this.fechaFiltro.set('');
     this.estadoFiltro.set('Todos');
+    if (!this.authService.isMedico()) {
+      this.medicoSeleccionadoId.set(0);
+      this.pacientes.set([]);
+    }
   }
 
   exportarListado(): void {
