@@ -22,6 +22,12 @@ export class Navbar {
     this.authService.isLoggedIn() && !this.esPersonalClinico()
   );
 
+  readonly rutaInicioBrand = computed(() => {
+    if (!this.authService.isLoggedIn()) return '/';
+    if (this.esPaciente()) return '/mi-portal';
+    return '/admin';
+  });
+
   toggleMenuMovil(): void {
     this.menuMovilAbierto.update(v => !v);
   }

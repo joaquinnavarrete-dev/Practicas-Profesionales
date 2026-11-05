@@ -1,5 +1,5 @@
 <header class="navbar-portal">
-  <div class="brand-group" routerLink="/" [fragment]="'inicio'">
+  <div class="brand-group" [routerLink]="rutaInicioBrand()">
     <div class="logo-shield">
       <svg viewBox="0 0 24 24" class="shield-svg" fill="currentColor">
         <path
@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <nav class="nav-links">
+  <nav class="nav-links" *ngIf="!authService.isLoggedIn()">
     <a routerLink="/" [fragment]="'inicio'">Inicio</a>
     <a routerLink="/" [fragment]="'nosotros'">La Clínica</a>
     <a routerLink="/" [fragment]="'especialidades'">Especialidades</a>
@@ -22,7 +22,8 @@
   </nav>
 
   <div class="nav-actions">
-    <a routerLink="/" [fragment]="'guardia'" class="badge-guardia" style="text-decoration: none;">
+    <a *ngIf="!authService.isLoggedIn()" routerLink="/" [fragment]="'guardia'" class="badge-guardia"
+      style="text-decoration: none;">
       <span class="asterisk-icon">✱</span>
       <span>Guardia 24hs</span>
     </a>
@@ -77,7 +78,7 @@
 <div class="mobile-nav-backdrop" *ngIf="menuMovilAbierto()" (click)="cerrarMenuMovil()"></div>
 
 <nav class="mobile-nav-drawer" *ngIf="menuMovilAbierto()">
-  <div class="mobile-nav-links">
+  <div class="mobile-nav-links" *ngIf="!authService.isLoggedIn()">
     <a routerLink="/" [fragment]="'inicio'" (click)="cerrarMenuMovil()">
       🏠 Inicio
     </a>
@@ -99,8 +100,14 @@
     <a routerLink="/turnos/solicitar" class="mobile-link-turno" (click)="cerrarMenuMovil()">
       📅 Sacar Turno Online
     </a>
+  </div>
+
+  <div class="mobile-nav-links" *ngIf="authService.isLoggedIn()">
     <a *ngIf="esPaciente()" routerLink="/mi-portal" (click)="cerrarMenuMovil()">
-      📋 Mis Turnos y Perfil
+      📋 Mi Portal de Paciente
+    </a>
+    <a *ngIf="esPaciente()" routerLink="/turnos/solicitar" class="mobile-link-turno" (click)="cerrarMenuMovil()">
+      📅 Solicitar Nuevo Turno
     </a>
     <a *ngIf="esPersonalClinico()" routerLink="/admin" class="mobile-link-admin" (click)="cerrarMenuMovil()">
       ⚙️ Panel Administrativo
