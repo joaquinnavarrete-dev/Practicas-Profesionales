@@ -94,10 +94,6 @@ export class TurnosAdminComponent implements OnInit {
     });
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   resetearFiltros(): void {
     this.busquedaGlobal.set('');
     this.fechaFiltro.set('');

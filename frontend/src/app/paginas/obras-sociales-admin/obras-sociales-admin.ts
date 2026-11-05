@@ -100,10 +100,6 @@ export class ObrasSocialesAdminComponent implements OnInit {
     };
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   contarPorEstado(estado: string): number {
     return this.obrasSociales().filter(os => os.estado === estado).length;
   }

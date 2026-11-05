@@ -82,10 +82,6 @@ export class MedicosAdminComponent implements OnInit {
     });
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   resetearFiltros(): void {
     this.busquedaGlobal.set('');
     this.especialidadFiltro.set('Todas');

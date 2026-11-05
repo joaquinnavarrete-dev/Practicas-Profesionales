@@ -84,10 +84,6 @@ export class PacientesAdminComponent implements OnInit {
     });
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   resetearFiltros(): void {
     this.busquedaGlobal.set('');
     this.obraSocialFiltro.set('Todas');

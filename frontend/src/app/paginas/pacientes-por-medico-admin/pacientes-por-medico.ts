@@ -146,10 +146,6 @@ export class PacientesPorMedicoComponent implements OnInit {
     });
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   contarPorEstado(estado: string): number {
     const idMed = Number(this.medicoSeleccionadoId());
     return this.pacientes().filter(p => p.medicoId === idMed && p.estado === estado).length;

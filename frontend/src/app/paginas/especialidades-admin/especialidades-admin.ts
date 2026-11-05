@@ -95,10 +95,6 @@ export class EspecialidadesAdminComponent implements OnInit {
     });
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   resetearFiltros(): void {
     this.filtroNombre.set('');
     this.filtroDepto.set('Todos');

@@ -93,10 +93,6 @@ export class UsuariosAdminComponent implements OnInit {
     };
   }
 
-  aplicarFiltros(): void {
-    // Computado reactivamente por Signals
-  }
-
   contarPorRol(rol: string): number {
     return this.usuarios().filter(u => u.rol === rol).length;
   }
