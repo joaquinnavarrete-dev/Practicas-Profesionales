@@ -29,4 +29,8 @@ export class AdminLayout {
       this.cerrarSidebar();
     }
   }
+
+  cerrarSesion(): void {
+    this.authService.logout();
+  }
 }

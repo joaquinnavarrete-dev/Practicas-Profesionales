@@ -105,6 +105,37 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
+  .mobile-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .btn-mobile-logout {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .btn-mobile-logout:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+  }
+
+  .btn-mobile-logout .logout-icon {
+    width: 16px;
+    height: 16px;
+  }
+
   .sidebar-backdrop {
     display: block;
     position: fixed;
