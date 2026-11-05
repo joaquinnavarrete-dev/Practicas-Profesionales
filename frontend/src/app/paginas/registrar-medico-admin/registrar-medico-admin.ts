@@ -7,11 +7,12 @@ import { EspecialidadService } from '../../services/especialidad.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { NotificationService } from '../../services/notification.service';
 import { Especialidad, MedicoRequest, UsuarioRequest } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-registrar-medico-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './registrar-medico-admin.html',
   styleUrl: './registrar-medico-admin.css'
 })

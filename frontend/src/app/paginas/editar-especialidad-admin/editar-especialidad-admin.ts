@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { EspecialidadService, NotificationService, AuthService } from '../../services';
 import { Especialidad } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-editar-especialidad-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './editar-especialidad-admin.html',
   styleUrl: './editar-especialidad-admin.css'
 })

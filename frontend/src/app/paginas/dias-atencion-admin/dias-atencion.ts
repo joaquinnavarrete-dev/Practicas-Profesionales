@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MedicoService, DiaAtencionService, EspecialidadService, NotificationService, ConfirmModalService } from '../../services';
 import { Medico, DiaAtencion, DiaAtencionRequest, Especialidad, HorarioDiaSemana, FranjaDetalle, MedicoAtencion } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-dias-atencion',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent],
   templateUrl: './dias-atencion.html',
   styleUrl: './dias-atencion.css'
 })

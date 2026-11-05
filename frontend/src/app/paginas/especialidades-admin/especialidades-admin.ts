@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { EspecialidadService, MedicoService, NotificationService, ConfirmModalService } from '../../services';
 import { Especialidad, Medico, EspecialidadRow } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-especialidades-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './especialidades-admin.html',
   styleUrl: './especialidades-admin.css'
 })

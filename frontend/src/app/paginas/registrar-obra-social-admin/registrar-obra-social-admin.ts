@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ObraSocialService, NotificationService, AuthService } from '../../services';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-registrar-obra-social-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './registrar-obra-social-admin.html',
   styleUrl: './registrar-obra-social-admin.css'
 })

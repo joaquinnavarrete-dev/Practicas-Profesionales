@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { UsuarioService, NotificationService, AuthService } from '../../services';
 import { Usuario, PermisoModulo, RolPerfil, UsuarioDetalle } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-roles-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './roles-admin.html',
   styleUrl: './roles-admin.css'
 })

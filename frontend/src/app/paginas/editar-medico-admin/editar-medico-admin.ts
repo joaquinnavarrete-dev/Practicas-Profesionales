@@ -6,11 +6,12 @@ import { MedicoService } from '../../services/medico.service';
 import { EspecialidadService } from '../../services/especialidad.service';
 import { NotificationService } from '../../services/notification.service';
 import { Especialidad, MedicoRequest } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-editar-medico-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './editar-medico-admin.html',
   styleUrl: './editar-medico-admin.css'
 })

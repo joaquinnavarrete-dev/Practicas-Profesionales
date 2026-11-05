@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MedicoService, TurnoService, NotificationService, AuthService } from '../../services';
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-pacientes-por-medico',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent],
   templateUrl: './pacientes-por-medico.html',
   styleUrl: './pacientes-por-medico.css'
 })

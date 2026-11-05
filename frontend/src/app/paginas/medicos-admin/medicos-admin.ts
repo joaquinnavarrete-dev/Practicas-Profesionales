@@ -7,11 +7,12 @@ import { EspecialidadService } from '../../services/especialidad.service';
 import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Medico, Especialidad } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-medicos-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent],
   templateUrl: './medicos-admin.html',
   styleUrl: './medicos-admin.css'
 })

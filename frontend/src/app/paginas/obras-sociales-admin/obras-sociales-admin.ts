@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ObraSocialService, NotificationService, ConfirmModalService } from '../../services';
 import { ObraSocial as ObraSocialModel, ObraSocialItem } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-obras-sociales-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './obras-sociales-admin.html',
   styleUrl: './obras-sociales-admin.css'
 })

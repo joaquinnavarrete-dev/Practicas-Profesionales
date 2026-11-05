@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { TurnoService, MedicoService, PacienteService, AuthService } from '../../services';
 import { Turno, Medico, Paciente, DemandaEspecialidad, ProximoTurno } from '../../models';
 import { formatearFecha } from '../../utils/date.utils';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-dashboard-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AdminTopbarComponent],
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css'
 })

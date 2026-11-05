@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { UsuarioService, NotificationService, ConfirmModalService } from '../../services';
 import { Usuario, UsuarioSistema } from '../../models';
+import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
 @Component({
   selector: 'app-usuarios-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
   templateUrl: './usuarios-admin.html',
   styleUrl: './usuarios-admin.css'
 })
