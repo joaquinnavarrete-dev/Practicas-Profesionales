@@ -1,29 +1,14 @@
 <div class="admin-view-wrapper">
 
-  <header class="topbar-admin">
-    <div class="topbar-left">
-      <div class="module-title-box">
-        <span class="module-icon">🔑</span>
-        <h2 class="module-title">Gestión de Roles y Permisos</h2>
-      </div>
-    </div>
-
-    <div class="topbar-right">
-      <a routerLink="/admin/usuarios" class="btn-back-link">
-        ← Volver al Padrón de Usuarios
-      </a>
-
-      <div class="profile-card">
-        <div class="avatar-ph">{{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'A' }}</div>
-        <div class="profile-info">
-          <span class="profile-name">{{ authService.currentUser()?.nombreUsuario || 'Administrador' }}</span>
-          <span class="profile-role">{{ authService.userRole()?.replace('ROLE_', '') || 'Gestión Médica' }}</span>
-        </div>
-      </div>
-    </div>
-  </header>
+  <app-admin-topbar titulo="Gestión de Roles y Permisos" icono="🔑"></app-admin-topbar>
 
   <section class="admin-main-body">
+
+    <div class="back-nav-row" style="margin-bottom: 0.5rem;">
+      <a routerLink="/admin/usuarios" class="btn-back-link" style="color: #004b93; font-weight: 700; text-decoration: none;">
+        ← Volver al Padrón de Usuarios
+      </a>
+    </div>
 
     <div class="page-title-row">
       <div class="title-block">
