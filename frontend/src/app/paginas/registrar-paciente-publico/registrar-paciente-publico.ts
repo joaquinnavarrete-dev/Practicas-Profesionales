@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { PacienteService } from '../../services/paciente.service';
+import { ObraSocialService } from '../../services/obra-social.service'; // Revisá si tu archivo se llama así o está en otra carpeta
 
-/**
- * Componente Standalone para el Registro Público de Pacientes.
- * Permite que los usuarios externos se den de alta por su cuenta en la web de la clínica.
- */
 @Component({
   selector: 'app-registrar-paciente-publico',
   standalone: true,
@@ -14,52 +12,86 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './registrar-paciente-publico.html',
   styleUrl: './registrar-paciente-publico.css'
 })
-export class RegistrarPacientePublicoComponent {
+export class RegistrarPacientePublicoComponent implements OnInit {
 
-  /**
-   * Objeto DTO (Data Transfer Object) que almacena los datos ingresados en el formulario.
-   * Estructura lista para ser enviada mediante una petición HTTP POST al backend de Spring Boot.
-   */
   pacienteForm = {
-    nombre: '',            // Nombre(s) del paciente
-    apellido: '',          // Apellido(s) del paciente
-    dni: '',               // Documento de identidad único
-    fechaNacimiento: '',   // Fecha de nacimiento para historia clínica
-    genero: 'Masculino',   // Género seleccionado por defecto
-    telefono: '',          // Teléfono o celular de contacto
-    email: '',             // Correo electrónico (será su usuario de acceso)
-    password: '',          // Contraseña para su cuenta web
-    confirmPassword: '',   // Confirmación de contraseña
-    domicilio: '',         // Dirección física actual
-    obraSocial: 'Particular', // Obra social o prepaga elegida
-    planAfiliado: ''       // Número de credencial o plan
+    nombre: '',
+    apellido: '',
+    dni: '',
+    fechaNacimiento: '',
+    genero: 'Masculino',
+    telefono: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    domicilio: '',
+    idObraSocial: null as number | null,
+    planAfiliado: ''
   };
 
-  /**
-   * Constructor del componente.
-   * @param router Servicio de enrutamiento de Angular para redirigir tras el registro exitoso.
-   */
-  constructor(private router: Router) {}
+  obrasSociales: any[] = [];
+  errorMessage: string = '';
+  isLoading: boolean = false;
 
-  /**
-   * Método que se ejecuta al enviar el formulario de registro público.
-   * Valida las contraseñas y simula el envío al servidor.
-   */
-  registrarUsuarioPublico(): void {
-    // Validación básica de coincidencia de contraseñas
+  constructor(
+    private router: Router,
+    private pacienteService: PacienteService,
+    private obraSocialService: ObraSocialService
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarObrasSociales();
+  }
+
+  cargarObrasSociales(): void {
+    this.obraSocialService.listarObrasSociales().subscribe({
+      next: (data: any[]) => {
+        this.obrasSociales = data;
+      },
+      error: (err: any) => {
+        console.error('Error al cargar las obras sociales:', err);
+        this.errorMessage = 'No se pudieron cargar las obras sociales disponibles.';
+      }
+    });
+  }
+
+registrarUsuarioPublico(): void {
     if (this.pacienteForm.password !== this.pacienteForm.confirmPassword) {
-      alert('Las contraseñas ingresadas no coinciden. Por favor, verifíquelas.');
+      this.errorMessage = 'Las contraseñas ingresadas no coinciden.';
       return;
     }
 
-    // Registro en consola simulando el payload hacia Spring Boot (POST /api/auth/register-patient)
-    console.log('Enviando datos de autorregistro de paciente a Spring Boot:', this.pacienteForm);
+    if (!this.pacienteForm.idObraSocial) {
+      this.errorMessage = 'Por favor, selecciona una obra social válida.';
+      return;
+    }
 
-    // Mensaje de éxito para el usuario
-    alert('¡Registro exitoso! Ya puede iniciar sesión en su portal de pacientes.');
+    this.errorMessage = '';
+    this.isLoading = true;
 
-    // Redirige al usuario hacia la pantalla de inicio o login de la web pública
-    this.router.navigate(['/login']);
+    
+    // Es este objeto que armás antes de hacer el subscribe:
+    const payload = {
+      dni: this.pacienteForm.dni,
+      nombre: this.pacienteForm.nombre,
+      apellido: this.pacienteForm.apellido,
+      telefono: this.pacienteForm.telefono,
+      email: this.pacienteForm.email,         
+      password: this.pacienteForm.password,     
+      idObraSocial: Number(this.pacienteForm.idObraSocial)
+    };
+
+    this.pacienteService.registrarPaciente(payload).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        alert('¡Registro exitoso! Ya puede iniciar sesión.');
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Error en el registro:', err);
+        this.errorMessage = err.error?.message || 'Ocurrió un error al registrarse.';
+      }
+    });
   }
-
 }

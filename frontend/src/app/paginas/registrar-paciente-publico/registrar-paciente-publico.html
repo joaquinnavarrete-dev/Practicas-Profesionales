@@ -104,14 +104,17 @@
         <div class="form-grid-2">
           <!-- Selector de Obra Social -->
           <div class="form-group">
-            <label>OBRA SOCIAL / PREPAGA</label>
-            <select [(ngModel)]="pacienteForm.obraSocial" name="obraSocial">
-              <option value="Particular">Particular (Sin cobertura)</option>
-              <option value="OSDE">OSDE</option>
-              <option value="Swiss Medical">Swiss Medical</option>
-              <option value="Galeno">Galeno</option>
-              <option value="PAMI">PAMI</option>
-              <option value="OSECAC">OSECAC</option>
+            <label for="idObraSocial">Obra Social</label>
+            <select 
+              id="idObraSocial" 
+              [(ngModel)]="pacienteForm.idObraSocial" 
+              name="idObraSocial" 
+              class="form-control" 
+              required>
+              <option [ngValue]="null" disabled>Seleccione una obra social...</option>
+              <option *ngFor="let os of obrasSociales" [ngValue]="os.idObraSocial">
+                {{ os.nombre }}
+              </option>
             </select>
           </div>
 

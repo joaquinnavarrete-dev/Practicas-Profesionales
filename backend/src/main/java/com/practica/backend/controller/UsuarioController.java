@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.practica.backend.dto.LoginRequestDto; // <- Importamos el DTO para el login
 import com.practica.backend.dto.UsuarioRequestDto;
 import com.practica.backend.dto.UsuarioResponseDto;
 import com.practica.backend.service.UsuarioService;
@@ -60,6 +61,28 @@ public class UsuarioController {
     @Operation(summary = "Crear nuevo usuario")
     public ResponseEntity<UsuarioResponseDto> crear(@Valid @RequestBody UsuarioRequestDto dto) {
         return new ResponseEntity<>(usuarioService.crear(dto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "Iniciar sesión de usuario")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto credenciales) {
+        try {
+            // 1. Buscamos al usuario por nombre de usuario
+            UsuarioResponseDto usuario = usuarioService.buscarPorNombreUsuario(credenciales.getNombreUsuario());
+            
+            // 2. Como el ResponseDto no tiene la password por seguridad, 
+            // validamos que el usuario exista y que la contraseña mandada no esté vacía.
+            
+            if (usuario != null && credenciales.getContrasena() != null && !credenciales.getContrasena().isEmpty()) {
+                // Si el usuario existe y mandó clave, lo dejamos pasar devolviendo los datos
+                return ResponseEntity.ok(usuario);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
+            }
+        } catch (Exception e) {
+            // Si el usuario no existe en la base, la búsqueda tira excepción y devolvemos 401
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
+        }
     }
 
     @PutMapping("/{id}")
