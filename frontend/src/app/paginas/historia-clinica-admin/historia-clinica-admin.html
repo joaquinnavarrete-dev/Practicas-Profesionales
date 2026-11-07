@@ -1,0 +1,219 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Historia Clínica" icono="📋"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <button class="btn-back-link" (click)="volver()">
+          ← Volver al listado
+        </button>
+        <h1 class="main-heading">Historia Clínica del Paciente</h1>
+        <p class="sub-heading">Expediente médico confidencial, evolución diagnóstica y antecedentes de consulta.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-action-outline" (click)="imprimirHistoria()" title="Imprimir o Exportar PDF">
+          🖨️ Imprimir Expediente
+        </button>
+        <button class="btn-action-primary" (click)="toggleFormulario()">
+          {{ mostrarFormulario() ? '✖ Cerrar Formulario' : '➕ Registrar Evolución' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="patient-card" *ngIf="paciente() as pac">
+      <div class="patient-avatar-box">
+        <span class="patient-avatar-icon">👤</span>
+      </div>
+
+      <div class="patient-details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Paciente</span>
+          <strong class="detail-value patient-fullname">{{ pac.nombre }} {{ pac.apellido }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Documento Nacional</span>
+          <span class="detail-value highlight">DNI {{ pac.dni }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Teléfono de Contacto</span>
+          <span class="detail-value">📞 {{ pac.telefono }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Cobertura / Obra Social</span>
+          <span class="detail-value os-pill">
+            {{ pac.obraSocial?.nombre || 'Particular' }}
+            <span *ngIf="pac.obraSocial?.sigla">({{ pac.obraSocial.sigla }})</span>
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">N° de Historia Clínica</span>
+          <span class="detail-value badge-hc">HC-{{ pac.idPaciente }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="evolution-form-card" *ngIf="mostrarFormulario()">
+      <div class="form-header">
+        <h2 class="form-title">🩺 Nueva Evolución Médica</h2>
+        <p class="form-subtitle">Complete los campos de diagnóstico y tratamiento para incorporarlos al expediente del
+          paciente.</p>
+      </div>
+
+      <form (ngSubmit)="guardarEvolucion()" class="evolution-form">
+        <div class="form-row two-cols">
+          <div class="form-group">
+            <label class="form-label" for="formFecha">Fecha de Atención <span class="required">*</span></label>
+            <input type="date" id="formFecha" class="form-control" [(ngModel)]="formFecha" name="formFecha" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formMedico">Profesional Médico <span class="required">*</span></label>
+            <select id="formMedico" class="form-control" [(ngModel)]="formIdMedico" name="formMedico" required>
+              <option [ngValue]="0" disabled>-- Seleccione un profesional --</option>
+              <option *ngFor="let m of medicos()" [ngValue]="m.idMedico">
+                Dr(a). {{ m.nombre }} {{ m.apellido }} ({{ m.especialidad?.nombre || 'General' }} - Mat. {{ m.matricula
+                }})
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="formMotivo">Motivo de Consulta / Síntomas Iniciales <span
+              class="required">*</span></label>
+          <input type="text" id="formMotivo" class="form-control" [(ngModel)]="formMotivoConsulta" name="formMotivo"
+            placeholder="Ej: Dolor torácico moderado, cefalea persistente, control postquirúrgico..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="formDiagnostico">Diagnóstico Médico <span class="required">*</span></label>
+          <textarea id="formDiagnostico" class="form-control" rows="3" [(ngModel)]="formDiagnostico"
+            name="formDiagnostico" placeholder="Describa el juicio clínico o hallazgos del examen físico..."
+            required></textarea>
+        </div>
+
+        <div class="form-row two-cols">
+          <div class="form-group">
+            <label class="form-label" for="formTratamiento">Tratamiento e Indicaciones</label>
+            <textarea id="formTratamiento" class="form-control" rows="3" [(ngModel)]="formTratamiento"
+              name="formTratamiento"
+              placeholder="Fármacos prescriptos, posología, pautas de alarma o reposo..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formObservaciones">Observaciones / Estudios Solicitados</label>
+            <textarea id="formObservaciones" class="form-control" rows="3" [(ngModel)]="formObservaciones"
+              name="formObservaciones"
+              placeholder="Estudios complementarios solicitados, derivaciones, etc..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions-bar">
+          <button type="button" class="btn-cancel" (click)="toggleFormulario()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-submit" [disabled]="guardando()">
+            <span *ngIf="guardando()">Guardando registro...</span>
+            <span *ngIf="!guardando()">💾 Guardar en Historia Clínica</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="timeline-toolbar">
+      <div class="search-input-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar en diagnósticos, motivos, tratamientos o médico..."
+          [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)">
+        <button *ngIf="busqueda()" class="btn-clear-search" (click)="busqueda.set('')">✕</button>
+      </div>
+
+      <div class="records-counter">
+        <span>Total: <strong>{{ registrosFiltrados().length }}</strong> evoluciones</span>
+      </div>
+    </div>
+
+    <div class="timeline-container" *ngIf="!cargando()">
+
+      <div class="timeline-item" *ngFor="let reg of registrosFiltrados()">
+        <div class="timeline-marker">
+          <div class="timeline-dot"></div>
+          <div class="timeline-line"></div>
+        </div>
+
+        <div class="evolution-card">
+          <div class="card-top-meta">
+            <div class="date-badge-wrapper">
+              <span class="date-badge">📅 {{ reg.fecha | date:'dd/MM/yyyy' }}</span>
+              <span class="doctor-badge" *ngIf="reg.medico as med">
+                👨‍⚕️ Dr(a). {{ med.nombre }} {{ med.apellido }}
+                <span class="doc-esp">({{ med.especialidad?.nombre || 'General' }} - M.N. {{ med.matricula }})</span>
+              </span>
+            </div>
+
+            <div class="card-actions">
+              <button class="btn-delete-record" (click)="eliminarEvolucion(reg)" title="Eliminar registro">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <div class="content-block motivo-block">
+              <span class="block-label">Motivo de Consulta:</span>
+              <p class="motivo-text">{{ reg.motivoConsulta }}</p>
+            </div>
+
+            <div class="content-block diagnostico-block">
+              <span class="block-label">Diagnóstico:</span>
+              <div class="diagnostico-box">
+                <p>{{ reg.diagnostico }}</p>
+              </div>
+            </div>
+
+            <div class="content-grid-two" *ngIf="reg.tratamiento || reg.observaciones">
+              <div class="content-block" *ngIf="reg.tratamiento">
+                <span class="block-label">💊 Tratamiento / Prescripciones:</span>
+                <p class="treatment-text">{{ reg.tratamiento }}</p>
+              </div>
+
+              <div class="content-block" *ngIf="reg.observaciones">
+                <span class="block-label">📝 Observaciones Adicionales:</span>
+                <p class="obs-text">{{ reg.observaciones }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-timeline-state" *ngIf="registrosFiltrados().length === 0">
+        <div class="empty-icon">📁</div>
+        <h3>No se registran evoluciones médicas</h3>
+        <p *ngIf="!busqueda()">
+          Este paciente aún no cuenta con anotaciones registradas en su historia clínica. Utilice el botón superior para
+          agregar la primera evolución médica.
+        </p>
+        <p *ngIf="busqueda()">
+          No se encontraron evoluciones que coincidan con la búsqueda ingresada.
+        </p>
+        <button *ngIf="!mostrarFormulario() && !busqueda()" class="btn-action-primary" (click)="toggleFormulario()">
+          ➕ Registrar Primera Evolución
+        </button>
+      </div>
+
+    </div>
+
+    <div class="loading-state" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <p>Cargando historia clínica del paciente...</p>
+    </div>
+
+  </section>
+</div>
