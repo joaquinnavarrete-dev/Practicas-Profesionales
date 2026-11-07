@@ -28,6 +28,9 @@ public class MedicoRequestDto {
     @Size(max = 100, message = "La matrícula no puede superar los 100 caracteres")
     private String matricula;
 
+    @Size(max = 30, message = "El teléfono no puede superar los 30 caracteres")
+    private String telefono;
+
     @NotNull(message = "El id de especialidad es obligatorio")
     @io.swagger.v3.oas.annotations.media.Schema(description = "ID de la especialidad del médico", example = "1")
     private Integer idEspecialidad;

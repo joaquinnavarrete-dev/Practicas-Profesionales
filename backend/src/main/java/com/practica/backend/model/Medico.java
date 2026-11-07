@@ -39,6 +39,9 @@ public class Medico {
     @Column(name = "matricula", nullable = false, unique = true, length = 100)
     private String matricula;
 
+    @Column(name = "telefono", length = 30)
+    private String telefono;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_especialidad", nullable = false)
     private Especialidad especialidad;
