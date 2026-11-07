@@ -1,6 +1,7 @@
 export interface ObraSocial {
   idObraSocial: number;
   nombre: string;
+  sigla?: string;
 }
 
 export interface ObraSocialRequest {

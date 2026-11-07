@@ -29,6 +29,7 @@ export interface ActualizarPerfilPacienteRequest {
 export interface PacienteCita {
   id: number;
   medicoId: number;
+  pacienteId?: number;
   hora: string;
   nombre: string;
   dni: string;
