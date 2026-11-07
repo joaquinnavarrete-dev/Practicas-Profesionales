@@ -24,6 +24,7 @@ import { RegistrarObraSocialAdminComponent } from './paginas/registrar-obra-soci
 import { RegistrarEspecialidadAdminComponent } from './paginas/registrar-especialidad-admin/registrar-especialidad-admin';
 import { EditarEspecialidadAdminComponent } from './paginas/editar-especialidad-admin/editar-especialidad-admin';
 import { PortalPacienteComponent } from './paginas/portal-paciente/portal-paciente';
+import { HistoriaClinicaAdminComponent } from './paginas/historia-clinica-admin/historia-clinica-admin';
 
 export const routes: Routes = [
   {
@@ -53,6 +54,7 @@ export const routes: Routes = [
       { path: 'turnos', component: TurnosAdminComponent },
       { path: 'obras-sociales', component: ObrasSocialesAdminComponent },
       { path: 'pacientes', component: PacientesAdminComponent },
+      { path: 'pacientes/:idPaciente/historia-clinica', component: HistoriaClinicaAdminComponent },
       { path: 'medicos', component: MedicosAdminComponent },
       { path: 'usuarios', component: UsuariosAdminComponent },
       { path: 'usuarios/roles', component: RolesAdminComponent },
