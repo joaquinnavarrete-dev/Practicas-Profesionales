@@ -8,3 +8,4 @@ export * from './turno.service';
 export * from './usuario.service';
 export * from './notification.service';
 export * from './confirm-modal.service';
+export * from './historia-clinica.service';
