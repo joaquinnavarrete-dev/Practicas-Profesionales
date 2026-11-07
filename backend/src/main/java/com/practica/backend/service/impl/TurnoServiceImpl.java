@@ -326,6 +326,7 @@ public class TurnoServiceImpl implements TurnoService {
                     .nombre(entity.getMedico().getNombre())
                     .apellido(entity.getMedico().getApellido())
                     .matricula(entity.getMedico().getMatricula())
+                    .telefono(entity.getMedico().getTelefono())
                     .especialidad(espMedDto)
                     .idUsuario(idUsuarioMed)
                     .nombreUsuario(nombreUsuarioMed)

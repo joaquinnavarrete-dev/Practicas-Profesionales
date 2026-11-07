@@ -79,6 +79,7 @@ public class MedicoServiceImpl implements MedicoService {
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
                 .matricula(dto.getMatricula())
+                .telefono(dto.getTelefono())
                 .especialidad(especialidad)
                 .usuario(usuario)
                 .build();
@@ -118,6 +119,7 @@ public class MedicoServiceImpl implements MedicoService {
         medico.setNombre(dto.getNombre());
         medico.setApellido(dto.getApellido());
         medico.setMatricula(dto.getMatricula());
+        medico.setTelefono(dto.getTelefono());
         medico.setEspecialidad(especialidad);
 
         return mapToResponseDto(medicoRepository.save(medico));
@@ -149,6 +151,7 @@ public class MedicoServiceImpl implements MedicoService {
                 .nombre(entity.getNombre())
                 .apellido(entity.getApellido())
                 .matricula(entity.getMatricula())
+                .telefono(entity.getTelefono())
                 .especialidad(especialidadDto)
                 .idUsuario(idUsuario)
                 .nombreUsuario(nombreUsuario)
