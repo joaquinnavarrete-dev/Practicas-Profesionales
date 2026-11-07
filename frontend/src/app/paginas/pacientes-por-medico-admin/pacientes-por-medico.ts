@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MedicoService, TurnoService, NotificationService, AuthService } from '../../services';
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
@@ -16,6 +17,7 @@ export class PacientesPorMedicoComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly turnoService = inject(TurnoService);
   private readonly notify = inject(NotificationService);
+  private readonly router = inject(Router);
   readonly authService = inject(AuthService);
 
   readonly busquedaGlobal = signal<string>('');
@@ -122,6 +124,7 @@ export class PacientesPorMedicoComponent implements OnInit {
           return {
             id: t.idTurno,
             medicoId: t.medico?.idMedico || idMedico,
+            pacienteId: t.paciente?.idPaciente,
             hora: t.hora ? `${t.hora} hs` : '09:00 hs',
             nombre: t.paciente ? `${t.paciente.nombre} ${t.paciente.apellido}` : 'Paciente General',
             dni: t.paciente?.dni || 'Sin DNI',
@@ -166,7 +169,11 @@ export class PacientesPorMedicoComponent implements OnInit {
   }
 
   verHistoriaClinica(p: PacienteCita): void {
-    this.notify.info(`HC: ${p.numHistoriaClinica} • DNI: ${p.dni} • ${p.obraSocial}`, p.nombre);
+    if (p.pacienteId) {
+      this.router.navigate(['/admin/pacientes', p.pacienteId, 'historia-clinica']);
+    } else {
+      this.notify.info(`HC: ${p.numHistoriaClinica} • DNI: ${p.dni} • ${p.obraSocial}`, p.nombre);
+    }
   }
 
   cambiarEstado(p: PacienteCita): void {
