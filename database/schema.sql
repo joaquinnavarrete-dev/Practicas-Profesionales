@@ -48,6 +48,7 @@ CREATE TABLE medico (
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     matricula VARCHAR(100) NOT NULL,
+    telefono VARCHAR(30) NULL,
     id_especialidad INT NOT NULL,
     id_usuario INT NULL,
     CONSTRAINT pk_medico PRIMARY KEY (id_medico),
@@ -137,4 +138,35 @@ CREATE TABLE turno (
     INDEX idx_turno_paciente (id_paciente),
     INDEX idx_turno_medico_fecha (id_medico, fecha),
     INDEX idx_turno_fecha (fecha)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE historia_clinica (
+    id_historia_clinica INT NOT NULL AUTO_INCREMENT,
+    id_paciente INT NOT NULL,
+    id_medico INT NOT NULL,
+    id_turno INT NULL,
+    fecha DATE NOT NULL,
+    motivo_consulta VARCHAR(255) NOT NULL,
+    diagnostico TEXT NOT NULL,
+    tratamiento TEXT NULL,
+    observaciones TEXT NULL,
+    CONSTRAINT pk_historia_clinica PRIMARY KEY (id_historia_clinica),
+    CONSTRAINT fk_historia_clinica_paciente
+        FOREIGN KEY (id_paciente)
+        REFERENCES paciente (id_paciente)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_historia_clinica_medico
+        FOREIGN KEY (id_medico)
+        REFERENCES medico (id_medico)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_historia_clinica_turno
+        FOREIGN KEY (id_turno)
+        REFERENCES turno (id_turno)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    INDEX idx_historia_paciente (id_paciente),
+    INDEX idx_historia_medico (id_medico),
+    INDEX idx_historia_fecha (fecha)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
