@@ -10,3 +10,4 @@ export * from './dashboard.model';
 export * from './rol.model';
 export * from './calendario.model';
 export * from './ui.model';
+export * from './historia-clinica.model';
