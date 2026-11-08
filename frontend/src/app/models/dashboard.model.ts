@@ -6,6 +6,8 @@ export interface DemandaEspecialidad {
 }
 
 export interface ProximoTurno {
+  idTurno?: number;
+  idPaciente?: number;
   hora: string;
   paciente: string;
   dni: string;
@@ -13,5 +15,19 @@ export interface ProximoTurno {
   especialidad: string;
   obraSocial: string;
   estado: 'En Espera' | 'Confirmado' | 'Atendido';
+  motivo?: string;
 }
 
+export interface MetricaObraSocial {
+  nombre: string;
+  cantidad: number;
+  porcentaje: number;
+  color: string;
+}
+
+export interface MesRendimiento {
+  mesNombre: string;
+  totalAtendidos: number;
+  totalAusentes: number;
+  efectividad: number;
+}

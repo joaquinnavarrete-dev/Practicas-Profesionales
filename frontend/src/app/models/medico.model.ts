@@ -29,3 +29,28 @@ export interface MedicoInfo {
   consultorio: string;
   fotoUrl: string;
 }
+
+export interface HorarioCartelera {
+  diaNombre: string;
+  horaInicio: string;
+  horaFin: string;
+}
+
+export interface MedicoCartelera {
+  idMedico: number;
+  nombreCompleto: string;
+  especialidad: string;
+  consultorio: string;
+  telefono: string;
+  horarios: HorarioCartelera[];
+}
+
+export interface ColegaMedicoCard {
+  idMedico: number;
+  nombreCompleto: string;
+  especialidad: string;
+  matricula: string;
+  telefono: string;
+  consultorio: string;
+  diasAtencion: string[];
+}

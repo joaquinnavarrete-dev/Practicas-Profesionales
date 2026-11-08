@@ -11,3 +11,4 @@ export * from './rol.model';
 export * from './calendario.model';
 export * from './ui.model';
 export * from './historia-clinica.model';
+export * from './reporte.model';
