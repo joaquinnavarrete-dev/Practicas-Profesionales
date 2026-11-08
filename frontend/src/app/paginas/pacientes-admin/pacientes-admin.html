@@ -113,7 +113,7 @@
                 <a class="btn-action-icon" [routerLink]="['/admin/pacientes', p.idPaciente, 'historia-clinica']" title="Ver Historia Clínica">
                   📋
                 </a>
-                <button class="btn-action-icon danger" (click)="eliminarPaciente(p)" title="Eliminar Ficha">
+                <button *ngIf="authService.isAdmin()" class="btn-action-icon danger" (click)="eliminarPaciente(p)" title="Eliminar Ficha">
                   🗑️
                 </button>
               </div>

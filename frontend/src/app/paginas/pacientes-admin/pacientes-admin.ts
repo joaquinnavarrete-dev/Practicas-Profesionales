@@ -6,6 +6,7 @@ import { PacienteService } from '../../services/paciente.service';
 import { ObraSocialService } from '../../services/obra-social.service';
 import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
+import { AuthService } from '../../services/auth.service';
 import { Paciente, ObraSocial } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
@@ -22,6 +23,7 @@ export class PacientesAdminComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
   private readonly router = inject(Router);
+  readonly authService = inject(AuthService);
 
   readonly busquedaGlobal = signal<string>('');
   readonly obraSocialFiltro = signal<string>('Todas');
