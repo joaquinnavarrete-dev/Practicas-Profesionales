@@ -1,12 +1,12 @@
 <div class="patient-portal-wrapper">
 
-  <!-- HERO BANNER DEL PACIENTE -->
   <header class="patient-hero">
     <div class="hero-container">
 
       <div class="hero-identity">
         <div class="avatar-portal">
-          <span>{{ paciente()?.nombre?.charAt(0)?.toUpperCase() || authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'P' }}</span>
+          <span>{{ paciente()?.nombre?.charAt(0)?.toUpperCase() ||
+            authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'P' }}</span>
         </div>
 
         <div class="identity-text">
@@ -16,13 +16,14 @@
           </div>
 
           <h1 class="patient-name">
-            ¡Hola, {{ paciente() ? (paciente()?.nombre + ' ' + paciente()?.apellido) : (authService.currentUser()?.nombreUsuario || 'Paciente') }}!
+            ¡Hola, {{ paciente() ? (paciente()?.nombre + ' ' + paciente()?.apellido) :
+            (authService.currentUser()?.nombreUsuario || 'Paciente') }}!
           </h1>
           <p class="patient-lead">
-            Gestioná tus turnos médicos, revisá tu agenda de consultas y actualizá tus datos personales de forma sencilla.
+            Gestioná tus turnos médicos, revisá tu agenda de consultas y actualizá tus datos personales de forma
+            sencilla.
           </p>
 
-          <!-- CHIPS DE INFORMACIÓN RÁPIDA -->
           <div class="quick-chips-row" *ngIf="paciente() as p">
             <div class="info-chip">
               <span class="chip-icon">🪪</span>
@@ -45,7 +46,6 @@
         </div>
       </div>
 
-      <!-- BOTÓN CTA DESTACADO: NUEVO TURNO -->
       <div class="hero-actions">
         <a routerLink="/turnos/solicitar" class="btn-new-appointment">
           <span class="btn-icon">➕</span>
@@ -56,62 +56,37 @@
     </div>
   </header>
 
-  <!-- CONTENEDOR PRINCIPAL CON PESTAÑAS -->
   <main class="portal-main-content">
 
-    <!-- NAVEGACIÓN POR PESTAÑAS PRINCIPALES -->
     <nav class="portal-tabs-nav">
-      <button 
-        type="button" 
-        class="tab-btn" 
-        [class.active]="tabActiva() === 'turnos'"
-        (click)="cambiarTab('turnos')"
-      >
+      <button type="button" class="tab-btn" [class.active]="tabActiva() === 'turnos'" (click)="cambiarTab('turnos')">
         <span class="tab-icon">📅</span>
         <span>Mis Turnos Médicos</span>
         <span class="badge-count" *ngIf="turnosActivos().length > 0">{{ turnosActivos().length }}</span>
       </button>
 
-      <button 
-        type="button" 
-        class="tab-btn" 
-        [class.active]="tabActiva() === 'perfil'"
-        (click)="cambiarTab('perfil')"
-      >
+      <button type="button" class="tab-btn" [class.active]="tabActiva() === 'perfil'" (click)="cambiarTab('perfil')">
         <span class="tab-icon">👤</span>
         <span>Mis Datos y Cobertura</span>
       </button>
     </nav>
 
-    <!-- ESTADO DE CARGA GLOBAL -->
     <div *ngIf="cargando()" class="loading-state-card">
       <div class="spinner"></div>
       <p>Cargando información de tu portal médico...</p>
     </div>
 
-    <!-- ============================================== -->
-    <!-- PESTAÑA 1: MIS TURNOS MÉDICOS                  -->
-    <!-- ============================================== -->
     <div class="tab-panel" *ngIf="!cargando() && tabActiva() === 'turnos'">
 
-      <!-- SUB-FILTRO: PRÓXIMOS VS HISTORIAL -->
       <div class="subtabs-toolbar">
         <div class="subtabs-group">
-          <button 
-            type="button" 
-            class="subtab-btn" 
-            [class.active]="subtabTurnos() === 'proximos'"
-            (click)="cambiarSubtab('proximos')"
-          >
+          <button type="button" class="subtab-btn" [class.active]="subtabTurnos() === 'proximos'"
+            (click)="cambiarSubtab('proximos')">
             ⏰ Próximos Turnos ({{ turnosActivos().length }})
           </button>
 
-          <button 
-            type="button" 
-            class="subtab-btn" 
-            [class.active]="subtabTurnos() === 'historial'"
-            (click)="cambiarSubtab('historial')"
-          >
+          <button type="button" class="subtab-btn" [class.active]="subtabTurnos() === 'historial'"
+            (click)="cambiarSubtab('historial')">
             📋 Historial de Atenciones ({{ turnosPasados().length }})
           </button>
         </div>
@@ -121,34 +96,32 @@
         </a>
       </div>
 
-      <!-- VISTA: PRÓXIMOS TURNOS -->
       <section *ngIf="subtabTurnos() === 'proximos'" class="turnos-section">
 
-        <!-- ALERTA DE PRÓXIMO TURNO DESTACADO SI HAY AL MENOS 1 -->
         <div class="highlight-appointment-banner" *ngIf="proximoTurnoDestacado() as proximo">
           <div class="highlight-icon">🔔</div>
           <div class="highlight-info">
             <span class="highlight-label">TU PRÓXIMA ATENCIÓN PROGRAMADA:</span>
             <strong class="highlight-text">
-              {{ proximo.fecha | fechaFormato:'completa' }} a las {{ proximo.hora }} hs con Dr(a). {{ proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
+              {{ proximo.fecha | fechaFormato:'completa' }} a las {{ proximo.hora }} hs con Dr(a). {{
+              proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
             </strong>
           </div>
           <span class="badge-status-confirmed">Confirmado</span>
         </div>
 
-        <!-- ESTADO VACÍO SI NO HAY TURNOS ACTIVOS -->
         <div class="empty-state-card" *ngIf="turnosActivos().length === 0">
           <div class="empty-illustration">🗓️</div>
           <h3>No tenés turnos médicos programados</h3>
           <p>
-            Cuando solicites una cita con nuestros profesionales, aparecerá listada en esta sección con todos los detalles de atención.
+            Cuando solicites una cita con nuestros profesionales, aparecerá listada en esta sección con todos los
+            detalles de atención.
           </p>
           <a routerLink="/turnos/solicitar" class="btn-empty-action">
             ➕ Solicitar un Turno Ahora
           </a>
         </div>
 
-        <!-- LISTADO DE TARJETAS DE TURNOS ACTIVOS -->
         <div class="appointments-grid" *ngIf="turnosActivos().length > 0">
           <div class="appointment-card" *ngFor="let t of turnosActivos()">
 
@@ -184,12 +157,8 @@
             <div class="card-status-actions">
               <span class="badge-pill-success">✓ Programado</span>
 
-              <button 
-                type="button" 
-                class="btn-cancel-appointment" 
-                (click)="confirmarCancelacionTurno(t)"
-                title="Cancelar este turno"
-              >
+              <button type="button" class="btn-cancel-appointment" (click)="confirmarCancelacionTurno(t)"
+                title="Cancelar este turno">
                 <span class="trash-icon">✕</span>
                 <span>Cancelar Cita</span>
               </button>
@@ -200,7 +169,6 @@
 
       </section>
 
-      <!-- VISTA: HISTORIAL DE TURNOS PASADOS -->
       <section *ngIf="subtabTurnos() === 'historial'" class="turnos-section">
 
         <div class="empty-state-card" *ngIf="turnosPasados().length === 0">
@@ -243,9 +211,6 @@
 
     </div>
 
-    <!-- ============================================== -->
-    <!-- PESTAÑA 2: MIS DATOS PERSONALES Y COBERTURA    -->
-    <!-- ============================================== -->
     <div class="tab-panel" *ngIf="!cargando() && tabActiva() === 'perfil'">
 
       <div class="profile-card-wrapper">
@@ -260,7 +225,6 @@
 
         <form class="profile-form" (ngSubmit)="guardarPerfil()">
 
-          <!-- DATOS FIJOS / NO EDITABLES DIRECTAMENTE -->
           <div class="fixed-info-bar">
             <div class="fixed-item">
               <span class="fixed-label">DOCUMENTO DE IDENTIDAD (DNI)</span>
@@ -270,46 +234,30 @@
 
             <div class="fixed-item">
               <span class="fixed-label">USUARIO DE ACCESO</span>
-              <strong class="fixed-val">@{{ authService.currentUser()?.nombreUsuario }}</strong>
+              <strong class="fixed-val">{{ authService.currentUser()?.nombreUsuario }}</strong>
               <small class="fixed-hint">Credencial del portal web</small>
             </div>
           </div>
 
-          <!-- CAMPOS EDITABLES -->
           <div class="form-grid-2">
             <div class="form-group">
               <label>NOMBRE(S) *</label>
-              <input 
-                type="text" 
-                [(ngModel)]="perfilForm.nombre" 
-                name="nombre" 
-                placeholder="Como figura en tu DNI" 
-                required 
-              />
+              <input type="text" [(ngModel)]="perfilForm.nombre" name="nombre" placeholder="Como figura en tu DNI"
+                required />
             </div>
 
             <div class="form-group">
               <label>APELLIDO(S) *</label>
-              <input 
-                type="text" 
-                [(ngModel)]="perfilForm.apellido" 
-                name="apellido" 
-                placeholder="Como figura en tu DNI" 
-                required 
-              />
+              <input type="text" [(ngModel)]="perfilForm.apellido" name="apellido" placeholder="Como figura en tu DNI"
+                required />
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
               <label>TELÉFONO / CELULAR DE CONTACTO *</label>
-              <input 
-                type="text" 
-                [(ngModel)]="perfilForm.telefono" 
-                name="telefono" 
-                placeholder="Ej. 3814123456" 
-                required 
-              />
+              <input type="text" [(ngModel)]="perfilForm.telefono" name="telefono" placeholder="Ej. 3814123456"
+                required />
               <small class="field-hint">Se utilizará para recordatorios de tus citas médicas.</small>
             </div>
 
@@ -326,11 +274,7 @@
           </div>
 
           <div class="profile-actions-bar">
-            <button 
-              type="submit" 
-              class="btn-save-profile" 
-              [disabled]="guardandoPerfil()"
-            >
+            <button type="submit" class="btn-save-profile" [disabled]="guardandoPerfil()">
               <span *ngIf="!guardandoPerfil()">💾 Guardar Modificaciones</span>
               <span *ngIf="guardandoPerfil()">Actualizando datos...</span>
             </button>
@@ -345,4 +289,3 @@
   </main>
 
 </div>
-
