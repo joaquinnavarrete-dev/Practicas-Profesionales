@@ -45,28 +45,42 @@ export class RegistrarUsuarioAdminComponent {
 
     this.guardando.set(true);
 
-    let idRol = 3;
-    if (this.usuarioForm.rol === 'Administrador') {
-      idRol = 1;
-    } else if (this.usuarioForm.rol === 'Médico') {
-      idRol = 2;
-    }
+    this.usuarioService.listarRoles().subscribe({
+      next: (rolesBd) => {
+        const rolSeleccionado = this.usuarioForm.rol.toUpperCase();
+        const rolBd = rolesBd.find(rb => {
+          const nom = rb.nombre.toUpperCase();
+          if (rolSeleccionado.includes('ADMIN')) return nom.includes('ADMIN');
+          if (rolSeleccionado.includes('MÉD') || rolSeleccionado.includes('MED')) return nom.includes('MED');
+          if (rolSeleccionado.includes('RECEP')) return nom.includes('RECEP') || nom.includes('SECRETAR');
+          if (rolSeleccionado.includes('PACIENT')) return nom.includes('PACIENT');
+          return false;
+        });
 
-    this.usuarioService.crear({
-      nombreUsuario: this.usuarioForm.username.trim(),
-      password: this.usuarioForm.password,
-      idRol: idRol,
-      estado: true
-    }).subscribe({
-      next: (nuevoUsuario) => {
-        this.guardando.set(false);
-        this.notify.success(`¡Usuario @${nuevoUsuario.nombreUsuario} registrado exitosamente en el sistema!`);
-        this.router.navigate(['/admin/usuarios']);
+        const idRol = rolBd ? rolBd.idRol : 3;
+
+        this.usuarioService.crear({
+          nombreUsuario: this.usuarioForm.username.trim(),
+          password: this.usuarioForm.password,
+          idRol: idRol,
+          estado: true
+        }).subscribe({
+          next: (nuevoUsuario) => {
+            this.guardando.set(false);
+            this.notify.success(`¡Usuario ${nuevoUsuario.nombreUsuario} registrado exitosamente en el sistema!`);
+            this.router.navigate(['/admin/usuarios']);
+          },
+          error: (err) => {
+            this.guardando.set(false);
+            console.error('Error al registrar usuario en Spring Boot:', err);
+            this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para registrar el usuario.');
+          }
+        });
       },
       error: (err) => {
         this.guardando.set(false);
-        console.error('Error al registrar usuario en Spring Boot:', err);
-        this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para registrar el usuario.');
+        console.error('Error al listar roles:', err);
+        this.notify.error('No se pudo verificar el catálogo de roles del sistema.');
       }
     });
   }
