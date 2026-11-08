@@ -1,0 +1,88 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Mi Perfil Profesional" icono="👤"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Ficha del Profesional Médico</h1>
+        <p class="sub-heading">Credenciales médicas, especialidad asignada y datos de contacto en consultorio.</p>
+      </div>
+    </div>
+
+    <div class="profile-layout" *ngIf="medico() as m">
+
+      <div class="profile-card-main">
+        <div class="avatar-large">👨‍⚕️</div>
+        <h2 class="doctor-fullname">Dr(a). {{ m.nombre }} {{ m.apellido }}</h2>
+        <span class="specialty-badge">{{ m.especialidad?.nombre || 'Medicina General' }}</span>
+        <span class="license-code">Matrícula Nacional: <strong>{{ m.matricula }}</strong></span>
+
+        <div class="quick-facts">
+          <div class="fact-item">
+            <span class="fact-label">CONSULTORIO FÍSICO</span>
+            <strong class="fact-val">Consultorio {{ 100 + m.idMedico }}</strong>
+          </div>
+          <div class="fact-item">
+            <span class="fact-label">ESTADO DE CUENTA</span>
+            <span class="badge-status-active">● Habilitado / Activo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-details-card">
+        <h3 class="section-title">📋 Datos Institucionales y de Contacto</h3>
+
+        <div class="details-grid">
+          <div class="info-group">
+            <label class="info-label">Nombre Completo</label>
+            <span class="info-value">{{ m.nombre }} {{ m.apellido }}</span>
+          </div>
+
+          <div class="info-group">
+            <label class="info-label">Especialidad Principal</label>
+            <span class="info-value">{{ m.especialidad?.nombre || 'General' }}</span>
+          </div>
+
+          <div class="info-group">
+            <label class="info-label">Número de Matrícula</label>
+            <span class="info-value">{{ m.matricula }}</span>
+          </div>
+
+          <div class="info-group">
+            <label class="info-label">Usuario del Sistema</label>
+            <span class="info-value">{{ m.nombreUsuario || authService.currentUser()?.nombreUsuario || 'Sin usuario'
+              }}</span>
+          </div>
+        </div>
+
+        <div class="contact-edit-box">
+          <h4 class="box-title">📞 Teléfono de Contacto Profesional</h4>
+          <p class="box-desc">Este número se utiliza para contacto institucional con recepción y coordinación clínica.
+          </p>
+
+          <form (ngSubmit)="guardarTelefono()" class="phone-form">
+            <div class="form-input-row">
+              <input type="text" class="form-control" [(ngModel)]="telefonoEdit" name="telefonoEdit"
+                placeholder="Ej: +54 9 11 5555-1234" required>
+
+              <button type="submit" class="btn-save-phone" [disabled]="guardando()">
+                <span *ngIf="guardando()">Guardando...</span>
+                <span *ngIf="!guardando()">💾 Actualizar Teléfono</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="loading-state" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <p>Cargando información del profesional...</p>
+    </div>
+
+  </section>
+</div>
