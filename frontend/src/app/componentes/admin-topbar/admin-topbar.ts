@@ -16,14 +16,19 @@ export class AdminTopbarComponent {
   @Input() icono: string = '⚙️';
 
   readonly nombreUsuario = computed(() => {
-    return this.authService.currentUser()?.nombreUsuario || 'Usuario';
+    const user = this.authService.currentUser();
+    if (!user) return 'Usuario';
+    const raw = user.nombreUsuario || 'Usuario';
+    if (!this.authService.isMedico()) {
+      return raw.replace(/^(dr\.|dr\s+|dra\.|dra\s+)/i, '');
+    }
+    return raw;
   });
 
   readonly rolFormateado = computed(() => {
-    const rol = this.authService.userRole() || '';
-    if (rol.includes('ADMINISTRADOR')) return 'Administrador';
-    if (rol.includes('MEDICO')) return 'Médico / Especialista';
-    if (rol.includes('RECEPCIONISTA')) return 'Recepción / Admisión';
+    if (this.authService.isAdmin()) return 'Administrador';
+    if (this.authService.isMedico()) return 'Médico / Especialista';
+    if (this.authService.isRecepcionista()) return 'Recepción / Admisión';
     return 'Personal Clínico';
   });
 
