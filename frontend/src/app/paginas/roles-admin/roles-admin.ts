@@ -101,13 +101,21 @@ export class RolesAdminComponent implements OnInit {
             username: u.nombreUsuario,
             nombre: u.nombreUsuario,
             apellido: '',
-            email: `${u.nombreUsuario}@clinicasangabriel.com`,
+            email: u.nombreUsuario && u.nombreUsuario.includes('@') ? u.nombreUsuario : 'No registrado',
             dni: `USR-${u.idUsuario}`,
             rol: rolNombre,
             avatarUrl: rolNombre.toUpperCase().includes('ADMIN') ? '🛡️' : (rolNombre.toUpperCase().includes('MED') ? '👨‍⚕️' : '👤')
           });
 
-          const rolActual = this.roles.find(r => r.nombre.toLowerCase() === rolNombre.toLowerCase());
+          const cleanRolNombre = rolNombre.toUpperCase().replace('ROLE_', '').trim();
+          const rolActual = this.roles.find(r => {
+            const nom = r.nombre.toUpperCase();
+            if (cleanRolNombre.includes('ADMIN') && nom.includes('ADMIN')) return true;
+            if (cleanRolNombre.includes('MED') && (nom.includes('MÉD') || nom.includes('MED'))) return true;
+            if ((cleanRolNombre.includes('RECEP') || cleanRolNombre.includes('SECRETAR')) && nom.includes('RECEP')) return true;
+            if (cleanRolNombre.includes('PACIENT') && nom.includes('PACIENT')) return true;
+            return nom === cleanRolNombre;
+          });
           if (rolActual) {
             this.rolSeleccionado.set(rolActual);
           }
@@ -135,27 +143,42 @@ export class RolesAdminComponent implements OnInit {
     const usuario = this.usuarioEnEdicion();
     if (usuario) {
       this.guardando.set(true);
-      let idRol = 3;
-      if (this.rolSeleccionado().nombre === 'Administrador') {
-        idRol = 1;
-      } else if (this.rolSeleccionado().nombre === 'Médico') {
-        idRol = 2;
-      }
 
-      this.usuarioService.actualizar(usuario.id, {
-        nombreUsuario: usuario.username,
-        idRol: idRol,
-        estado: true
-      }).subscribe({
-        next: () => {
-          this.guardando.set(false);
-          this.notify.success(`¡Rol de acceso actualizado exitosamente para @${usuario.username}!`);
-          this.router.navigate(['/admin/usuarios']);
+      this.usuarioService.listarRoles().subscribe({
+        next: (rolesBd) => {
+          const targetNombre = this.rolSeleccionado().nombre.toUpperCase();
+          const rolBd = rolesBd.find(rb => {
+            const nom = rb.nombre.toUpperCase();
+            if (targetNombre.includes('ADMIN')) return nom.includes('ADMIN');
+            if (targetNombre.includes('MÉD') || targetNombre.includes('MED')) return nom.includes('MED');
+            if (targetNombre.includes('RECEP')) return nom.includes('RECEP') || nom.includes('SECRETAR');
+            if (targetNombre.includes('PACIENT')) return nom.includes('PACIENT');
+            return false;
+          });
+
+          const idRolFinal = rolBd ? rolBd.idRol : 3;
+
+          this.usuarioService.actualizar(usuario.id, {
+            nombreUsuario: usuario.username,
+            idRol: idRolFinal,
+            estado: true
+          }).subscribe({
+            next: () => {
+              this.guardando.set(false);
+              this.notify.success(`¡Rol de acceso actualizado exitosamente para ${usuario.username}!`);
+              this.router.navigate(['/admin/usuarios']);
+            },
+            error: (err) => {
+              this.guardando.set(false);
+              console.error('Error al actualizar rol de usuario:', err);
+              this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para actualizar el rol.');
+            }
+          });
         },
         error: (err) => {
           this.guardando.set(false);
-          console.error('Error al actualizar rol de usuario:', err);
-          this.notify.error(err?.error?.message || 'Error al comunicarse con el servidor para actualizar el rol.');
+          console.error('Error al obtener catálogo de roles:', err);
+          this.notify.error('No se pudieron verificar los roles del servidor.');
         }
       });
     } else {
