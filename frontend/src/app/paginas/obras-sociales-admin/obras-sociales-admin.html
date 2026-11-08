@@ -10,7 +10,7 @@
         <p class="sub-heading">Administre las entidades, estado de convenios arancelarios y copagos requeridos.</p>
       </div>
 
-      <div class="header-actions">
+      <div class="header-actions" *ngIf="authService.isAdmin()">
         <a routerLink="/admin/obras-sociales/nuevo" class="btn-create-modal">
           <span class="plus-symbol">+</span> Nueva Obra Social
         </a>
@@ -89,12 +89,12 @@
             <th>COPAGO REQUERIDO</th>
             <th>CÓDIGO RNS</th>
             <th>ESTADO</th>
-            <th class="col-actions">ACCIONES</th>
+            <th class="col-actions" *ngIf="authService.isAdmin()">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td [attr.colspan]="authService.isAdmin() ? 7 : 6" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando catálogo de obras sociales y convenios...
             </td>
           </tr>
@@ -136,7 +136,7 @@
               </span>
             </td>
 
-            <td class="col-actions">
+            <td class="col-actions" *ngIf="authService.isAdmin()">
               <div class="action-buttons-group">
                 <button class="btn-action-icon" (click)="cambiarEstadoConvenio(os)" title="Alternar Estado de Convenio">
                   🔄
@@ -150,7 +150,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && obrasSocialesFiltradas().length === 0">
-            <td colspan="7" class="empty-table-row">
+            <td [attr.colspan]="authService.isAdmin() ? 7 : 6" class="empty-table-row">
               <span>🔍 No se encontraron obras sociales con los filtros seleccionados.</span>
             </td>
           </tr>

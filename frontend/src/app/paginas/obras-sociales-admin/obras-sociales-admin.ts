@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ObraSocialService, NotificationService, ConfirmModalService } from '../../services';
+import { ObraSocialService, NotificationService, ConfirmModalService, AuthService } from '../../services';
 import { ObraSocial as ObraSocialModel, ObraSocialItem } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
@@ -17,6 +17,7 @@ export class ObrasSocialesAdminComponent implements OnInit {
   private readonly obraSocialService = inject(ObraSocialService);
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
+  readonly authService = inject(AuthService);
 
   readonly busquedaGlobal = signal<string>('');
   readonly estadoFiltro = signal<string>('Todos');
