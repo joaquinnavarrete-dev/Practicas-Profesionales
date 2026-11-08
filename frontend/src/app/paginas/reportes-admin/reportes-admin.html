@@ -1,0 +1,132 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Reportes y Exportación de Datos" icono="📈"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Informes Ejecutivos y Estadísticas</h1>
+        <p class="sub-heading">Consolidado institucional de atención médica, demanda de servicios y coberturas.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-action-outline" (click)="imprimir()">
+          🖨️ Imprimir Reporte
+        </button>
+        <button class="btn-action-primary" (click)="exportarCSV()">
+          📥 Descargar CSV (Excel)
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <button class="tab-btn" [class.active]="tabActiva() === 'especialidades'" (click)="cambiarTab('especialidades')">
+        ⚕️ Por Especialidad Médica
+      </button>
+      <button class="tab-btn" [class.active]="tabActiva() === 'medicos'" (click)="cambiarTab('medicos')">
+        🩺 Por Profesional Médico
+      </button>
+      <button class="tab-btn" [class.active]="tabActiva() === 'obrasSociales'" (click)="cambiarTab('obrasSociales')">
+        🛡️ Por Obra Social / Cobertura
+      </button>
+    </div>
+
+    <div class="report-card" *ngIf="!cargando()">
+
+      <div class="table-responsive" *ngIf="tabActiva() === 'especialidades'">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>ESPECIALIDAD MÉDICA</th>
+              <th>TOTAL TURNOS</th>
+              <th>CONSULTAS ATENDIDAS</th>
+              <th>AUSENCIAS / CANCELADOS</th>
+              <th>TASA DE ASISTENCIA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of reporteEspecialidades()">
+              <td><strong class="item-title">{{ e.nombre }}</strong></td>
+              <td>{{ e.totalTurnos }} citas</td>
+              <td><span class="count-green">✓ {{ e.atendidos }}</span></td>
+              <td><span class="count-red">{{ e.ausentes }}</span></td>
+              <td>
+                <span class="pct-badge">{{ e.efectividad }}%</span>
+              </td>
+            </tr>
+            <tr *ngIf="reporteEspecialidades().length === 0">
+              <td colspan="5" class="empty-row">No hay datos suficientes para generar el reporte.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-responsive" *ngIf="tabActiva() === 'medicos'">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>PROFESIONAL MÉDICO</th>
+              <th>ESPECIALIDAD</th>
+              <th>TOTAL TURNOS</th>
+              <th>ATENDIDOS</th>
+              <th>AUSENTES</th>
+              <th>EFECTIVIDAD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of reporteMedicos()">
+              <td><strong class="item-title">{{ m.nombre }}</strong></td>
+              <td><span class="esp-tag">{{ m.especialidad }}</span></td>
+              <td>{{ m.totalTurnos }} citas</td>
+              <td><span class="count-green">✓ {{ m.atendidos }}</span></td>
+              <td><span class="count-red">{{ m.ausentes }}</span></td>
+              <td>
+                <span class="pct-badge">{{ m.efectividad }}%</span>
+              </td>
+            </tr>
+            <tr *ngIf="reporteMedicos().length === 0">
+              <td colspan="6" class="empty-row">No hay médicos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-responsive" *ngIf="tabActiva() === 'obrasSociales'">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>OBRA SOCIAL / COBERTURA</th>
+              <th>TOTAL CITAS ASIGNADAS</th>
+              <th>PARTICIPACIÓN RELATIVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of reporteObrasSociales()">
+              <td><strong class="item-title">{{ o.nombre }}</strong></td>
+              <td>{{ o.totalTurnos }} turnos</td>
+              <td>
+                <div class="progress-inline-box">
+                  <div class="progress-bar-sm">
+                    <div class="bar-fill" [style.width.%]="o.porcentaje"></div>
+                  </div>
+                  <span class="pct-text">{{ o.porcentaje }}%</span>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="reporteObrasSociales().length === 0">
+              <td colspan="3" class="empty-row">No hay turnos registrados con obras sociales.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="loading-state" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <p>Generando reportes institucionales...</p>
+    </div>
+
+  </section>
+</div>
