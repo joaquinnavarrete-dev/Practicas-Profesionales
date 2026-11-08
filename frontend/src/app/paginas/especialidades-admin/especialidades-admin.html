@@ -15,6 +15,38 @@
       </a>
     </div>
 
+    <div class="stats-overview-grid">
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-blue">
+          <span>🩺</span>
+        </div>
+        <div class="stat-body">
+          <span class="stat-caption">Total Especialidades</span>
+          <strong class="stat-number">{{ especialidades().length }} Registradas</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-cyan">
+          <span>🏢</span>
+        </div>
+        <div class="stat-body">
+          <span class="stat-caption">Departamentos</span>
+          <strong class="stat-number">6 Áreas</strong>
+        </div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-icon-tile icon-amber">
+          <span>🪪</span>
+        </div>
+        <div class="stat-body">
+          <span class="stat-caption">Especialistas</span>
+          <strong class="stat-number">{{ totalMedicosRegistrados() }} Médicos</strong>
+        </div>
+      </div>
+    </div>
+
     <div class="filters-card">
       <div class="filter-search-box">
         <span class="lens-icon">🔍</span>
@@ -128,38 +160,6 @@
           <button class="page-nav-btn" disabled>&lt;</button>
           <button class="page-num-btn active">1</button>
           <button class="page-nav-btn" disabled>&gt;</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="stats-overview-grid">
-      <div class="stat-box">
-        <div class="stat-icon-tile icon-blue">
-          <span>🩺</span>
-        </div>
-        <div class="stat-body">
-          <span class="stat-caption">Total Especialidades</span>
-          <strong class="stat-number">{{ especialidades().length }} Registradas</strong>
-        </div>
-      </div>
-
-      <div class="stat-box">
-        <div class="stat-icon-tile icon-cyan">
-          <span>🏢</span>
-        </div>
-        <div class="stat-body">
-          <span class="stat-caption">Departamentos</span>
-          <strong class="stat-number">6 Áreas</strong>
-        </div>
-      </div>
-
-      <div class="stat-box">
-        <div class="stat-icon-tile icon-amber">
-          <span>🪪</span>
-        </div>
-        <div class="stat-body">
-          <span class="stat-caption">Especialistas</span>
-          <strong class="stat-number">{{ totalMedicosRegistrados() }} Médicos</strong>
         </div>
       </div>
     </div>
