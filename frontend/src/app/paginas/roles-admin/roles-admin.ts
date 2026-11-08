@@ -29,7 +29,7 @@ export class RolesAdminComponent implements OnInit {
       nombre: 'Administrador',
       icono: '🛡️',
       descripcion: 'Acceso total a todos los módulos y configuraciones del sistema.',
-      cantidadUsuarios: 2,
+      cantidadUsuarios: 0,
       modulos: [
         { nombreModulo: 'Gestión de Turnos', descripcion: 'Control general de la agenda de turnos', leer: true, crear: true, editar: true, eliminar: true },
         { nombreModulo: 'Pacientes', descripcion: 'Historias clínicas y datos de contacto', leer: true, crear: true, editar: true, eliminar: true },
@@ -44,7 +44,7 @@ export class RolesAdminComponent implements OnInit {
       nombre: 'Médico',
       icono: '🩺',
       descripcion: 'Acceso a la agenda propia, citados e historias clínicas.',
-      cantidadUsuarios: 14,
+      cantidadUsuarios: 0,
       modulos: [
         { nombreModulo: 'Gestión de Turnos', descripcion: 'Ver turnos citados en sus consultorios', leer: true, crear: false, editar: true, eliminar: false },
         { nombreModulo: 'Pacientes', descripcion: 'Ver historia clínica de sus pacientes', leer: true, crear: false, editar: true, eliminar: false },
@@ -59,7 +59,7 @@ export class RolesAdminComponent implements OnInit {
       nombre: 'Recepción',
       icono: '👩‍💼',
       descripcion: 'Atención al público, recepción de pacientes y asignación de turnos.',
-      cantidadUsuarios: 5,
+      cantidadUsuarios: 0,
       modulos: [
         { nombreModulo: 'Gestión de Turnos', descripcion: 'Agendar, cambiar estado y cancelar citas', leer: true, crear: true, editar: true, eliminar: true },
         { nombreModulo: 'Pacientes', descripcion: 'Dar de alta y actualizar datos personales', leer: true, crear: true, editar: true, eliminar: false },
@@ -74,7 +74,7 @@ export class RolesAdminComponent implements OnInit {
       nombre: 'Paciente',
       icono: '👤',
       descripcion: 'Perfil público para autogestión de turnos e historia básica.',
-      cantidadUsuarios: 1480,
+      cantidadUsuarios: 0,
       modulos: [
         { nombreModulo: 'Gestión de Turnos', descripcion: 'Solicitar y cancelar turnos propios', leer: true, crear: true, editar: false, eliminar: true },
         { nombreModulo: 'Pacientes', descripcion: 'Ver y modificar mis datos personales', leer: true, crear: false, editar: true, eliminar: false },
@@ -89,6 +89,7 @@ export class RolesAdminComponent implements OnInit {
   readonly rolSeleccionado = signal<RolPerfil>(this.roles[0]);
 
   ngOnInit(): void {
+    this.cargarConteoUsuarios();
     const paramId = this.route.snapshot.paramMap.get('id');
 
     if (paramId) {
@@ -126,6 +127,39 @@ export class RolesAdminComponent implements OnInit {
         }
       });
     }
+  }
+
+  cargarConteoUsuarios(): void {
+    this.usuarioService.listar().subscribe({
+      next: (usuarios) => {
+        let countAdmin = 0;
+        let countMedico = 0;
+        let countRecep = 0;
+        let countPac = 0;
+
+        for (const u of usuarios) {
+          const rol = (u.rol?.nombre || '').toUpperCase();
+          if (rol.includes('ADMIN')) {
+            countAdmin++;
+          } else if (rol.includes('MED') || rol.includes('DOCTOR')) {
+            countMedico++;
+          } else if (rol.includes('RECEP') || rol.includes('SECRETAR')) {
+            countRecep++;
+          } else if (rol.includes('PACIENT')) {
+            countPac++;
+          }
+        }
+
+        for (const r of this.roles) {
+          const nom = r.nombre.toUpperCase();
+          if (nom.includes('ADMIN')) r.cantidadUsuarios = countAdmin;
+          else if (nom.includes('MÉD') || nom.includes('MED')) r.cantidadUsuarios = countMedico;
+          else if (nom.includes('RECEP')) r.cantidadUsuarios = countRecep;
+          else if (nom.includes('PACIENT')) r.cantidadUsuarios = countPac;
+        }
+      },
+      error: (err) => console.error('Error al calcular conteo de usuarios en roles:', err)
+    });
   }
 
   seleccionarRol(r: RolPerfil): void {
