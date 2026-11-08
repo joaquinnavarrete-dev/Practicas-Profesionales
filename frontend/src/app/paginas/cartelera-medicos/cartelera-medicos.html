@@ -1,0 +1,87 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Cartelera de Médicos" icono="🩺"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Cartelera de Profesionales y Horarios</h1>
+        <p class="sub-heading">Guía rápida de mostrador con especialidades, consultorios asignados y días de atención.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <a routerLink="/turnos/solicitar" class="btn-create-modal">
+          <span class="plus-symbol">+</span> Otorgar Turno
+        </a>
+      </div>
+    </div>
+
+    <div class="filters-card">
+      <div class="filter-group filter-search-group">
+        <label>BUSCAR MÉDICO O CONSULTORIO:</label>
+        <div class="input-search-inner">
+          <span>🔍</span>
+          <input type="text" placeholder="Buscar por nombre, especialidad o consultorio..." [ngModel]="busqueda()"
+            (ngModelChange)="busqueda.set($event)">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>ESPECIALIDAD:</label>
+        <select class="select-control" [ngModel]="filtroEspecialidad()"
+          (ngModelChange)="filtroEspecialidad.set($event)">
+          <option value="Todas">Todas las Especialidades</option>
+          <option *ngFor="let esp of especialidades()" [value]="esp.nombre">
+            {{ esp.nombre }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="cartelera-grid" *ngIf="!cargando()">
+      <div class="cartelera-card" *ngFor="let m of carteleraFiltrada()">
+        <div class="card-top">
+          <div class="doc-avatar">👨‍⚕️</div>
+          <div class="doc-info">
+            <h3 class="doc-name">{{ m.nombreCompleto }}</h3>
+            <span class="doc-esp">{{ m.especialidad }}</span>
+            <span class="doc-office">🏢 {{ m.consultorio }}</span>
+          </div>
+        </div>
+
+        <div class="card-schedule-section">
+          <span class="sched-title">📅 Días y Franjas de Atención:</span>
+
+          <div class="schedules-list" *ngIf="m.horarios.length > 0">
+            <div class="schedule-item" *ngFor="let h of m.horarios">
+              <span class="day-badge">{{ h.diaNombre }}</span>
+              <span class="hours-tag">{{ h.horaInicio }} - {{ h.horaFin }} hs</span>
+            </div>
+          </div>
+
+          <div class="no-schedules" *ngIf="m.horarios.length === 0">
+            <span>Horarios no definidos aún</span>
+          </div>
+        </div>
+
+        <div class="card-footer-action">
+          <a routerLink="/turnos/solicitar" class="btn-book-slot">
+            ➕ Asignar Turno
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!cargando() && carteleraFiltrada().length === 0">
+      <span>🔍 No se encontraron profesionales que coincidan con la búsqueda.</span>
+    </div>
+
+    <div class="loading-state" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <p>Cargando cartelera de médicos...</p>
+    </div>
+
+  </section>
+</div>
