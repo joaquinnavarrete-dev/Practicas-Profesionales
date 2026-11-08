@@ -7,11 +7,11 @@
       <span class="badge-cat">GESTIÓN DE ATENCIÓN MÉDICA</span>
       <h1 class="main-title">Días y Horarios de Atención</h1>
       <p class="subtitle">
-        Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.
+        {{ authService.isMedico() ? 'Configuración de tus franjas horarias y días de atención en consultorio.' : 'Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.' }}
       </p>
     </div>
 
-    <div class="filter-card">
+    <div class="filter-card" *ngIf="!authService.isMedico()">
       <div class="search-input-group">
         <span class="search-icon">🔍</span>
         <input type="text" placeholder="Buscar por médico o especialidad..." [ngModel]="busquedaGeneral()"

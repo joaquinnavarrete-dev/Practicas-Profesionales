@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MedicoService, DiaAtencionService, EspecialidadService, NotificationService, ConfirmModalService } from '../../services';
+import { MedicoService, DiaAtencionService, EspecialidadService, NotificationService, ConfirmModalService, AuthService } from '../../services';
 import { Medico, DiaAtencion, DiaAtencionRequest, Especialidad, HorarioDiaSemana, FranjaDetalle, MedicoAtencion } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
@@ -18,6 +18,7 @@ export class DiasAtencionComponent implements OnInit {
   private readonly especialidadService = inject(EspecialidadService);
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
+  readonly authService = inject(AuthService);
 
   readonly busquedaGeneral = signal<string>('');
   readonly filtroEspecialidad = signal<string>('Todas');
@@ -58,7 +59,11 @@ export class DiasAtencionComponent implements OnInit {
     const q = this.busquedaGeneral().toLowerCase().trim();
     const fEsp = this.filtroEspecialidad();
     const fDia = this.filtroDia();
-    const lista = this.medicos();
+    
+    const idMedLogueado = this.authService.currentUser()?.idMedico;
+    const lista = (this.authService.isMedico() && idMedLogueado)
+      ? this.medicos().filter(m => m.id === idMedLogueado)
+      : this.medicos();
 
     return lista.filter(m => {
       const matchBusqueda = !q ||
