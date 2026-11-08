@@ -1,0 +1,94 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Mi Agenda Semanal" icono="🕒"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Agenda Semanal de Consultorio</h1>
+        <p class="sub-heading">Cronograma semanal de pacientes agendados y turnos reservados para tu consultorio.</p>
+      </div>
+
+      <div class="week-controls">
+        <button class="btn-nav-week" (click)="cambiarSemana(-1)">
+          ◀ Semana Anterior
+        </button>
+        <button class="btn-current-week" (click)="irSemanaActual()" [disabled]="semanaOffset() === 0">
+          Semana Actual
+        </button>
+        <button class="btn-nav-week" (click)="cambiarSemana(1)">
+          Semana Siguiente ▶
+        </button>
+      </div>
+    </div>
+
+    <div class="week-info-bar">
+      <div class="week-range-badge">
+        <span class="calendar-icon">📅</span>
+        <strong>{{ rangoSemanaTexto() }}</strong>
+      </div>
+      <div class="week-counter-tag">
+        Total citas esta semana: <strong>{{ totalTurnosSemana() }}</strong>
+      </div>
+    </div>
+
+    <div class="weekly-board" *ngIf="!cargando()">
+      <div class="day-column" *ngFor="let dia of diasSemana()" [class.is-today]="dia.esHoy">
+
+        <div class="day-header">
+          <div class="day-title-box">
+            <span class="day-name">{{ dia.nombreDia }}</span>
+            <span class="day-number">{{ dia.diaMes }}</span>
+          </div>
+          <span class="badge-today" *ngIf="dia.esHoy">HOY</span>
+          <span class="turnos-count-badge">{{ dia.turnos.length }}</span>
+        </div>
+
+        <div class="day-appointments-list">
+          <div class="appointment-card" *ngFor="let t of dia.turnos">
+
+            <div class="appt-time-row">
+              <span class="appt-time">🕒 {{ t.hora ? (t.hora + ' hs') : '09:00 hs' }}</span>
+              <span class="appt-status" [ngClass]="{
+                  'st-atendido': t.fecha < dia.fechaIso,
+                  'st-espera': dia.esHoy,
+                  'st-confirmado': t.fecha > dia.fechaIso
+                }">
+                ● {{ dia.esHoy ? 'En Espera' : (t.fecha < dia.fechaIso ? 'Atendido' : 'Confirmado' ) }} </span>
+            </div>
+
+            <strong class="appt-patient" *ngIf="t.paciente">
+              {{ t.paciente.nombre }} {{ t.paciente.apellido }}
+            </strong>
+            <span class="appt-dni" *ngIf="t.paciente">
+              DNI {{ t.paciente.dni }}
+            </span>
+
+            <span class="appt-os" *ngIf="t.paciente?.obraSocial">
+              {{ t.paciente.obraSocial.nombre }}
+            </span>
+
+            <div class="appt-actions" *ngIf="t.paciente">
+              <a [routerLink]="['/admin/pacientes', t.paciente.idPaciente, 'historia-clinica']" class="btn-open-hc"
+                title="Abrir Historia Clínica">
+                📋 Historia Clínica
+              </a>
+            </div>
+          </div>
+
+          <div class="no-appts-placeholder" *ngIf="dia.turnos.length === 0">
+            <span>Sin citas agendadas</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <p>Cargando agenda semanal...</p>
+    </div>
+
+  </section>
+</div>
