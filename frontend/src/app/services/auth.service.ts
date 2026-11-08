@@ -47,9 +47,12 @@ export class AuthService {
   hasRole(rol: string): boolean {
     const rolActual = this.userRole();
     if (!rolActual) return false;
-    const rolNormalizado = rol.startsWith('ROLE_') ? rol : `ROLE_${rol}`;
-    const rolActualNormalizado = rolActual.startsWith('ROLE_') ? rolActual : `ROLE_${rolActual}`;
-    return rolActualNormalizado === rolNormalizado;
+    const cleanActual = rolActual.toUpperCase().replace('ROLE_', '').trim();
+    const cleanTarget = rol.toUpperCase().replace('ROLE_', '').trim();
+    if (cleanTarget === 'RECEPCIONISTA' || cleanTarget === 'RECEPCION') {
+      return cleanActual === 'RECEPCIONISTA' || cleanActual === 'RECEPCION';
+    }
+    return cleanActual === cleanTarget;
   }
 
   isAdmin(): boolean {
@@ -61,7 +64,7 @@ export class AuthService {
   }
 
   isRecepcionista(): boolean {
-    return this.hasRole('RECEPCIONISTA');
+    return this.hasRole('RECEPCIONISTA') || this.hasRole('RECEPCION');
   }
 
   isPaciente(): boolean {
