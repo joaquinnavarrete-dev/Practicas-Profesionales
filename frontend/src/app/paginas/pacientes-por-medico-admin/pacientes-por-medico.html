@@ -6,8 +6,8 @@
 
     <div class="page-title-row">
       <div class="title-block">
-        <h1 class="main-heading">Nómina de Pacientes Citados</h1>
-        <p class="sub-heading">Consulte la agenda diaria de pacientes asignados a cada profesional médico.</p>
+        <h1 class="main-heading">{{ authService.isMedico() ? 'Mis Pacientes Citados de Hoy' : 'Nómina de Pacientes Citados' }}</h1>
+        <p class="sub-heading">{{ authService.isMedico() ? 'Pacientes programados en tu consultorio con acceso a su Historia Clínica.' : 'Consulte la agenda diaria de pacientes asignados a cada profesional médico.' }}</p>
       </div>
 
       <div class="header-actions">
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="select-doctor-box">
+      <div class="select-doctor-box" *ngIf="!authService.isMedico()">
         <label>MÉDICO PROFESIONAL:</label>
         <select [ngModel]="medicoSeleccionadoId()" (ngModelChange)="onSeleccionarMedico($event)">
           <option [value]="0">Seleccione un profesional...</option>
