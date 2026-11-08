@@ -84,7 +84,7 @@ export class UsuariosAdminComponent implements OnInit {
       username: u.nombreUsuario,
       nombre: u.nombreUsuario,
       apellido: '',
-      email: `${u.nombreUsuario}@clinicasangabriel.com`,
+      email: u.nombreUsuario && u.nombreUsuario.includes('@') ? u.nombreUsuario : 'No registrado',
       dni: `USR-${u.idUsuario}`,
       rol: rolNormalizado,
       ultimoIngreso: 'Reciente',

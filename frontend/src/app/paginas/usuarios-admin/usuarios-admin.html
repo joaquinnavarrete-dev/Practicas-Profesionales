@@ -113,7 +113,7 @@
             </td>
 
             <td>
-              <span class="email-text">{{ u.email }}</span>
+              <span class="email-text" [style.color]="u.email === 'No registrado' ? '#94a3b8' : 'inherit'">{{ u.email }}</span>
             </td>
 
             <td>
