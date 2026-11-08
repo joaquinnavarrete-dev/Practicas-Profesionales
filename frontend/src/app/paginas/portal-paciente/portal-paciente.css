@@ -150,21 +150,23 @@
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  background-color: #3b82f6;
-  color: #ffffff;
-  font-weight: 700;
+  background-color: #ffffff;
+  color: #004b93;
+  font-weight: 800;
   font-size: 1rem;
   padding: 0.9rem 1.75rem;
   border-radius: 12px;
   text-decoration: none;
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-new-appointment:hover {
-  background-color: #2563eb;
+  background-color: #f8fafc;
+  color: #00366a;
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px -5px rgba(37, 99, 235, 0.65);
+  box-shadow: 0 14px 28px -5px rgba(0, 0, 0, 0.45);
 }
 
 .btn-new-appointment:active {
