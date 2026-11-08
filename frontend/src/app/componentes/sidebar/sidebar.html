@@ -1,6 +1,6 @@
 <aside class="sidebar-container">
 
-  <div class="sidebar-header" routerLink="/admin">
+  <div class="sidebar-header" [routerLink]="rutaInicio()">
     <div class="sidebar-logo">
       <svg viewBox="0 0 24 24" class="cross-icon" fill="currentColor">
         <path
@@ -8,76 +8,116 @@
       </svg>
     </div>
     <div class="sidebar-brand">
-      <span class="name">{{ authService.currentUser()?.nombreUsuario || 'Clínica San Gabriel' }}</span>
+      <span class="name">{{ nombreMostrar() }}</span>
       <span class="badge-role">{{ rolFormateado() }}</span>
     </div>
   </div>
 
-  <div class="sidebar-cta">
+  <div class="sidebar-cta" *ngIf="authService.isAdmin() || authService.isRecepcionista()">
     <button class="btn-new-turno" routerLink="/turnos/solicitar">
       <span class="plus-sign">+</span>
-      <span>Nuevo Turno</span>
+      <span>Otorgar Turno</span>
     </button>
   </div>
 
   <nav class="sidebar-menu">
 
-    <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-item">
-      <span class="menu-icon">🪟</span>
-      <span>Dashboard</span>
-    </a>
+    <ng-container *ngIf="authService.isMedico()">
+      <a routerLink="/admin/pacientes-por-medico" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">👥</span>
+        <span>Mis pacientes citados hoy</span>
+      </a>
 
-    <a routerLink="/admin/turnos" routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">🕒</span>
-      <span>Gestión de Turnos</span>
-    </a>
+      <a routerLink="/admin/mi-agenda" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🕒</span>
+        <span>Mi agenda semanal</span>
+      </a>
 
-    <a *ngIf="authService.isMedico() || authService.isAdmin()" routerLink="/admin/pacientes-por-medico"
-      routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">👥</span>
-      <span>Pacientes por Médico</span>
-    </a>
+      <a routerLink="/admin/dias-atencion" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📅</span>
+        <span>Mis días y horarios de atención</span>
+      </a>
 
-    <a *ngIf="authService.isMedico() || authService.isAdmin()" routerLink="/admin/dias-atencion"
-      routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">📅</span>
-      <span>Días de Atención</span>
-    </a>
+      <a routerLink="/admin/mi-perfil-medico" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">👤</span>
+        <span>Mi perfil profesional</span>
+      </a>
 
-    <a *ngIf="authService.isRecepcionista() || authService.isAdmin()" routerLink="/admin/obras-sociales"
-      routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">🛡️</span>
-      <span>Obras Sociales</span>
-    </a>
+      <a routerLink="/admin/directorio-medico" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📞</span>
+        <span>Directorio de colegas</span>
+      </a>
 
-    <a *ngIf="authService.isRecepcionista() || authService.isAdmin()" routerLink="/admin/pacientes"
-      routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">👤</span>
-      <span>Pacientes</span>
-    </a>
+      <a routerLink="/admin/mis-metricas" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📊</span>
+        <span>Mis métricas y Rendimiento</span>
+      </a>
+    </ng-container>
 
-    <a *ngIf="authService.isAdmin()" routerLink="/admin/especialidades" routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">⚕️</span>
-      <span>Especialidades</span>
-    </a>
+    <ng-container *ngIf="authService.isRecepcionista()">
+      <a routerLink="/admin/turnos" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🕒</span>
+        <span>Recepción y Check-In</span>
+      </a>
 
-    <a *ngIf="authService.isAdmin()" routerLink="/admin/medicos" routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">🩺</span>
-      <span>Cuerpo Médico</span>
-    </a>
+      <a routerLink="/turnos/solicitar" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">➕</span>
+        <span>Otorgar Nuevo Turno</span>
+      </a>
 
-    <a *ngIf="authService.isAdmin()" routerLink="/admin/usuarios" routerLinkActive="active" class="menu-item">
-      <span class="menu-icon">👥</span>
-      <span>Usuarios y Roles</span>
-    </a>
+      <a routerLink="/admin/pacientes" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">👤</span>
+        <span>Padrón de Pacientes</span>
+      </a>
+
+      <a routerLink="/admin/cartelera-medicos" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🩺</span>
+        <span>Cartelera de Médicos</span>
+      </a>
+
+      <a routerLink="/admin/obras-sociales" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🛡️</span>
+        <span>Obras Sociales y Convenios</span>
+      </a>
+    </ng-container>
+
+    <ng-container *ngIf="authService.isAdmin()">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-item">
+        <span class="menu-icon">📊</span>
+        <span>Dashboard Ejecutivo y Métricas</span>
+      </a>
+
+      <a routerLink="/admin/medicos" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🩺</span>
+        <span>Cuerpo Médico</span>
+      </a>
+
+      <a routerLink="/admin/especialidades" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">⚕️</span>
+        <span>Catálogo de Especialidades</span>
+      </a>
+
+      <a routerLink="/admin/obras-sociales" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🛡️</span>
+        <span>Gestión de Obras Sociales</span>
+      </a>
+
+      <a routerLink="/admin/usuarios" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">👥</span>
+        <span>Usuarios y Cuentas de Acceso</span>
+      </a>
+
+      <a routerLink="/admin/usuarios/roles" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">🔐</span>
+        <span>Roles y Permisos de Seguridad</span>
+      </a>
+
+      <a routerLink="/admin/reportes" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📈</span>
+        <span>Reportes y Exportación de Datos</span>
+      </a>
+    </ng-container>
 
   </nav>
-
-  <div class="sidebar-footer">
-    <a routerLink="/" class="footer-link">
-      <span class="link-icon">🌐</span>
-      <span>Ver Sitio Público</span>
-    </a>
-  </div>
 
 </aside>

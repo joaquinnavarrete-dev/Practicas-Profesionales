@@ -16,11 +16,28 @@ export class Sidebar {
   readonly rolFormateado = computed(() => {
     const rol = this.authService.userRole();
     if (!rol) return 'Gestión Médica';
-    if (rol.includes('ADMINISTRADOR')) return 'Administrador General';
-    if (rol.includes('MEDICO')) return 'Médico / Especialista';
-    if (rol.includes('RECEPCIONISTA')) return 'Recepción / Mostrador';
-    if (rol.includes('PACIENTE')) return 'Paciente';
+    if (this.authService.isAdmin()) return 'Administrador General';
+    if (this.authService.isMedico()) return 'Médico / Especialista';
+    if (this.authService.isRecepcionista()) return 'Recepción / Mostrador';
+    if (this.authService.isPaciente()) return 'Paciente';
     return rol.replace('ROLE_', '');
+  });
+
+  readonly nombreMostrar = computed(() => {
+    const user = this.authService.currentUser();
+    if (!user) return 'Clínica San Gabriel';
+    const raw = user.nombreUsuario || 'Usuario';
+    if (!this.authService.isMedico()) {
+      return raw.replace(/^(dr\.|dr\s+|dra\.|dra\s+)/i, '');
+    }
+    return raw;
+  });
+
+  readonly rutaInicio = computed(() => {
+    if (this.authService.isMedico()) {
+      return '/admin/pacientes-por-medico';
+    }
+    return '/admin';
   });
 
   cerrarSesion(): void {
