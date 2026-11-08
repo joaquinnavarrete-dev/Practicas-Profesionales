@@ -1,0 +1,67 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Directorio de Colegas" icono="📞"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Directorio Profesional de Colegas</h1>
+        <p class="sub-heading">Guía interna del plantel médico para interconsultas, derivaciones y coordinación clínica.
+        </p>
+      </div>
+
+      <div class="search-input-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar por médico, especialidad, consultorio o matrícula..."
+          [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)">
+        <button *ngIf="busqueda()" class="btn-clear" (click)="busqueda.set('')">✕</button>
+      </div>
+    </div>
+
+    <div class="colegas-grid" *ngIf="!cargando()">
+      <div class="colega-card" *ngFor="let c of colegasFiltrados()">
+        <div class="colega-header">
+          <div class="avatar-ph">👨‍⚕️</div>
+          <div class="colega-meta">
+            <h3 class="colega-name">{{ c.nombreCompleto }}</h3>
+            <span class="colega-esp">{{ c.especialidad }}</span>
+            <span class="colega-mat">M.N. {{ c.matricula }}</span>
+          </div>
+        </div>
+
+        <div class="colega-body">
+          <div class="data-row">
+            <span class="data-label">🏢 Consultorio:</span>
+            <strong class="data-val">{{ c.consultorio }}</strong>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">📞 Teléfono:</span>
+            <span class="data-val phone-val">
+              <a *ngIf="c.telefono !== 'Sin teléfono informado'" [href]="'tel:' + c.telefono">{{ c.telefono }}</a>
+              <span *ngIf="c.telefono === 'Sin teléfono informado'">{{ c.telefono }}</span>
+            </span>
+          </div>
+
+          <div class="data-row dias-row">
+            <span class="data-label">📅 Días de Atención:</span>
+            <div class="dias-pills-list">
+              <span class="dia-pill" *ngFor="let d of c.diasAtencion">{{ d }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!cargando() && colegasFiltrados().length === 0">
+      <span>🔍 No se encontraron colegas médicos con el criterio de búsqueda ingresado.</span>
+    </div>
+
+    <div class="loading-state" *ngIf="cargando()">
+      <div class="spinner"></div>
+      <p>Cargando directorio de colegas...</p>
+    </div>
+
+  </section>
+</div>
