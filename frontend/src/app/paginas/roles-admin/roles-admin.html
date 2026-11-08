@@ -46,7 +46,7 @@
     </div>
 
     <div class="roles-cards-grid">
-      <div class="role-card" *ngFor="let r of roles" [class.selected]="r.nombre === rolSeleccionado().nombre"
+      <div class="role-card" *ngFor="let r of roles()" [class.selected]="r.nombre === rolSeleccionado().nombre"
         (click)="seleccionarRol(r)">
         <div class="role-card-header">
           <span class="role-icon">{{ r.icono }}</span>
