@@ -7,194 +7,429 @@
     <div class="page-title-row">
       <div class="title-block">
         <span class="today-badge">📅 Hoy: {{ fechaHoyTexto }}</span>
-        <h1 class="main-heading">¡Hola, {{ nombreUsuario() }}! 👋</h1>
-        <p class="sub-heading">Este es el resumen operativo y métricas en tiempo real de la Clínica San Gabriel.</p>
+        <h1 class="main-heading">{{ saludoTitulo() }}</h1>
+        <p class="sub-heading">{{ subtitulo() }}</p>
       </div>
 
       <div class="header-actions">
-        <a routerLink="/turnos/solicitar" class="btn-primary-action">
-          <span class="plus-symbol">+</span> Nuevo Turno
-        </a>
+        <ng-container *ngIf="authService.isMedico()">
+          <a routerLink="/admin/pacientes-por-medico" class="btn-primary-action">
+            👥 Mis Pacientes Citados
+          </a>
+          <a routerLink="/admin/mi-agenda" class="btn-header-link">
+            🕒 Mi Agenda Semanal
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="authService.isRecepcionista()">
+          <a routerLink="/turnos/solicitar" class="btn-primary-action">
+            <span class="plus-symbol">+</span> Otorgar Turno
+          </a>
+          <a routerLink="/admin/pacientes" class="btn-header-link">
+            👤 Padrón Pacientes
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="authService.isAdmin()">
+          <a routerLink="/turnos/solicitar" class="btn-primary-action">
+            <span class="plus-symbol">+</span> Nuevo Turno
+          </a>
+          <a routerLink="/admin/reportes" class="btn-header-link">
+            📈 Reportes Ejecutivos
+          </a>
+        </ng-container>
       </div>
     </div>
 
-    <div class="kpi-cards-grid">
-
-      <div class="kpi-card">
-        <div class="kpi-top">
-          <span class="kpi-label">TOTAL TURNOS</span>
-          <div class="kpi-icon-box icon-blue">📅</div>
+    <ng-container *ngIf="authService.isMedico()">
+      <div class="kpi-cards-grid">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TURNOS DE HOY PENDIENTES</span>
+            <div class="kpi-icon-box icon-blue">🕒</div>
+          </div>
+          <strong class="kpi-value">{{ medicoTurnosPendientesHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="trend-up">Consultas por atender en la fecha</span>
+          </div>
         </div>
-        <strong class="kpi-value">{{ totalTurnos() }}</strong>
-        <div class="kpi-footer">
-          <span class="trend-up">{{ turnosHoyCount() }} agendados para hoy</span>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">PACIENTES ATENDIDOS HOY</span>
+            <div class="kpi-icon-box icon-green">✅</div>
+          </div>
+          <strong class="kpi-value">{{ medicoTurnosAtendidosHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Consultas finalizadas y evolucionadas</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">PACIENTES CON OBRA SOCIAL / PREPAGA HOY</span>
+            <div class="kpi-icon-box icon-amber">🛡️</div>
+          </div>
+          <strong class="kpi-value">{{ medicoConObraSocialHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Con cobertura médica en la jornada</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">PACIENTES PARTICULARES (SIN OBRA SOCIAL) HOY</span>
+            <div class="kpi-icon-box icon-purple">👤</div>
+          </div>
+          <strong class="kpi-value">{{ medicoSinObraSocialHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Atención privada/particular en la fecha</span>
+          </div>
         </div>
       </div>
-
-      <div class="kpi-card">
-        <div class="kpi-top">
-          <span class="kpi-label">PACIENTES REGISTRADOS</span>
-          <div class="kpi-icon-box icon-amber">👥</div>
-        </div>
-        <strong class="kpi-value">{{ totalPacientes() }}</strong>
-        <div class="kpi-footer">
-          <span class="kpi-subtext">Padrón clínico activo</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-top">
-          <span class="kpi-label">ATENDIDOS / COMPLETADOS</span>
-          <div class="kpi-icon-box icon-green">✓</div>
-        </div>
-        <strong class="kpi-value">{{ atendidosHoyCount() }}</strong>
-        <div class="kpi-footer">
-          <span class="kpi-subtext">Consultas confirmadas o atendidas</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-top">
-          <span class="kpi-label">MÉDICOS DEL PLANTEL</span>
-          <div class="kpi-icon-box icon-purple">🩺</div>
-        </div>
-        <strong class="kpi-value">{{ totalMedicos() }}</strong>
-        <div class="kpi-footer">
-          <span class="kpi-subtext">Profesionales en cartilla</span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="middle-dashboard-grid">
 
       <div class="dash-card">
         <div class="dash-card-header">
-          <h3>Demanda por Especialidad</h3>
-          <span class="badge-live">● En tiempo real</span>
+          <div>
+            <h3>🩺 Mis Pacientes Citados para Hoy</h3>
+            <p class="card-subtitle">Listado de pacientes programados en tu consultorio con acceso inmediato a su
+              Historia Clínica</p>
+          </div>
+          <a routerLink="/admin/pacientes-por-medico" class="link-see-all">Ver nómina completa →</a>
         </div>
 
-        <div class="specialty-progress-list">
-          <div *ngIf="demandaEspecialidades().length === 0" style="padding: 1.5rem; color: #64748b; text-align: center;">
-            No hay turnos registrados aún para graficar la demanda.
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>HORA</th>
+                <th>PACIENTE</th>
+                <th>DNI</th>
+                <th>COBERTURA</th>
+                <th>MOTIVO DE CONSULTA</th>
+                <th>ESTADO</th>
+                <th style="text-align: right;">EXPEDIENTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="cargando()">
+                <td colspan="7" class="card-empty-message">
+                  ⏳ Cargando agenda del día...
+                </td>
+              </tr>
+              <tr *ngFor="let t of misTurnosHoy()">
+                <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+                <td><strong class="patient-name">{{ t.paciente }}</strong></td>
+                <td>{{ t.dni }}</td>
+                <td><span class="esp-tag">{{ t.obraSocial }}</span></td>
+                <td>{{ t.motivo }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                      'st-espera': t.estado === 'En Espera',
+                      'st-confirmado': t.estado === 'Confirmado',
+                      'st-atendido': t.estado === 'Atendido'
+                    }">
+                    ● {{ t.estado }}
+                  </span>
+                </td>
+                <td style="text-align: right;">
+                  <a *ngIf="t.idPaciente" [routerLink]="['/admin/pacientes', t.idPaciente, 'historia-clinica']"
+                    class="btn-table-action" title="Abrir Historia Clínica">
+                    📋 Historia Clínica
+                  </a>
+                  <span *ngIf="!t.idPaciente" style="color: #94a3b8; font-size: 0.8rem;">Sin ID</span>
+                </td>
+              </tr>
+              <tr *ngIf="!cargando() && misTurnosHoy().length === 0">
+                <td colspan="7" class="card-empty-message">
+                  🎉 ¡No tienes pacientes citados para hoy! Utiliza los accesos para revisar otros días o configurar tus
+                  horarios.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="authService.isRecepcionista()">
+      <div class="kpi-cards-grid">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TOTAL DE TURNOS PROGRAMADOS HOY</span>
+            <div class="kpi-icon-box icon-blue">📅</div>
           </div>
-          <div class="progress-item" *ngFor="let item of demandaEspecialidades()">
-            <div class="progress-labels">
-              <span class="item-name">{{ item.nombre }}</span>
-              <span class="item-val">{{ item.turnos }} turnos ({{ item.porcentaje }}%)</span>
+          <strong class="kpi-value">{{ recepTurnosHoyTotal() }}</strong>
+          <div class="kpi-footer">
+            <span class="trend-up">Citas agendadas en todos los consultorios</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TURNOS CONFIRMADOS</span>
+            <div class="kpi-icon-box icon-amber">⏳</div>
+          </div>
+          <strong class="kpi-value">{{ recepTurnosConfirmadosHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Pacientes confirmados o en sala</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TURNOS CANCELADOS / AUSENTES DEL DÍA</span>
+            <div class="kpi-icon-box icon-purple">❌</div>
+          </div>
+          <strong class="kpi-value">{{ recepTurnosCanceladosAusentesHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Citas no concretadas en la fecha</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TURNOS YA ATENDIDOS EN LA JORNADA</span>
+            <div class="kpi-icon-box icon-green">✅</div>
+          </div>
+          <strong class="kpi-value">{{ recepTurnosAtendidosHoy() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Pacientes que ya pasaron por consulta</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <h3>🛎️ Recepción y Mesa de Entradas - Turnos del Día</h3>
+            <p class="card-subtitle">Flujo en vivo de pacientes citados hoy en la clínica</p>
+          </div>
+          <a routerLink="/admin/turnos" class="link-see-all">Ver grilla general de turnos →</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>HORA</th>
+                <th>PACIENTE</th>
+                <th>DNI</th>
+                <th>MÉDICO TRATANTE</th>
+                <th>ESPECIALIDAD</th>
+                <th>COBERTURA</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="cargando()">
+                <td colspan="7" class="card-empty-message">
+                  ⏳ Cargando flujo de recepción...
+                </td>
+              </tr>
+              <tr *ngFor="let t of turnosRecepcionHoy()">
+                <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+                <td><strong class="patient-name">{{ t.paciente }}</strong></td>
+                <td>{{ t.dni }}</td>
+                <td>{{ t.medico }}</td>
+                <td><span class="esp-tag">{{ t.especialidad }}</span></td>
+                <td>{{ t.obraSocial }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                      'st-espera': t.estado === 'En Espera',
+                      'st-confirmado': t.estado === 'Confirmado',
+                      'st-atendido': t.estado === 'Atendido'
+                    }">
+                    ● {{ t.estado }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="!cargando() && turnosRecepcionHoy().length === 0">
+                <td colspan="7" class="card-empty-message">
+                  No hay turnos registrados en la fecha de hoy.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="authService.isAdmin()">
+      <div class="kpi-cards-grid">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TOTAL DE PACIENTES EMPADRONADOS</span>
+            <div class="kpi-icon-box icon-blue">👥</div>
+          </div>
+          <strong class="kpi-value">{{ adminTotalPacientes() }}</strong>
+          <div class="kpi-footer">
+            <span class="trend-up">Fichas clínicas registradas</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">PLANTEL MÉDICO ACTIVO</span>
+            <div class="kpi-icon-box icon-purple">🩺</div>
+          </div>
+          <strong class="kpi-value">{{ adminTotalMedicos() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Profesionales habilitados en cartilla</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">OBRAS SOCIALES Y CONVENIOS VIGENTES</span>
+            <div class="kpi-icon-box icon-green">🛡️</div>
+          </div>
+          <strong class="kpi-value">{{ adminTotalObrasSociales() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Entidades y prestadoras activas</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TASA GLOBAL DE AUSENTISMO</span>
+            <div class="kpi-icon-box icon-amber">📉</div>
+          </div>
+          <strong class="kpi-value">{{ adminTasaAusentismo() }}%</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Porcentaje de citas no concretadas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="middle-dashboard-grid">
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <h3>Demanda por Especialidad Médica</h3>
+            <span class="badge-live">● En tiempo real</span>
+          </div>
+
+          <div class="specialty-progress-list">
+            <div *ngIf="demandaEspecialidades().length === 0" class="card-empty-message">
+              No hay turnos registrados aún para graficar la demanda.
             </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" [style.width.%]="item.porcentaje" [style.background-color]="item.color">
+            <div class="progress-item" *ngFor="let item of demandaEspecialidades()">
+              <div class="progress-labels">
+                <span class="item-name">{{ item.nombre }}</span>
+                <span class="item-val">{{ item.turnos }} turnos ({{ item.porcentaje }}%)</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" [style.width.%]="item.porcentaje" [style.background-color]="item.color">
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="dash-card quick-actions-card">
-        <div class="dash-card-header">
-          <h3>Accesos Rápidos</h3>
-        </div>
+        <div class="dash-card quick-actions-card">
+          <div class="dash-card-header">
+            <h3>Accesos Rápidos Institucionales</h3>
+          </div>
 
-        <div class="quick-links-list">
-          <a routerLink="/admin/especialidades" class="quick-btn">
-            <span class="q-icon">📋</span>
-            <div>
-              <strong>Catálogo de Especialidades</strong>
-              <small>Departamentos y áreas clínicas</small>
-            </div>
-          </a>
+          <div class="quick-links-list">
+            <a routerLink="/admin/especialidades" class="quick-btn">
+              <span class="q-icon">📋</span>
+              <div>
+                <strong>Catálogo de Especialidades</strong>
+                <small>Departamentos y áreas clínicas</small>
+              </div>
+            </a>
 
-          <a routerLink="/admin/pacientes-por-medico" class="quick-btn">
-            <span class="q-icon">👨‍⚕️</span>
-            <div>
-              <strong>Pacientes por Profesional</strong>
-              <small>Agenda diaria de consultorios</small>
-            </div>
-          </a>
+            <a routerLink="/admin/medicos" class="quick-btn">
+              <span class="q-icon">🩺</span>
+              <div>
+                <strong>Cuerpo Médico</strong>
+                <small>Gestión de profesionales y matrículas</small>
+              </div>
+            </a>
 
-          <a routerLink="/admin/turnos" class="quick-btn">
-            <span class="q-icon">📅</span>
-            <div>
-              <strong>Libro General de Turnos</strong>
-              <small>Listado y cancelaciones</small>
-            </div>
-          </a>
+            <a routerLink="/admin/obras-sociales" class="quick-btn">
+              <span class="q-icon">🛡️</span>
+              <div>
+                <strong>Gestión de Obras Sociales</strong>
+                <small>Convenios y prestadoras vigentes</small>
+              </div>
+            </a>
 
-          <a routerLink="/admin/medicos" class="quick-btn">
-            <span class="q-icon">🩺</span>
-            <div>
-              <strong>Cuerpo Médico</strong>
-              <small>Profesionales y matrículas</small>
-            </div>
-          </a>
-        </div>
+            <a routerLink="/admin/usuarios" class="quick-btn">
+              <span class="q-icon">👥</span>
+              <div>
+                <strong>Usuarios y Cuentas de Acceso</strong>
+                <small>Control de accesos y credenciales</small>
+              </div>
+            </a>
 
-        <div class="guard-notice-box">
-          <span class="shield-ico">🛡️</span>
-          <div>
-            <strong>Guardia Médica 24 hs Activa</strong>
-            <p>Servicio continuo de urgencias y consultorios ambulatorios Sede Central.</p>
+            <a routerLink="/admin/reportes" class="quick-btn">
+              <span class="q-icon">📈</span>
+              <div>
+                <strong>Reportes y Exportación de Datos</strong>
+                <small>Informes ejecutivos y descargas CSV</small>
+              </div>
+            </a>
           </div>
         </div>
       </div>
 
-    </div>
-
-    <div class="dash-card">
-      <div class="dash-card-header">
-        <div>
-          <h3>Próximos Turnos a Atender (Recepción)</h3>
-          <p class="card-subtitle">Listado en vivo de los pacientes agendados</p>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <h3>Próximos Turnos a Atender (Visión Global)</h3>
+            <p class="card-subtitle">Listado en vivo de los pacientes agendados en la clínica</p>
+          </div>
+          <a routerLink="/admin/turnos" class="link-see-all">Ver todos los turnos →</a>
         </div>
-        <a routerLink="/admin/turnos" class="link-see-all">Ver todos los turnos →</a>
-      </div>
 
-      <div class="table-responsive">
-        <table class="dash-table">
-          <thead>
-            <tr>
-              <th>HORA</th>
-              <th>PACIENTE</th>
-              <th>DNI</th>
-              <th>PROFESIONAL</th>
-              <th>ESPECIALIDAD</th>
-              <th>COBERTURA</th>
-              <th>ESTADO</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="cargando()">
-              <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
-                ⏳ Cargando agenda del día...
-              </td>
-            </tr>
-            <tr *ngFor="let t of proximosTurnos()">
-              <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
-              <td><strong class="patient-name">{{ t.paciente }}</strong></td>
-              <td>{{ t.dni }}</td>
-              <td>{{ t.medico }}</td>
-              <td><span class="esp-tag">{{ t.especialidad }}</span></td>
-              <td>{{ t.obraSocial }}</td>
-              <td>
-                <span class="status-badge" [ngClass]="{
-                    'st-espera': t.estado === 'En Espera',
-                    'st-confirmado': t.estado === 'Confirmado',
-                    'st-atendido': t.estado === 'Atendido'
-                  }">
-                  ● {{ t.estado }}
-                </span>
-              </td>
-            </tr>
-            <tr *ngIf="!cargando() && proximosTurnos().length === 0">
-              <td colspan="7" style="text-align: center; padding: 2rem; color: #64748b;">
-                No hay turnos registrados en la agenda.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>HORA</th>
+                <th>PACIENTE</th>
+                <th>DNI</th>
+                <th>PROFESIONAL</th>
+                <th>ESPECIALIDAD</th>
+                <th>COBERTURA</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="cargando()">
+                <td colspan="7" class="card-empty-message">
+                  ⏳ Cargando agenda general...
+                </td>
+              </tr>
+              <tr *ngFor="let t of proximosTurnosGlobal()">
+                <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+                <td><strong class="patient-name">{{ t.paciente }}</strong></td>
+                <td>{{ t.dni }}</td>
+                <td>{{ t.medico }}</td>
+                <td><span class="esp-tag">{{ t.especialidad }}</span></td>
+                <td>{{ t.obraSocial }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                      'st-espera': t.estado === 'En Espera',
+                      'st-confirmado': t.estado === 'Confirmado',
+                      'st-atendido': t.estado === 'Atendido'
+                    }">
+                    ● {{ t.estado }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="!cargando() && proximosTurnosGlobal().length === 0">
+                <td colspan="7" class="card-empty-message">
+                  No hay turnos registrados en la agenda.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </ng-container>
 
   </section>
 </div>
