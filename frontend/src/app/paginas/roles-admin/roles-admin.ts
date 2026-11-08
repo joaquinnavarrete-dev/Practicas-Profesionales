@@ -23,7 +23,7 @@ export class RolesAdminComponent implements OnInit {
   readonly usuarioEnEdicion = signal<UsuarioDetalle | null>(null);
   readonly guardando = signal<boolean>(false);
 
-  roles: RolPerfil[] = [
+  readonly roles = signal<RolPerfil[]>([
     {
       id: 1,
       nombre: 'Administrador',
@@ -84,9 +84,9 @@ export class RolesAdminComponent implements OnInit {
         { nombreModulo: 'Usuarios y Roles', descripcion: 'Sin acceso', leer: false, crear: false, editar: false, eliminar: false }
       ]
     }
-  ];
+  ]);
 
-  readonly rolSeleccionado = signal<RolPerfil>(this.roles[0]);
+  readonly rolSeleccionado = signal<RolPerfil>(this.roles()[0]);
 
   ngOnInit(): void {
     this.cargarConteoUsuarios();
@@ -109,7 +109,7 @@ export class RolesAdminComponent implements OnInit {
           });
 
           const cleanRolNombre = rolNombre.toUpperCase().replace('ROLE_', '').trim();
-          const rolActual = this.roles.find(r => {
+          const rolActual = this.roles().find(r => {
             const nom = r.nombre.toUpperCase();
             if (cleanRolNombre.includes('ADMIN') && nom.includes('ADMIN')) return true;
             if (cleanRolNombre.includes('MED') && (nom.includes('MÉD') || nom.includes('MED'))) return true;
@@ -150,12 +150,22 @@ export class RolesAdminComponent implements OnInit {
           }
         }
 
-        for (const r of this.roles) {
+        const actualizados = this.roles().map(r => {
           const nom = r.nombre.toUpperCase();
-          if (nom.includes('ADMIN')) r.cantidadUsuarios = countAdmin;
-          else if (nom.includes('MÉD') || nom.includes('MED')) r.cantidadUsuarios = countMedico;
-          else if (nom.includes('RECEP')) r.cantidadUsuarios = countRecep;
-          else if (nom.includes('PACIENT')) r.cantidadUsuarios = countPac;
+          let cant = 0;
+          if (nom.includes('ADMIN')) cant = countAdmin;
+          else if (nom.includes('MÉD') || nom.includes('MED')) cant = countMedico;
+          else if (nom.includes('RECEP')) cant = countRecep;
+          else if (nom.includes('PACIENT')) cant = countPac;
+          return { ...r, cantidadUsuarios: cant };
+        });
+
+        this.roles.set(actualizados);
+
+        const seleccionadoActual = this.rolSeleccionado();
+        const coincide = actualizados.find(r => r.nombre === seleccionadoActual.nombre);
+        if (coincide) {
+          this.rolSeleccionado.set(coincide);
         }
       },
       error: (err) => console.error('Error al calcular conteo de usuarios en roles:', err)
