@@ -25,6 +25,12 @@ import { RegistrarEspecialidadAdminComponent } from './paginas/registrar-especia
 import { EditarEspecialidadAdminComponent } from './paginas/editar-especialidad-admin/editar-especialidad-admin';
 import { PortalPacienteComponent } from './paginas/portal-paciente/portal-paciente';
 import { HistoriaClinicaAdminComponent } from './paginas/historia-clinica-admin/historia-clinica-admin';
+import { MiAgendaMedicoComponent } from './paginas/mi-agenda-medico/mi-agenda-medico';
+import { MiPerfilMedicoComponent } from './paginas/mi-perfil-medico/mi-perfil-medico';
+import { DirectorioColegasComponent } from './paginas/directorio-colegas/directorio-colegas';
+import { MisMetricasMedicoComponent } from './paginas/mis-metricas-medico/mis-metricas-medico';
+import { CarteleraMedicosComponent } from './paginas/cartelera-medicos/cartelera-medicos';
+import { ReportesAdminComponent } from './paginas/reportes-admin/reportes-admin';
 
 export const routes: Routes = [
   {
@@ -55,6 +61,12 @@ export const routes: Routes = [
       { path: 'obras-sociales', component: ObrasSocialesAdminComponent },
       { path: 'pacientes', component: PacientesAdminComponent },
       { path: 'pacientes/:idPaciente/historia-clinica', component: HistoriaClinicaAdminComponent },
+      { path: 'mi-agenda', component: MiAgendaMedicoComponent },
+      { path: 'mi-perfil-medico', component: MiPerfilMedicoComponent },
+      { path: 'directorio-medico', component: DirectorioColegasComponent },
+      { path: 'mis-metricas', component: MisMetricasMedicoComponent },
+      { path: 'cartelera-medicos', component: CarteleraMedicosComponent },
+      { path: 'reportes', component: ReportesAdminComponent },
       { path: 'medicos', component: MedicosAdminComponent },
       { path: 'usuarios', component: UsuariosAdminComponent },
       { path: 'usuarios/roles', component: RolesAdminComponent },
