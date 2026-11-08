@@ -1,0 +1,111 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Mis Métricas y Rendimiento" icono="📊"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Estadísticas y Rendimiento de Consultorio</h1>
+        <p class="sub-heading">Métricas personales de atención, efectividad de turnos y coberturas médicas asistidas.
+        </p>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">TOTAL CONSULTAS HISTÓRICAS</span>
+          <div class="kpi-icon-box icon-blue">📋</div>
+        </div>
+        <strong class="kpi-value">{{ totalConsultas() }}</strong>
+        <span class="kpi-sub">Total de citas en tu historial</span>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">PACIENTES ATENDIDOS</span>
+          <div class="kpi-icon-box icon-green">✅</div>
+        </div>
+        <strong class="kpi-value">{{ totalAtendidos() }}</strong>
+        <span class="kpi-sub">Consultas completadas con éxito</span>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">TASA DE ASISTENCIA</span>
+          <div class="kpi-icon-box icon-amber">📈</div>
+        </div>
+        <strong class="kpi-value">{{ tasaAsistencia() }}%</strong>
+        <span class="kpi-sub">Efectividad de concurrencia</span>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">COBERTURAS ATENDIDAS</span>
+          <div class="kpi-icon-box icon-purple">🛡️</div>
+        </div>
+        <strong class="kpi-value">{{ distribucionObrasSociales().length }}</strong>
+        <span class="kpi-sub">Obras sociales / prepagas distintas</span>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+
+      <div class="dash-card">
+        <div class="card-header">
+          <h3>Distribución por Obra Social de tus Pacientes</h3>
+        </div>
+
+        <div class="progress-list">
+          <div class="progress-item" *ngFor="let item of distribucionObrasSociales()">
+            <div class="progress-labels">
+              <span class="item-name">{{ item.nombre }}</span>
+              <span class="item-val">{{ item.cantidad }} citas ({{ item.porcentaje }}%)</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" [style.width.%]="item.porcentaje" [style.background-color]="item.color">
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="distribucionObrasSociales().length === 0" class="empty-block">
+            No hay registros de atenciones para graficar la distribución.
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-header">
+          <h3>Consultas por Mes</h3>
+        </div>
+
+        <div class="table-responsive">
+          <table class="simple-table">
+            <thead>
+              <tr>
+                <th>PERÍODO</th>
+                <th>CONSULTAS</th>
+                <th>EFECTIVIDAD</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let m of ultimosMeses()">
+                <td><strong>{{ m.mesNombre }}</strong></td>
+                <td>{{ m.totalAtendidos }} pacientes</td>
+                <td>
+                  <span class="pct-badge">{{ m.efectividad }}%</span>
+                </td>
+              </tr>
+              <tr *ngIf="ultimosMeses().length === 0">
+                <td colspan="3" class="empty-block">Sin datos históricos registrados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+</div>
