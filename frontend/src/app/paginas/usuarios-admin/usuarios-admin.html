@@ -87,16 +87,14 @@
           <tr>
             <th>USUARIO / NOMBRE</th>
             <th>EMAIL DE ACCESO</th>
-            <th>IDENTIFICADOR</th>
             <th>ROL ASIGNADO</th>
-            <th>ESTADO DE CUENTA</th>
             <th>ESTADO</th>
             <th class="col-actions">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="7" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td colspan="5" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando padrón general de usuarios...
             </td>
           </tr>
@@ -117,10 +115,6 @@
             </td>
 
             <td>
-              <span class="dni-text">{{ u.dni }}</span>
-            </td>
-
-            <td>
               <span class="badge-rol" [ngClass]="{
                   'rol-admin': u.rol === 'Administrador',
                   'rol-medico': u.rol === 'Médico',
@@ -129,10 +123,6 @@
                 }">
                 {{ u.rol }}
               </span>
-            </td>
-
-            <td>
-              <span class="access-date">🕒 {{ u.ultimoIngreso }}</span>
             </td>
 
             <td>
@@ -162,7 +152,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && usuariosFiltrados().length === 0">
-            <td colspan="7" class="empty-table-row">
+            <td colspan="5" class="empty-table-row">
               <span>🔍 No se encontraron usuarios con los filtros seleccionados.</span>
             </td>
           </tr>
