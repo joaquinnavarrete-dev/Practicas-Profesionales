@@ -18,9 +18,9 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label>NOMBRE DE USUARIO / EMAIL *</label>
-            <input type="text" [(ngModel)]="pacienteForm.nombreUsuario" name="nombreUsuario"
-              placeholder="Ej: juanperez o juan@email.com" autocomplete="username"
+            <label>CORREO ELECTRÓNICO (EMAIL) *</label>
+            <input type="email" [(ngModel)]="pacienteForm.nombreUsuario" name="nombreUsuario"
+              placeholder="Ej: juan@email.com" autocomplete="email"
               [class.is-invalid]="campoInvalido('nombreUsuario')" required />
           </div>
 
