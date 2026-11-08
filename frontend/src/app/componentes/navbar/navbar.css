@@ -243,70 +243,73 @@
   background-color: #1e293b;
 }
 
-.user-chip {
+.profile-card {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.3rem 0.65rem 0.3rem 0.4rem;
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
+  gap: 0.65rem;
+  padding-right: 0.75rem;
+  border-right: 1px solid #e2e8f0;
 }
 
-.user-avatar-circle {
-  width: 28px;
-  height: 28px;
-  background-color: #004b93;
-  color: #ffffff;
+.avatar-ph {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  background: linear-gradient(135deg, #004b93 0%, #002b55 100%);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 800;
+  box-shadow: 0 2px 4px rgba(0, 75, 147, 0.2);
 }
 
-.user-details {
+.profile-info {
   display: flex;
   flex-direction: column;
 }
 
-.user-name {
-  font-size: 0.82rem;
+.profile-name {
+  font-size: 0.85rem;
   font-weight: 700;
   color: #0f172a;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
-.user-role-badge {
-  font-size: 0.65rem;
-  font-weight: 600;
+.profile-role {
+  font-size: 0.7rem;
   color: #64748b;
+  font-weight: 600;
   text-transform: capitalize;
 }
 
-.btn-logout-nav {
-  background: none;
-  border: none;
-  color: #64748b;
-  cursor: pointer;
-  padding: 0.2rem;
-  display: flex;
+.btn-topbar-logout {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  margin-left: 0.2rem;
-  transition: color 0.15s ease, background-color 0.15s ease;
-}
-
-.btn-logout-nav:hover {
-  color: #dc2626;
+  gap: 0.45rem;
   background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.logout-icon {
-  width: 16px;
-  height: 16px;
+.btn-topbar-logout:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-topbar-logout .logout-icon {
+  width: 15px;
+  height: 15px;
 }
 
 
@@ -329,8 +332,6 @@
   transform: translateY(-1px);
 }
 
-
-/* BOTÓN HAMBURGUESA PÚBLICO */
 .btn-hamburger-nav {
   display: none;
   background: transparent;
@@ -353,7 +354,6 @@
   background-color: #f1f5f9;
 }
 
-/* MENÚ MÓVIL DESPLEGABLE */
 .mobile-nav-backdrop {
   display: none;
   position: fixed;
@@ -485,9 +485,11 @@
   .btn-hamburger-nav {
     display: flex;
   }
+
   .mobile-nav-backdrop {
     display: block;
   }
+
   .mobile-nav-drawer {
     display: flex;
   }
@@ -497,6 +499,7 @@
   .badge-guardia {
     display: none;
   }
+
   .btn-registro-nav {
     display: none;
   }
@@ -507,6 +510,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
