@@ -45,6 +45,11 @@ export class SolicitarTurnoComponent implements OnInit {
 
   readonly turnosDisponibles = signal<TurnoDisponible[]>([]);
   readonly cargandoDisponibles = signal<boolean>(false);
+  readonly misTurnosExistentes = signal<Turno[]>([]);
+
+  readonly tieneConflictoEnFecha = computed(() => {
+    return this.turnosDisponibles().some(s => s.conflictoPaciente);
+  });
 
   fechaMinima: string = '';
   readonly cargandoReserva = signal<boolean>(false);
@@ -361,6 +366,7 @@ export class SolicitarTurnoComponent implements OnInit {
           disponible: s.disponible !== undefined ? Boolean(s.disponible) : true
         }));
         this.turnosDisponibles.set(formateados);
+        this.aplicarValidacionConflictosPaciente();
         this.cargandoDisponibles.set(false);
       },
       error: (err) => {
@@ -371,12 +377,66 @@ export class SolicitarTurnoComponent implements OnInit {
     });
   }
 
+  aplicarValidacionConflictosPaciente(): void {
+    const slots = this.turnosDisponibles();
+    const fecha = this.turnoBorrador.fecha;
+    const misTurnos = this.misTurnosExistentes();
+
+    if (!slots.length || !fecha || !misTurnos.length) return;
+
+    const actualizados = slots.map(s => {
+      const horaStr = s.hora.length > 5 ? s.hora.substring(0, 5) : s.hora;
+      const [sH, sM] = horaStr.split(':').map(Number);
+      const sMinutos = sH * 60 + sM;
+
+      let conflicto = false;
+      let motivo = '';
+
+      for (const t of misTurnos) {
+        if (t.fecha === fecha && t.estado !== 'Cancelado') {
+          const tHora = t.hora ? (t.hora.length > 5 ? t.hora.substring(0, 5) : t.hora) : '';
+          if (tHora) {
+            const [tH, tM] = tHora.split(':').map(Number);
+            const tMinutos = tH * 60 + tM;
+            const dif = Math.abs(sMinutos - tMinutos);
+
+            if (dif === 0) {
+              conflicto = true;
+              motivo = `Ya tienes un turno agendado a las ${tHora} hs con Dr(a). ${t.medico?.nombre || ''} ${t.medico?.apellido || ''}.`;
+              break;
+            } else if (dif < 30) {
+              conflicto = true;
+              motivo = `Intervalo menor a 30 min: ya tienes un turno a las ${tHora} hs con Dr(a). ${t.medico?.nombre || ''} ${t.medico?.apellido || ''}.`;
+              break;
+            }
+          }
+        }
+      }
+
+      if (conflicto) {
+        return {
+          ...s,
+          disponible: false,
+          conflictoPaciente: true,
+          motivoConflicto: motivo
+        };
+      }
+      return s;
+    });
+
+    this.turnosDisponibles.set(actualizados);
+  }
+
   onFechaCambio(): void {
     this.turnoBorrador.hora = '';
     this.cargarDisponibilidad();
   }
 
   seleccionarHorario(h: TurnoDisponible): void {
+    if (h.conflictoPaciente) {
+      this.notify.warning(h.motivoConflicto || 'Ya tienes un turno agendado en ese horario o con menos de 30 minutos de diferencia.', 'Conflicto de Horario');
+      return;
+    }
     if (!h.disponible) return;
     this.turnoBorrador.hora = h.hora;
   }
@@ -393,6 +453,16 @@ export class SolicitarTurnoComponent implements OnInit {
         },
         error: (err) => {
           console.warn('No se pudo precargar el perfil del paciente:', err);
+        }
+      });
+
+      this.turnoService.listarMisTurnos().subscribe({
+        next: (turnos) => {
+          this.misTurnosExistentes.set(turnos || []);
+          this.aplicarValidacionConflictosPaciente();
+        },
+        error: (err) => {
+          console.warn('No se pudieron precargar los turnos previos del paciente:', err);
         }
       });
     }
@@ -469,10 +539,13 @@ export class SolicitarTurnoComponent implements OnInit {
       error: (err) => {
         this.cargandoReserva.set(false);
         console.error('Error al reservar turno:', err);
-        if (err.status === 409) {
+        const msg = err.error?.message || '';
+        if (msg.includes('ya tiene un turno') || msg.includes('intervalo mínimo')) {
+          this.notify.warning(msg, 'Conflicto de Horario');
+        } else if (err.status === 409) {
           this.notify.warning('El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.', 'Turno no disponible');
         } else {
-          this.notify.error(err.error?.message || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.', 'Error al reservar');
+          this.notify.error(msg || 'Ocurrió un error al confirmar la reserva. Intente nuevamente.', 'Error al reservar');
         }
       }
     });
