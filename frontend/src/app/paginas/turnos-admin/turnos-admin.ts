@@ -6,6 +6,7 @@ import { TurnoService } from '../../services/turno.service';
 import { EspecialidadService } from '../../services/especialidad.service';
 import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
+import { AuthService } from '../../services/auth.service';
 import { Turno, Especialidad } from '../../models';
 import { FechaFormatoPipe } from '../../pipes';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
@@ -23,10 +24,12 @@ export class TurnosAdminComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
   private readonly route = inject(ActivatedRoute);
+  readonly authService = inject(AuthService);
 
   readonly busquedaGlobal = signal<string>('');
   readonly fechaFiltro = signal<string>('');
   readonly especialidadFiltro = signal<string>('Todas');
+  readonly conteoReubicacion = signal<number>(0);
 
   readonly turnos = signal<Turno[]>([]);
   readonly especialidades = signal<Especialidad[]>([]);
@@ -49,7 +52,8 @@ export class TurnosAdminComponent implements OnInit {
         pacienteFull.includes(q) ||
         t.paciente.dni.includes(q) ||
         medicoFull.includes(q) ||
-        t.especialidad.nombre.toLowerCase().includes(q);
+        t.especialidad.nombre.toLowerCase().includes(q) ||
+        (t.estado && t.estado.toLowerCase().includes(q));
 
       return matchFecha && matchEsp && matchQuery;
     });
@@ -60,6 +64,22 @@ export class TurnosAdminComponent implements OnInit {
 
     this.cargarEspecialidades();
     this.cargarTurnos(idMedicoParam ? Number(idMedicoParam) : undefined);
+    this.verificarPendientesReubicacion();
+  }
+
+  verificarPendientesReubicacion(): void {
+    this.turnoService.conteoPendientesReubicacion().subscribe({
+      next: (res) => {
+        const count = res?.conteo || 0;
+        this.conteoReubicacion.set(count);
+        if (count > 0 && (this.authService.isRecepcionista() || this.authService.isAdmin())) {
+          this.notify.warning(`Hay ${count} turno(s) pendiente(s) de reubicación por cambios en la agenda médica de los profesionales.`, 'Atención Reubicación');
+        }
+      },
+      error: (err) => {
+        console.error('Error al verificar turnos pendientes de reubicación:', err);
+      }
+    });
   }
 
   cargarTurnos(idMedicoFiltro?: number): void {
