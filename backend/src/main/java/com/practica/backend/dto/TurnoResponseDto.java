@@ -22,4 +22,5 @@ public class TurnoResponseDto {
     private EspecialidadResponseDto especialidad;
     private LocalDate fecha;
     private LocalTime hora;
+    private String estado;
 }

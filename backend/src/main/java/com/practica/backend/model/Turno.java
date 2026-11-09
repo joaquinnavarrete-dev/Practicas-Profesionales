@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "turno")
+@Table(name = "turno", uniqueConstraints = {
+    @UniqueConstraint(name = "uq_turno_medico_fecha_hora", columnNames = {"id_medico", "fecha", "hora"}),
+    @UniqueConstraint(name = "uq_turno_paciente_fecha_hora", columnNames = {"id_paciente", "fecha", "hora"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -49,4 +53,8 @@ public class Turno {
 
     @Column(name = "hora", nullable = false)
     private LocalTime hora;
+
+    @Column(name = "estado", nullable = false, length = 40)
+    @Builder.Default
+    private String estado = "Confirmado";
 }

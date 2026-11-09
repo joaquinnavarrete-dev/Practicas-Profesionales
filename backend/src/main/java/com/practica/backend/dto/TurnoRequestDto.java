@@ -33,4 +33,6 @@ public class TurnoRequestDto {
 
     @NotNull(message = "La hora es obligatoria")
     private LocalTime hora;
+
+    private String estado;
 }
