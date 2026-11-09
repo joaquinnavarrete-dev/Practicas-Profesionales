@@ -41,7 +41,8 @@
       </div>
 
       <div class="success-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a *ngIf="authService.isLoggedIn()" routerLink="/mi-portal" class="btn-primary-success" style="text-decoration: none;">
+        <a *ngIf="authService.isLoggedIn()" routerLink="/mi-portal" class="btn-primary-success"
+          style="text-decoration: none;">
           📋 Ver mis turnos en Mi Portal
         </a>
         <button class="btn-primary-success" *ngIf="!authService.isLoggedIn()" (click)="volverAlInicio()">
@@ -54,7 +55,8 @@
     </div>
 
     <div class="stepper-indicator" *ngIf="!reservaExitosa()">
-      <div class="step-node" [class.active]="pasoActual() === 1" [class.completed]="pasoActual() > 1" (click)="irAlPaso(1)">
+      <div class="step-node" [class.active]="pasoActual() === 1" [class.completed]="pasoActual() > 1"
+        (click)="irAlPaso(1)">
         <div class="node-circle">
           <span *ngIf="pasoActual() <= 1">1</span>
           <span *ngIf="pasoActual() > 1">✓</span>
@@ -64,7 +66,8 @@
 
       <div class="step-connector" [class.filled]="pasoActual() > 1"></div>
 
-      <div class="step-node" [class.active]="pasoActual() === 2" [class.completed]="pasoActual() > 2" (click)="irAlPaso(2)">
+      <div class="step-node" [class.active]="pasoActual() === 2" [class.completed]="pasoActual() > 2"
+        (click)="irAlPaso(2)">
         <div class="node-circle">
           <span *ngIf="pasoActual() <= 2">2</span>
           <span *ngIf="pasoActual() > 2">✓</span>
@@ -74,7 +77,8 @@
 
       <div class="step-connector" [class.filled]="pasoActual() > 2"></div>
 
-      <div class="step-node" [class.active]="pasoActual() === 3" [class.completed]="pasoActual() > 3" (click)="irAlPaso(3)">
+      <div class="step-node" [class.active]="pasoActual() === 3" [class.completed]="pasoActual() > 3"
+        (click)="irAlPaso(3)">
         <div class="node-circle">
           <span *ngIf="pasoActual() <= 3">3</span>
           <span *ngIf="pasoActual() > 3">✓</span>
@@ -200,21 +204,21 @@
         <div class="datetime-grid">
 
           <div class="calendar-card">
-            <!-- Header con mes/año y flechas de navegación -->
             <div class="cal-nav">
               <h4 class="cal-title">{{ nombreMesVisual() }}</h4>
               <div class="cal-arrows">
-                <button type="button" (click)="mesAnterior()" [disabled]="!puedeRetrocederMes()" title="Mes anterior">◀</button>
+                <button type="button" (click)="mesAnterior()" [disabled]="!puedeRetrocederMes()"
+                  title="Mes anterior">◀</button>
                 <button type="button" (click)="mesSiguiente()" title="Mes siguiente">▶</button>
               </div>
             </div>
 
-            <!-- Días de atención configurados para el médico -->
             <div class="medico-dias-resumen" *ngIf="diasAtencionMedico().length > 0">
               <span class="dias-resumen-label">🩺 Días de atención:</span>
               <div class="dias-chips-container">
                 <span class="chip-dia-mini" *ngFor="let dia of diasAtencionMedico()">
-                  <strong>{{ getNombreDiaSemana(dia.diaSemana) }}</strong> ({{ dia.horaInicio.substring(0, 5) }} - {{ dia.horaFin.substring(0, 5) }} hs)
+                  <strong>{{ getNombreDiaSemana(dia.diaSemana) }}</strong> ({{ dia.horaInicio.substring(0, 5) }} - {{
+                  dia.horaFin.substring(0, 5) }} hs)
                 </span>
               </div>
             </div>
@@ -223,7 +227,6 @@
               <span>⚠️ Este profesional no tiene días de atención asignados en este momento.</span>
             </div>
 
-            <!-- Cabecera de la semana -->
             <div class="cal-week-labels">
               <span>Lun</span>
               <span>Mar</span>
@@ -234,26 +237,17 @@
               <span>Dom</span>
             </div>
 
-            <!-- Grilla interactiva de días del mes -->
             <div class="cal-days-grid">
-              <div
-                *ngFor="let dia of diasCalendario()"
-                class="cal-day-cell"
-                [class.other-month]="!dia.esMesActual"
-                [class.past]="dia.esPasado"
-                [class.working-day]="dia.atiendeMedico"
-                [class.non-working]="dia.esMesActual && !dia.esPasado && !dia.atiendeMedico"
-                [class.today]="dia.esHoy"
-                [class.selected-day]="dia.estaSeleccionado"
-                (click)="seleccionarDiaCalendario(dia)"
-                [attr.title]="getTooltipDia(dia)"
-              >
+              <div *ngFor="let dia of diasCalendario()" class="cal-day-cell" [class.other-month]="!dia.esMesActual"
+                [class.past]="dia.esPasado" [class.working-day]="dia.atiendeMedico"
+                [class.non-working]="dia.esMesActual && !dia.esPasado && !dia.atiendeMedico" [class.today]="dia.esHoy"
+                [class.selected-day]="dia.estaSeleccionado" (click)="seleccionarDiaCalendario(dia)"
+                [attr.title]="getTooltipDia(dia)">
                 <span class="day-number">{{ dia.numeroDia }}</span>
                 <span class="day-dot" *ngIf="dia.atiendeMedico && !dia.estaSeleccionado"></span>
               </div>
             </div>
 
-            <!-- Leyenda explicativa -->
             <div class="cal-legend">
               <span><i class="dot-green"></i> Con atención</span>
               <span><i class="dot-gray"></i> Sin atención</span>
@@ -277,14 +271,27 @@
               <small>Pruebe seleccionando otra fecha en el calendario.</small>
             </div>
 
+            <div *ngIf="tieneConflictoEnFecha()" class="conflict-alert-box"
+              style="display: flex; align-items: center; gap: 0.75rem; background-color: #fef2f2; border: 1px solid #fca5a5; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem; color: #991b1b;">
+              <span style="font-size: 1.25rem;">⚠️</span>
+              <div>
+                <strong>Aviso de superposición:</strong> Ya cuentas con una o más citas agendadas en esta fecha. Los
+                horarios coincidentes o con menos de 30 minutos de intervalo están bloqueados para evitar
+                superposiciones.
+              </div>
+            </div>
+
             <ng-container *ngIf="!cargandoDisponibles() && turnosDisponibles().length > 0">
               <div class="hour-group" *ngIf="horariosManana().length > 0">
                 <span class="hour-group-title">☀️ TURNO MAÑANA</span>
                 <div class="slots-grid">
                   <button *ngFor="let h of horariosManana()" type="button" class="slot-btn"
-                    [class.active]="turnoBorrador.hora === h.hora" [disabled]="!h.disponible"
-                    (click)="seleccionarHorario(h)">
-                    {{ h.hora }} hs <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
+                    [class.active]="turnoBorrador.hora === h.hora" [class.slot-conflict]="h.conflictoPaciente"
+                    [disabled]="!h.disponible" [title]="h.motivoConflicto || ''" (click)="seleccionarHorario(h)">
+                    {{ h.hora }} hs
+                    <span *ngIf="h.conflictoPaciente" style="font-size: 0.75rem; margin-left: 0.25rem;"
+                      title="Conflicto con otro turno">⚠️</span>
+                    <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
                   </button>
                 </div>
               </div>
@@ -293,9 +300,12 @@
                 <span class="hour-group-title">🌙 TURNO TARDE</span>
                 <div class="slots-grid">
                   <button *ngFor="let h of horariosTarde()" type="button" class="slot-btn"
-                    [class.active]="turnoBorrador.hora === h.hora" [disabled]="!h.disponible"
-                    (click)="seleccionarHorario(h)">
-                    {{ h.hora }} hs <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
+                    [class.active]="turnoBorrador.hora === h.hora" [class.slot-conflict]="h.conflictoPaciente"
+                    [disabled]="!h.disponible" [title]="h.motivoConflicto || ''" (click)="seleccionarHorario(h)">
+                    {{ h.hora }} hs
+                    <span *ngIf="h.conflictoPaciente" style="font-size: 0.75rem; margin-left: 0.25rem;"
+                      title="Conflicto con otro turno">⚠️</span>
+                    <span *ngIf="turnoBorrador.hora === h.hora">✓</span>
                   </button>
                 </div>
               </div>
