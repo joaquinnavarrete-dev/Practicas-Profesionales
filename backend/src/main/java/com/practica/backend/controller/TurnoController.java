@@ -69,6 +69,18 @@ public class TurnoController {
         return ResponseEntity.ok(turnoService.listarTodos());
     }
 
+    @GetMapping("/pendientes-reubicacion")
+    @Operation(summary = "Listar turnos pendientes de reubicación por cambios de agenda médica")
+    public ResponseEntity<List<TurnoResponseDto>> listarPendientesReubicacion() {
+        return ResponseEntity.ok(turnoService.listarPendientesReubicacion());
+    }
+
+    @GetMapping("/pendientes-reubicacion/conteo")
+    @Operation(summary = "Obtener conteo de turnos pendientes de reubicación")
+    public ResponseEntity<java.util.Map<String, Long>> contarPendientesReubicacion() {
+        return ResponseEntity.ok(java.util.Map.of("conteo", turnoService.contarPendientesReubicacion()));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Buscar turno por ID")
     public ResponseEntity<TurnoResponseDto> buscarPorId(@PathVariable Integer id) {
