@@ -118,6 +118,7 @@ CREATE TABLE turno (
     id_especialidad INT NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
+    estado VARCHAR(40) NOT NULL DEFAULT 'Confirmado',
     CONSTRAINT pk_turno PRIMARY KEY (id_turno),
     CONSTRAINT fk_turno_paciente
         FOREIGN KEY (id_paciente)
@@ -135,9 +136,11 @@ CREATE TABLE turno (
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
     CONSTRAINT uq_turno_medico_fecha_hora UNIQUE (id_medico, fecha, hora),
+    CONSTRAINT uq_turno_paciente_fecha_hora UNIQUE (id_paciente, fecha, hora),
     INDEX idx_turno_paciente (id_paciente),
     INDEX idx_turno_medico_fecha (id_medico, fecha),
-    INDEX idx_turno_fecha (fecha)
+    INDEX idx_turno_fecha (fecha),
+    INDEX idx_turno_estado (estado)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE historia_clinica (
