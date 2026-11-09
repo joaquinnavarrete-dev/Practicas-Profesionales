@@ -9,6 +9,7 @@ export interface Turno {
   especialidad: Especialidad;
   fecha: string;
   hora: string;
+  estado?: string;
 }
 
 export interface TurnoRequest {
@@ -17,6 +18,7 @@ export interface TurnoRequest {
   idEspecialidad: number;
   fecha: string;
   hora: string;
+  estado?: string;
 }
 
 export interface SolicitarTurnoRequest {
@@ -38,4 +40,6 @@ export interface TurnoDisponible {
   hora: string;
   diaSemana?: string;
   disponible: boolean;
+  conflictoPaciente?: boolean;
+  motivoConflicto?: string;
 }
