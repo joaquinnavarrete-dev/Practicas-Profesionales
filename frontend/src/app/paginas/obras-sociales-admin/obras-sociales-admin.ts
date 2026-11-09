@@ -5,11 +5,12 @@ import { RouterLink } from '@angular/router';
 import { ObraSocialService, NotificationService, ConfirmModalService, AuthService } from '../../services';
 import { ObraSocial as ObraSocialModel, ObraSocialItem } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-obras-sociales-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './obras-sociales-admin.html',
   styleUrl: './obras-sociales-admin.css'
 })
@@ -22,6 +23,9 @@ export class ObrasSocialesAdminComponent implements OnInit {
   readonly busquedaGlobal = signal<string>('');
   readonly estadoFiltro = signal<string>('Todos');
   readonly tipoFiltro = signal<string>('Todos');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
 
   readonly cargando = signal<boolean>(false);
   readonly obrasSociales = signal<ObraSocialItem[]>([]);
@@ -42,6 +46,11 @@ export class ObrasSocialesAdminComponent implements OnInit {
 
       return matchEstado && matchTipo && matchQuery;
     });
+  });
+
+  readonly obrasSocialesPaginadas = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.obrasSocialesFiltradas().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -109,6 +118,7 @@ export class ObrasSocialesAdminComponent implements OnInit {
     this.busquedaGlobal.set('');
     this.estadoFiltro.set('Todos');
     this.tipoFiltro.set('Todos');
+    this.paginaActual.set(1);
   }
 
   async eliminarObraSocial(os: ObraSocialItem): Promise<void> {

@@ -24,14 +24,14 @@
         <div class="input-search-inner">
           <span>🔍</span>
           <input type="text" placeholder="Buscar por nombre, especialidad o consultorio..." [ngModel]="busqueda()"
-            (ngModelChange)="busqueda.set($event)">
+            (ngModelChange)="busqueda.set($event); paginaActual.set(1)">
         </div>
       </div>
 
       <div class="filter-group">
         <label>ESPECIALIDAD:</label>
         <select class="select-control" [ngModel]="filtroEspecialidad()"
-          (ngModelChange)="filtroEspecialidad.set($event)">
+          (ngModelChange)="filtroEspecialidad.set($event); paginaActual.set(1)">
           <option value="Todas">Todas las Especialidades</option>
           <option *ngFor="let esp of especialidades()" [value]="esp.nombre">
             {{ esp.nombre }}
@@ -41,7 +41,7 @@
     </div>
 
     <div class="cartelera-grid" *ngIf="!cargando()">
-      <div class="cartelera-card" *ngFor="let m of carteleraFiltrada()">
+      <div class="cartelera-card" *ngFor="let m of carteleraPaginada()">
         <div class="card-top">
           <div class="doc-avatar">👨‍⚕️</div>
           <div class="doc-info">
@@ -72,6 +72,16 @@
           </a>
         </div>
       </div>
+    </div>
+
+    <div class="cartelera-pagination-wrapper" *ngIf="!cargando() && carteleraFiltrada().length > 0" style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 1rem;">
+      <app-paginacion
+        [totalItems]="carteleraFiltrada().length"
+        [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()"
+        (cambioPagina)="paginaActual.set($event)"
+        (cambioTamano)="tamanoPagina.set($event)">
+      </app-paginacion>
     </div>
 
     <div class="empty-state" *ngIf="!cargando() && carteleraFiltrada().length === 0">

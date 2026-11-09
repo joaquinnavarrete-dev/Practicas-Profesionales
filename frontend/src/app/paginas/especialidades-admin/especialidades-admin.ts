@@ -5,11 +5,12 @@ import { RouterLink, Router } from '@angular/router';
 import { EspecialidadService, MedicoService, NotificationService, ConfirmModalService } from '../../services';
 import { Especialidad, Medico, EspecialidadRow } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-especialidades-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './especialidades-admin.html',
   styleUrl: './especialidades-admin.css'
 })
@@ -23,6 +24,9 @@ export class EspecialidadesAdminComponent implements OnInit {
   readonly filtroNombre = signal<string>('');
   readonly filtroDepto = signal<string>('Todos');
   readonly filtroEstado = signal<string>('Todas');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
 
   readonly cargando = signal<boolean>(false);
   readonly especialidades = signal<EspecialidadRow[]>([]);
@@ -42,6 +46,11 @@ export class EspecialidadesAdminComponent implements OnInit {
       const matchEstado = fEstado === 'Todas' || item.estado === fEstado;
       return matchNombre && matchDepto && matchEstado;
     });
+  });
+
+  readonly especialidadesPaginadas = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.listaFiltrada().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -99,6 +108,7 @@ export class EspecialidadesAdminComponent implements OnInit {
     this.filtroNombre.set('');
     this.filtroDepto.set('Todos');
     this.filtroEstado.set('Todas');
+    this.paginaActual.set(1);
   }
 
   abrirModalNueva(): void {

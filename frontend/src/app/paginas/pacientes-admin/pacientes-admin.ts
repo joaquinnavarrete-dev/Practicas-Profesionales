@@ -9,11 +9,12 @@ import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { AuthService } from '../../services/auth.service';
 import { Paciente, ObraSocial } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-pacientes-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './pacientes-admin.html',
   styleUrl: './pacientes-admin.css'
 })
@@ -27,6 +28,9 @@ export class PacientesAdminComponent implements OnInit {
 
   readonly busquedaGlobal = signal<string>('');
   readonly obraSocialFiltro = signal<string>('Todas');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
 
   readonly pacientes = signal<Paciente[]>([]);
   readonly obrasSociales = signal<ObraSocial[]>([]);
@@ -51,6 +55,11 @@ export class PacientesAdminComponent implements OnInit {
 
       return matchOS && matchQuery;
     });
+  });
+
+  readonly pacientesPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.pacientesFiltrados().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -89,6 +98,7 @@ export class PacientesAdminComponent implements OnInit {
   resetearFiltros(): void {
     this.busquedaGlobal.set('');
     this.obraSocialFiltro.set('Todas');
+    this.paginaActual.set(1);
   }
 
   async eliminarPaciente(p: Paciente): Promise<void> {

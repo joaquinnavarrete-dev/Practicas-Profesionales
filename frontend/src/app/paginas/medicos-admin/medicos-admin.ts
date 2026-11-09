@@ -8,11 +8,12 @@ import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Medico, Especialidad } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-medicos-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './medicos-admin.html',
   styleUrl: './medicos-admin.css'
 })
@@ -25,6 +26,9 @@ export class MedicosAdminComponent implements OnInit {
 
   readonly busquedaGlobal = signal<string>('');
   readonly especialidadFiltro = signal<string>('Todas');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
 
   readonly medicos = signal<Medico[]>([]);
   readonly especialidades = signal<Especialidad[]>([]);
@@ -48,6 +52,11 @@ export class MedicosAdminComponent implements OnInit {
 
       return matchEsp && matchQuery;
     });
+  });
+
+  readonly medicosPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.medicosFiltrados().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -85,6 +94,7 @@ export class MedicosAdminComponent implements OnInit {
   resetearFiltros(): void {
     this.busquedaGlobal.set('');
     this.especialidadFiltro.set('Todas');
+    this.paginaActual.set(1);
   }
 
   abrirModalCrear(): void {

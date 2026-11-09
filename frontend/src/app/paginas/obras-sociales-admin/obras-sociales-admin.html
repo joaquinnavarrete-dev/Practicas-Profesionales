@@ -50,13 +50,13 @@
         <div class="input-search-inner">
           <span class="search-lens">🔍</span>
           <input type="text" placeholder="Buscar obra social, prepaga o código..." [ngModel]="busquedaGlobal()"
-            (ngModelChange)="busquedaGlobal.set($event)" />
+            (ngModelChange)="busquedaGlobal.set($event); paginaActual.set(1)" />
         </div>
       </div>
 
       <div class="filter-group">
         <label>ESTADO CONVENIO:</label>
-        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event); paginaActual.set(1)">
           <option value="Todos">Todos los estados</option>
           <option value="Activa">Activa</option>
           <option value="En Revisión">En Revisión</option>
@@ -66,7 +66,7 @@
 
       <div class="filter-group">
         <label>TIPO DE COBERTURA:</label>
-        <select [ngModel]="tipoFiltro()" (ngModelChange)="tipoFiltro.set($event)">
+        <select [ngModel]="tipoFiltro()" (ngModelChange)="tipoFiltro.set($event); paginaActual.set(1)">
           <option value="Todos">Todos los tipos</option>
           <option value="Prepaga">Prepaga</option>
           <option value="Obra Social">Obra Social Nacional/Provincial</option>
@@ -99,7 +99,7 @@
             </td>
           </tr>
 
-          <tr *ngFor="let os of obrasSocialesFiltradas()">
+          <tr *ngFor="let os of obrasSocialesPaginadas()">
             <td>
               <div class="entity-cell">
                 <span class="entity-logo">{{ os.logoUrl }}</span>
@@ -157,16 +157,13 @@
         </tbody>
       </table>
 
-      <div class="table-pagination-footer">
-        <span class="pagination-legend">
-          Mostrando {{ obrasSocialesFiltradas().length }} de {{ obrasSociales().length }} entidades registradas
-        </span>
-        <div class="pages-list">
-          <button class="page-nav-btn" disabled>&lt;</button>
-          <button class="page-num-btn active">1</button>
-          <button class="page-nav-btn" disabled>&gt;</button>
-        </div>
-      </div>
+      <app-paginacion
+        [totalItems]="obrasSocialesFiltradas().length"
+        [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()"
+        (cambioPagina)="paginaActual.set($event)"
+        (cambioTamano)="tamanoPagina.set($event)">
+      </app-paginacion>
     </div>
 
   </section>

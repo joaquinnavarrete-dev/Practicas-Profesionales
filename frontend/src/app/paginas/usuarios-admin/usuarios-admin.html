@@ -52,13 +52,13 @@
         <div class="input-search-inner">
           <span class="search-lens">🔍</span>
           <input type="text" placeholder="Buscar usuario por nombre o username..." [ngModel]="busquedaGlobal()"
-            (ngModelChange)="busquedaGlobal.set($event)" />
+            (ngModelChange)="busquedaGlobal.set($event); paginaActual.set(1)" />
         </div>
       </div>
 
       <div class="filter-group">
         <label>ROL DE ACCESO:</label>
-        <select [ngModel]="rolFiltro()" (ngModelChange)="rolFiltro.set($event)">
+        <select [ngModel]="rolFiltro()" (ngModelChange)="rolFiltro.set($event); paginaActual.set(1)">
           <option value="Todos">Todos los roles</option>
           <option value="Administrador">Administrador</option>
           <option value="Médico">Médico</option>
@@ -69,7 +69,7 @@
 
       <div class="filter-group">
         <label>ESTADO DE CUENTA:</label>
-        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event); paginaActual.set(1)">
           <option value="Todos">Todos los estados</option>
           <option value="Activo">Activo</option>
           <option value="Bloqueado">Bloqueado / Inactivo</option>
@@ -99,7 +99,7 @@
             </td>
           </tr>
 
-          <tr *ngFor="let u of usuariosFiltrados()">
+          <tr *ngFor="let u of usuariosPaginados()">
             <td>
               <div class="user-cell">
                 <span class="user-avatar">{{ u.avatarUrl }}</span>
@@ -159,16 +159,13 @@
         </tbody>
       </table>
 
-      <div class="table-pagination-footer">
-        <span class="pagination-legend">
-          Mostrando {{ usuariosFiltrados().length }} de {{ usuarios().length }} usuarios registrados
-        </span>
-        <div class="pages-list">
-          <button class="page-nav-btn" disabled>&lt;</button>
-          <button class="page-num-btn active">1</button>
-          <button class="page-nav-btn" disabled>&gt;</button>
-        </div>
-      </div>
+      <app-paginacion
+        [totalItems]="usuariosFiltrados().length"
+        [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()"
+        (cambioPagina)="paginaActual.set($event)"
+        (cambioTamano)="tamanoPagina.set($event)">
+      </app-paginacion>
     </div>
 
   </section>

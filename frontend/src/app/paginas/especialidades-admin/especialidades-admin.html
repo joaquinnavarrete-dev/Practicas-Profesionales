@@ -51,11 +51,11 @@
       <div class="filter-search-box">
         <span class="lens-icon">🔍</span>
         <input type="text" placeholder="Buscar por especialidad o departamento..." [ngModel]="filtroNombre()"
-          (ngModelChange)="filtroNombre.set($event)" />
+          (ngModelChange)="filtroNombre.set($event); paginaActual.set(1)" />
       </div>
 
       <div class="filter-select-wrapper">
-        <select [ngModel]="filtroDepto()" (ngModelChange)="filtroDepto.set($event)">
+        <select [ngModel]="filtroDepto()" (ngModelChange)="filtroDepto.set($event); paginaActual.set(1)">
           <option value="Todos">Departamento: Todos</option>
           <option value="Cardiología">Cardiología</option>
           <option value="Materno Infantil">Materno Infantil</option>
@@ -67,7 +67,7 @@
       </div>
 
       <div class="filter-select-wrapper">
-        <select [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event)">
+        <select [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event); paginaActual.set(1)">
           <option value="Todas">Estado: Todas</option>
           <option value="Activa">Activa</option>
           <option value="Inactiva">Inactiva</option>
@@ -98,7 +98,7 @@
             </td>
           </tr>
 
-          <tr *ngFor="let item of listaFiltrada()">
+          <tr *ngFor="let item of especialidadesPaginadas()">
             <td>
               <div class="table-item-info">
                 <div class="icon-avatar" [ngClass]="item.bgClase">
@@ -152,16 +152,13 @@
         </tbody>
       </table>
 
-      <div class="table-pagination-footer">
-        <span class="pagination-legend">
-          Mostrando {{ listaFiltrada().length }} de {{ especialidades().length }} especialidades registradas
-        </span>
-        <div class="pages-list">
-          <button class="page-nav-btn" disabled>&lt;</button>
-          <button class="page-num-btn active">1</button>
-          <button class="page-nav-btn" disabled>&gt;</button>
-        </div>
-      </div>
+      <app-paginacion
+        [totalItems]="listaFiltrada().length"
+        [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()"
+        (cambioPagina)="paginaActual.set($event)"
+        (cambioTamano)="tamanoPagina.set($event)">
+      </app-paginacion>
     </div>
 
   </section>

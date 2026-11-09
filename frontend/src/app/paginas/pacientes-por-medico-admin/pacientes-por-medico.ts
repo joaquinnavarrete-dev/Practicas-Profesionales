@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { MedicoService, TurnoService, NotificationService, AuthService } from '../../services';
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-pacientes-por-medico',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './pacientes-por-medico.html',
   styleUrl: './pacientes-por-medico.css'
 })
@@ -24,6 +25,10 @@ export class PacientesPorMedicoComponent implements OnInit {
   readonly medicoSeleccionadoId = signal<number>(0);
   readonly fechaFiltro = signal<string>('');
   readonly estadoFiltro = signal<string>('Todos');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
+
   readonly cargando = signal<boolean>(false);
 
   readonly medicos = signal<MedicoInfo[]>([]);
@@ -55,6 +60,11 @@ export class PacientesPorMedicoComponent implements OnInit {
 
       return coincideMedico && coincideFecha && coincideEstado && coincideQuery;
     });
+  });
+
+  readonly pacientesPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.pacientesFiltrados().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -158,6 +168,7 @@ export class PacientesPorMedicoComponent implements OnInit {
     this.busquedaGlobal.set('');
     this.fechaFiltro.set('');
     this.estadoFiltro.set('Todos');
+    this.paginaActual.set(1);
     if (!this.authService.isMedico()) {
       this.medicoSeleccionadoId.set(0);
       this.pacientes.set([]);

@@ -10,11 +10,12 @@ import { AuthService } from '../../services/auth.service';
 import { Turno, Especialidad } from '../../models';
 import { FechaFormatoPipe } from '../../pipes';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-turnos-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './turnos-admin.html',
   styleUrl: './turnos-admin.css'
 })
@@ -30,6 +31,9 @@ export class TurnosAdminComponent implements OnInit {
   readonly fechaFiltro = signal<string>('');
   readonly especialidadFiltro = signal<string>('Todas');
   readonly conteoReubicacion = signal<number>(0);
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
 
   readonly turnos = signal<Turno[]>([]);
   readonly especialidades = signal<Especialidad[]>([]);
@@ -57,6 +61,11 @@ export class TurnosAdminComponent implements OnInit {
 
       return matchFecha && matchEsp && matchQuery;
     });
+  });
+
+  readonly turnosPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.turnosFiltrados().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -118,6 +127,7 @@ export class TurnosAdminComponent implements OnInit {
     this.busquedaGlobal.set('');
     this.fechaFiltro.set('');
     this.especialidadFiltro.set('Todas');
+    this.paginaActual.set(1);
   }
 
   async cancelarTurno(t: Turno): Promise<void> {

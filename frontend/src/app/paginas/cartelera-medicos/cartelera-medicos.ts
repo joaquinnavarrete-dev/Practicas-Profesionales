@@ -5,11 +5,12 @@ import { RouterLink } from '@angular/router';
 import { MedicoService, DiaAtencionService, EspecialidadService, AuthService } from '../../services';
 import { Medico, DiaAtencion, Especialidad, HorarioCartelera, MedicoCartelera } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-cartelera-medicos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './cartelera-medicos.html',
   styleUrl: './cartelera-medicos.css'
 })
@@ -22,6 +23,9 @@ export class CarteleraMedicosComponent implements OnInit {
   readonly cargando = signal<boolean>(false);
   readonly busqueda = signal<string>('');
   readonly filtroEspecialidad = signal<string>('Todas');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
 
   readonly especialidades = signal<Especialidad[]>([]);
   readonly cartelera = signal<MedicoCartelera[]>([]);
@@ -40,6 +44,11 @@ export class CarteleraMedicosComponent implements OnInit {
 
       return matchEsp && matchQuery;
     });
+  });
+
+  readonly carteleraPaginada = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.carteleraFiltrada().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {

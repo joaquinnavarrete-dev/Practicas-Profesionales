@@ -24,13 +24,13 @@
         <div class="input-search-inner">
           <span class="search-lens">🔍</span>
           <input type="text" placeholder="Buscar por nombre, DNI, historia clínica..." [ngModel]="busquedaGlobal()"
-            (ngModelChange)="busquedaGlobal.set($event)" />
+            (ngModelChange)="busquedaGlobal.set($event); paginaActual.set(1)" />
         </div>
       </div>
 
       <div class="select-doctor-box" *ngIf="!authService.isMedico()">
         <label>MÉDICO PROFESIONAL:</label>
-        <select [ngModel]="medicoSeleccionadoId()" (ngModelChange)="onSeleccionarMedico($event)">
+        <select [ngModel]="medicoSeleccionadoId()" (ngModelChange)="onSeleccionarMedico($event); paginaActual.set(1)">
           <option [value]="0">Seleccione un profesional...</option>
           <option *ngFor="let med of medicos()" [value]="med.id">
             {{ med.nombre }}
@@ -40,12 +40,12 @@
 
       <div class="date-picker-box">
         <label>FECHA DE CITA:</label>
-        <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event)" />
+        <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event); paginaActual.set(1)" />
       </div>
 
       <div class="select-status-box">
         <label>ESTADO:</label>
-        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event)">
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event); paginaActual.set(1)">
           <option value="Todos">Todos los estados</option>
           <option value="Confirmado">Confirmado</option>
           <option value="En Espera">En Espera</option>
@@ -111,7 +111,7 @@
             </td>
           </tr>
 
-          <tr *ngFor="let p of pacientesFiltrados()">
+          <tr *ngFor="let p of pacientesPaginados()">
             <td>
               <span class="time-tag">🕒 {{ p.hora }}</span>
             </td>
@@ -178,11 +178,14 @@
         </tbody>
       </table>
 
-      <div class="table-pagination-footer" *ngIf="medicoSeleccionadoId()">
-        <span class="pagination-legend">
-          Mostrando {{ pacientesFiltrados().length }} pacientes citados
-        </span>
-      </div>
+      <app-paginacion
+        *ngIf="medicoSeleccionadoId()"
+        [totalItems]="pacientesFiltrados().length"
+        [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()"
+        (cambioPagina)="paginaActual.set($event)"
+        (cambioTamano)="tamanoPagina.set($event)">
+      </app-paginacion>
     </div>
 
   </section>

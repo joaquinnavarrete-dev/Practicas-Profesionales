@@ -5,11 +5,12 @@ import { RouterLink, Router } from '@angular/router';
 import { UsuarioService, NotificationService, ConfirmModalService } from '../../services';
 import { Usuario, UsuarioSistema } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-usuarios-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './usuarios-admin.html',
   styleUrl: './usuarios-admin.css'
 })
@@ -22,6 +23,10 @@ export class UsuariosAdminComponent implements OnInit {
   readonly busquedaGlobal = signal<string>('');
   readonly rolFiltro = signal<string>('Todos');
   readonly estadoFiltro = signal<string>('Todos');
+
+  readonly paginaActual = signal<number>(1);
+  readonly tamanoPagina = signal<number>(10);
+
   readonly cargando = signal<boolean>(false);
 
   readonly usuarios = signal<UsuarioSistema[]>([]);
@@ -42,6 +47,11 @@ export class UsuariosAdminComponent implements OnInit {
 
       return matchRol && matchEstado && matchQuery;
     });
+  });
+
+  readonly usuariosPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.tamanoPagina();
+    return this.usuariosFiltrados().slice(inicio, inicio + this.tamanoPagina());
   });
 
   ngOnInit(): void {
@@ -105,6 +115,7 @@ export class UsuariosAdminComponent implements OnInit {
     this.busquedaGlobal.set('');
     this.rolFiltro.set('Todos');
     this.estadoFiltro.set('Todos');
+    this.paginaActual.set(1);
   }
 
   abrirModalCrearUsuario(): void {

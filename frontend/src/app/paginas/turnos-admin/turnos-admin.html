@@ -53,18 +53,18 @@
         <div class="input-search-inner">
           <span class="search-lens">🔍</span>
           <input type="text" placeholder="Buscar por paciente, DNI, médico o especialidad..." [ngModel]="busquedaGlobal()"
-            (ngModelChange)="busquedaGlobal.set($event)" />
+            (ngModelChange)="busquedaGlobal.set($event); paginaActual.set(1)" />
         </div>
       </div>
 
       <div class="filter-group">
         <label>FECHA:</label>
-        <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event)" />
+        <input type="date" [ngModel]="fechaFiltro()" (ngModelChange)="fechaFiltro.set($event); paginaActual.set(1)" />
       </div>
 
       <div class="filter-group">
         <label>ESPECIALIDAD:</label>
-        <select [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event)">
+        <select [ngModel]="especialidadFiltro()" (ngModelChange)="especialidadFiltro.set($event); paginaActual.set(1)">
           <option value="Todas">Todas las especialidades</option>
           <option *ngFor="let esp of especialidades()" [value]="esp.nombre">
             {{ esp.nombre }}
@@ -98,7 +98,7 @@
             </td>
           </tr>
 
-          <tr *ngFor="let t of turnosFiltrados()">
+          <tr *ngFor="let t of turnosPaginados()">
             <td>
               <div class="datetime-cell">
                 <strong class="time-text">🕒 {{ t.hora }} hs</strong>
@@ -156,11 +156,13 @@
         </tbody>
       </table>
 
-      <div class="table-pagination-footer">
-        <span class="pagination-legend">
-          Mostrando {{ turnosFiltrados().length }} turnos clínicos
-        </span>
-      </div>
+      <app-paginacion
+        [totalItems]="turnosFiltrados().length"
+        [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()"
+        (cambioPagina)="paginaActual.set($event)"
+        (cambioTamano)="tamanoPagina.set($event)">
+      </app-paginacion>
     </div>
 
   </section>
