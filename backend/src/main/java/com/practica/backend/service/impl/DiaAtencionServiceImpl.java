@@ -203,18 +203,15 @@ public class DiaAtencionServiceImpl implements DiaAtencionService {
         Integer idMedico = diaAtencion.getMedico().getIdMedico();
         List<Turno> turnosFuturos = turnoRepository.findByMedicoIdMedicoAndFechaGreaterThanEqual(idMedico, LocalDate.now());
 
-        // Filtrar turnos del día de semana original del diaAtencion que no estén cancelados
         List<Turno> turnosDiaOriginal = turnosFuturos.stream()
                 .filter(t -> !"Cancelado".equalsIgnoreCase(t.getEstado()))
                 .filter(t -> diaAtencion.getDiaSemana().equals(DiaSemanaUtil.obtenerNumeroIso(t.getFecha().getDayOfWeek())))
                 .toList();
 
-        // Si se cambia el día de la semana, todos los turnos del día original quedan afectados
         if (!diaAtencion.getDiaSemana().equals(nuevoDiaSemana)) {
             return turnosDiaOriginal;
         }
 
-        // Si se mantiene el día pero cambian las horas, quedan afectados los que quedan fuera del nuevo rango
         return turnosDiaOriginal.stream()
                 .filter(t -> t.getHora().isBefore(nuevaHoraInicio) || t.getHora().plusMinutes(30).isAfter(nuevaHoraFin))
                 .sorted(Comparator.comparing(Turno::getFecha).thenComparing(Turno::getHora))
