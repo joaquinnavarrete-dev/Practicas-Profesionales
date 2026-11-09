@@ -7,9 +7,10 @@ import { MedicoService } from '../../services/medico.service';
 import { TurnoService } from '../../services/turno.service';
 import { PacienteService } from '../../services/paciente.service';
 import { DiaAtencionService } from '../../services/dia-atencion.service';
+import { ObraSocialService } from '../../services/obra-social.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
-import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion, DiaCalendario } from '../../models';
+import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion, DiaCalendario, ObraSocial } from '../../models';
 import { FechaFormatoPipe } from '../../pipes';
 
 @Component({
@@ -25,6 +26,7 @@ export class SolicitarTurnoComponent implements OnInit {
   private readonly turnoService = inject(TurnoService);
   private readonly pacienteService = inject(PacienteService);
   private readonly diaAtencionService = inject(DiaAtencionService);
+  private readonly obraSocialService = inject(ObraSocialService);
   private readonly notify = inject(NotificationService);
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -33,6 +35,10 @@ export class SolicitarTurnoComponent implements OnInit {
 
   readonly especialidades = signal<Especialidad[]>([]);
   readonly cargandoEspecialidades = signal<boolean>(false);
+
+  readonly obrasSociales = signal<ObraSocial[]>([]);
+  readonly buscandoPacienteDni = signal<boolean>(false);
+  readonly pacienteEncontradoEnPadron = signal<boolean | null>(null);
 
   readonly medicos = signal<Medico[]>([]);
   readonly cargandoMedicos = signal<boolean>(false);
@@ -178,10 +184,13 @@ export class SolicitarTurnoComponent implements OnInit {
     hora: '',
     modalidad: 'Presencial',
     sede: 'Sede Central (Av. San Gabriel 1420)',
+    idPaciente: null as number | null,
     pacienteNombre: '',
+    pacienteApellido: '',
     pacienteDni: '',
     pacienteTelefono: '',
     pacienteEmail: '',
+    idObraSocial: null as number | null,
     obraSocial: 'Particular',
     afiliadoNro: 'Titular',
     copago: '$0 (Cubierto al 100%)',
@@ -201,7 +210,29 @@ export class SolicitarTurnoComponent implements OnInit {
     this.fechaMesVisual.set(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
 
     this.cargarEspecialidades();
+    this.cargarObrasSociales();
     this.precargarDatosPaciente();
+  }
+
+  cargarObrasSociales(): void {
+    this.obraSocialService.listar().subscribe({
+      next: (data) => {
+        this.obrasSociales.set(data || []);
+        if (!this.turnoBorrador.idObraSocial && data && data.length > 0) {
+          const particular = data.find(o => o.nombre.toLowerCase().includes('particular'));
+          if (particular) {
+            this.turnoBorrador.idObraSocial = particular.idObraSocial;
+            this.turnoBorrador.obraSocial = particular.nombre;
+          } else {
+            this.turnoBorrador.idObraSocial = data[0].idObraSocial;
+            this.turnoBorrador.obraSocial = data[0].nombre;
+          }
+        }
+      },
+      error: (err) => {
+        console.warn('No se pudieron cargar las obras sociales:', err);
+      }
+    });
   }
 
   cargarEspecialidades(): void {
@@ -510,6 +541,54 @@ export class SolicitarTurnoComponent implements OnInit {
     }
   }
 
+  onObraSocialChange(id: number | null): void {
+    this.turnoBorrador.idObraSocial = id;
+    if (id) {
+      const os = this.obrasSociales().find(o => o.idObraSocial === id);
+      if (os) {
+        this.turnoBorrador.obraSocial = os.nombre;
+      }
+    }
+  }
+
+  onDniInput(): void {
+    if (this.pacienteEncontradoEnPadron() !== null) {
+      this.pacienteEncontradoEnPadron.set(null);
+      this.turnoBorrador.idPaciente = null;
+    }
+  }
+
+  buscarPacientePorDni(): void {
+    const dni = this.turnoBorrador.pacienteDni?.trim();
+    if (!dni) {
+      this.notify.warning('Ingrese un número de DNI para buscar en el padrón.', 'DNI requerido');
+      return;
+    }
+
+    this.buscandoPacienteDni.set(true);
+    this.pacienteService.buscarPorDni(dni).subscribe({
+      next: (p) => {
+        this.buscandoPacienteDni.set(false);
+        this.pacienteEncontradoEnPadron.set(true);
+        this.turnoBorrador.idPaciente = p.idPaciente;
+        this.turnoBorrador.pacienteNombre = p.nombre;
+        this.turnoBorrador.pacienteApellido = p.apellido;
+        this.turnoBorrador.pacienteTelefono = p.telefono;
+        if (p.obraSocial) {
+          this.turnoBorrador.idObraSocial = p.obraSocial.idObraSocial;
+          this.turnoBorrador.obraSocial = p.obraSocial.nombre;
+        }
+        this.notify.info(`Paciente registrado encontrado: ${p.nombre} ${p.apellido}`, 'Padrón de Pacientes');
+      },
+      error: () => {
+        this.buscandoPacienteDni.set(false);
+        this.pacienteEncontradoEnPadron.set(false);
+        this.turnoBorrador.idPaciente = null;
+        this.notify.info('El DNI no está registrado en el padrón. Complete los datos para darlo de alta como paciente presencial.', 'Nuevo Paciente');
+      }
+    });
+  }
+
   confirmarReservaFinal(): void {
     if (!this.authService.isLoggedIn()) {
       this.notify.warning('Para confirmar tu turno médico necesitas iniciar sesión o registrarte como paciente.', 'Acceso requerido');
@@ -519,6 +598,60 @@ export class SolicitarTurnoComponent implements OnInit {
 
     if (!this.turnoBorrador.medico || !this.turnoBorrador.especialidad || !this.turnoBorrador.fecha || !this.turnoBorrador.hora) {
       this.notify.warning('Faltan datos obligatorios para procesar la reserva del turno.', 'Datos incompletos');
+      return;
+    }
+
+    const esPersonal = this.authService.isAdmin() || this.authService.isRecepcionista();
+
+    if (esPersonal) {
+      const dni = this.turnoBorrador.pacienteDni?.trim();
+      const nombre = this.turnoBorrador.pacienteNombre?.trim();
+      const apellido = this.turnoBorrador.pacienteApellido?.trim();
+      const telefono = this.turnoBorrador.pacienteTelefono?.trim();
+      const idObraSocial = this.turnoBorrador.idObraSocial;
+
+      if (!dni || !nombre || !apellido || !telefono || !idObraSocial) {
+        this.notify.warning('Debe completar todos los datos obligatorios del paciente presencial (DNI, Nombre, Apellido, Teléfono y Obra Social).', 'Datos Incompletos');
+        return;
+      }
+
+      this.cargandoReserva.set(true);
+
+      if (this.turnoBorrador.idPaciente) {
+        this.ejecutarReservaAdmin(this.turnoBorrador.idPaciente);
+      } else {
+        this.pacienteService.crear({
+          dni,
+          nombre,
+          apellido,
+          telefono,
+          idObraSocial
+        }).subscribe({
+          next: (pacienteCreado) => {
+            this.turnoBorrador.idPaciente = pacienteCreado.idPaciente;
+            this.ejecutarReservaAdmin(pacienteCreado.idPaciente);
+          },
+          error: (err) => {
+            if (err.status === 409 || err.error?.message?.includes('Ya existe un paciente con el DNI')) {
+              this.pacienteService.buscarPorDni(dni).subscribe({
+                next: (existente) => {
+                  this.turnoBorrador.idPaciente = existente.idPaciente;
+                  this.ejecutarReservaAdmin(existente.idPaciente);
+                },
+                error: () => {
+                  this.cargandoReserva.set(false);
+                  this.notify.error('Ya existe un paciente registrado con ese DNI. Por favor búsquelo en el padrón.', 'DNI Registrado');
+                }
+              });
+            } else {
+              this.cargandoReserva.set(false);
+              console.error('Error al registrar nuevo paciente presencial:', err);
+              const msg = err.error?.message || 'No se pudo dar de alta al paciente presencial. Verifique los datos.';
+              this.notify.error(msg, 'Error al registrar paciente');
+            }
+          }
+        });
+      }
       return;
     }
 
@@ -549,6 +682,57 @@ export class SolicitarTurnoComponent implements OnInit {
         }
       }
     });
+  }
+
+  private ejecutarReservaAdmin(idPaciente: number): void {
+    if (!this.turnoBorrador.medico || !this.turnoBorrador.especialidad || !this.turnoBorrador.fecha || !this.turnoBorrador.hora) {
+      this.cargandoReserva.set(false);
+      return;
+    }
+
+    this.turnoService.reservarAdmin({
+      idPaciente: idPaciente,
+      idMedico: this.turnoBorrador.medico.idMedico,
+      idEspecialidad: this.turnoBorrador.especialidad.idEspecialidad,
+      fecha: this.turnoBorrador.fecha,
+      hora: this.turnoBorrador.hora
+    }).subscribe({
+      next: (res) => {
+        this.cargandoReserva.set(false);
+        this.reservaExitosa.set(true);
+        this.turnoConfirmado.set(res);
+        this.notify.success(`Turno otorgado con éxito para ${this.turnoBorrador.pacienteNombre} ${this.turnoBorrador.pacienteApellido || ''}.`, '¡Turno Otorgado!');
+      },
+      error: (err) => {
+        this.cargandoReserva.set(false);
+        console.error('Error al reservar turno administrativo:', err);
+        const msg = err.error?.message || '';
+        if (msg.includes('ya tiene un turno') || msg.includes('intervalo mínimo')) {
+          this.notify.warning(msg, 'Conflicto de Horario');
+        } else if (err.status === 409) {
+          this.notify.warning('El horario seleccionado ya fue reservado por otro paciente. Por favor, elija otro turno.', 'Turno no disponible');
+        } else {
+          this.notify.error(msg || 'Ocurrió un error al otorgar el turno presencial. Intente nuevamente.', 'Error al otorgar turno');
+        }
+      }
+    });
+  }
+
+  reiniciarWizard(): void {
+    this.reservaExitosa.set(false);
+    this.turnoConfirmado.set(null);
+    this.pasoActual.set(1);
+    this.turnoBorrador.especialidad = null;
+    this.turnoBorrador.medico = null;
+    this.turnoBorrador.hora = '';
+    this.turnoBorrador.idPaciente = null;
+    this.turnoBorrador.pacienteNombre = '';
+    this.turnoBorrador.pacienteApellido = '';
+    this.turnoBorrador.pacienteDni = '';
+    this.turnoBorrador.pacienteTelefono = '';
+    this.turnoBorrador.motivoConsulta = '';
+    this.pacienteEncontradoEnPadron.set(null);
+    this.precargarDatosPaciente();
   }
 
   actualizarFiltroMedico(valor: string): void {
