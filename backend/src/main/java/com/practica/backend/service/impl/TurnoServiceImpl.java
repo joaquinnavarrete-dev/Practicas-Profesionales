@@ -180,12 +180,30 @@ public class TurnoServiceImpl implements TurnoService {
             throw new ResourceAlreadyExistsException("El turno solicitado para el " + dto.getFecha() + " a las " + dto.getHora() + " ya se encuentra ocupado");
         }
 
+        if (turnoRepository.existsByPacienteIdPacienteAndFechaAndHora(dto.getIdPaciente(), dto.getFecha(), dto.getHora())) {
+            throw new BadRequestException("El paciente ya tiene un turno agendado para el " + dto.getFecha() + " a las " + dto.getHora() + " hs");
+        }
+
+        List<Turno> turnosPacienteMismoDia = turnoRepository.findByPacienteIdPacienteAndFecha(dto.getIdPaciente(), dto.getFecha());
+        for (Turno tExistente : turnosPacienteMismoDia) {
+            if (!"Cancelado".equalsIgnoreCase(tExistente.getEstado())) {
+                long minutosDiferencia = Math.abs(java.time.Duration.between(tExistente.getHora(), dto.getHora()).toMinutes());
+                if (minutosDiferencia < 30) {
+                    String medicoNombre = tExistente.getMedico() != null ? tExistente.getMedico().getNombre() + " " + tExistente.getMedico().getApellido() : "otro profesional";
+                    throw new BadRequestException("El paciente ya tiene un turno agendado a las " + tExistente.getHora()
+                            + " hs con el/la Dr(a). " + medicoNombre
+                            + ". Debe existir un intervalo mínimo de 30 minutos entre turnos.");
+                }
+            }
+        }
+
         Turno turno = Turno.builder()
                 .paciente(paciente)
                 .medico(medico)
                 .especialidad(especialidad)
                 .fecha(dto.getFecha())
                 .hora(dto.getHora())
+                .estado(dto.getEstado() != null && !dto.getEstado().isBlank() ? dto.getEstado() : "Confirmado")
                 .build();
 
         return mapToResponseDto(turnoRepository.save(turno));
@@ -217,12 +235,32 @@ public class TurnoServiceImpl implements TurnoService {
             throw new BadRequestException("La nueva hora seleccionada está fuera de la franja de atención del médico");
         }
 
-        if (turnoRepository.existsByMedicoIdMedicoAndFechaAndHora(turno.getMedico().getIdMedico(), nuevaFecha, nuevaHora)) {
+        if (turnoRepository.existsByMedicoIdMedicoAndFechaAndHoraAndIdTurnoNot(turno.getMedico().getIdMedico(), nuevaFecha, nuevaHora, id)) {
             throw new ResourceAlreadyExistsException("El nuevo horario ya se encuentra ocupado para este médico");
+        }
+
+        if (turnoRepository.existsByPacienteIdPacienteAndFechaAndHoraAndIdTurnoNot(turno.getPaciente().getIdPaciente(), nuevaFecha, nuevaHora, id)) {
+            throw new BadRequestException("El paciente ya tiene otro turno asignado para el " + nuevaFecha + " a las " + nuevaHora + " hs");
+        }
+
+        List<Turno> turnosPacienteMismoDia = turnoRepository.findByPacienteIdPacienteAndFechaAndIdTurnoNot(turno.getPaciente().getIdPaciente(), nuevaFecha, id);
+        for (Turno tExistente : turnosPacienteMismoDia) {
+            if (!"Cancelado".equalsIgnoreCase(tExistente.getEstado())) {
+                long minutosDiferencia = Math.abs(java.time.Duration.between(tExistente.getHora(), nuevaHora).toMinutes());
+                if (minutosDiferencia < 30) {
+                    String medicoNombre = tExistente.getMedico() != null ? tExistente.getMedico().getNombre() + " " + tExistente.getMedico().getApellido() : "otro profesional";
+                    throw new BadRequestException("El paciente ya tiene un turno agendado a las " + tExistente.getHora()
+                            + " hs con el/la Dr(a). " + medicoNombre
+                            + ". Debe existir un intervalo mínimo de 30 minutos entre turnos.");
+                }
+            }
         }
 
         turno.setFecha(nuevaFecha);
         turno.setHora(nuevaHora);
+        if ("Pendiente de Reubicación".equalsIgnoreCase(turno.getEstado())) {
+            turno.setEstado("Confirmado");
+        }
         return mapToResponseDto(turnoRepository.save(turno));
     }
 
@@ -280,6 +318,21 @@ public class TurnoServiceImpl implements TurnoService {
         }
 
         turnoRepository.delete(turno);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TurnoResponseDto> listarPendientesReubicacion() {
+        return turnoRepository.findByEstado("Pendiente de Reubicación").stream()
+                .sorted(Comparator.comparing(Turno::getFecha).thenComparing(Turno::getHora))
+                .map(this::mapToResponseDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long contarPendientesReubicacion() {
+        return turnoRepository.countByEstado("Pendiente de Reubicación");
     }
 
     private TurnoResponseDto mapToResponseDto(Turno entity) {
@@ -348,6 +401,7 @@ public class TurnoServiceImpl implements TurnoService {
                 .especialidad(especialidadDto)
                 .fecha(entity.getFecha())
                 .hora(entity.getHora())
+                .estado(entity.getEstado() != null ? entity.getEstado() : "Confirmado")
                 .build();
     }
 }

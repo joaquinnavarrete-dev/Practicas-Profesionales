@@ -37,4 +37,8 @@ public interface TurnoService {
     TurnoResponseDto solicitarTurno(String nombreUsuario, SolicitarTurnoRequestDto dto);
 
     void cancelarMiTurno(String nombreUsuario, Integer idTurno);
+
+    List<TurnoResponseDto> listarPendientesReubicacion();
+
+    long contarPendientesReubicacion();
 }
