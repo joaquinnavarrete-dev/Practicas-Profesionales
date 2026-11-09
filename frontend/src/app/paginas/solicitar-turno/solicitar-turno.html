@@ -3,17 +3,22 @@
   <main class="wizard-container">
 
     <div class="wizard-header-text">
-      <h1 class="wizard-title">Solicitar Nuevo Turno</h1>
+      <h1 class="wizard-title">{{ (authService.isAdmin() || authService.isRecepcionista()) ? 'Otorgar Turno Presencial'
+        : 'Solicitar Nuevo Turno' }}</h1>
       <p class="wizard-subtitle">
-        Siga los pasos a continuación para agendar su cita médica. Seleccione especialidad, profesional y el horario que
-        mejor se adapte a su disponibilidad.
+        {{ (authService.isAdmin() || authService.isRecepcionista()) ? 'Complete los pasos para asignar una cita médica
+        presencial a un paciente en mostrador.' : 'Siga los pasos a continuación para agendar su cita médica. Seleccione
+        especialidad, profesional y el horario que mejor se adapte a su disponibilidad.' }}
       </p>
     </div>
 
     <div class="success-screen-card" *ngIf="reservaExitosa()">
       <div class="success-icon-circle">✓</div>
-      <h2 class="success-title">¡Turno Confirmado con Éxito!</h2>
-      <p class="success-sub">Tu cita médica ha sido agendada en la base de datos de la Clínica San Gabriel.</p>
+      <h2 class="success-title">{{ (authService.isAdmin() || authService.isRecepcionista()) ? '¡Turno Otorgado con
+        Éxito!' : '¡Turno Confirmado con Éxito!' }}</h2>
+      <p class="success-sub">{{ (authService.isAdmin() || authService.isRecepcionista()) ? 'La cita médica ha sido
+        agendada para el paciente presencial en la base de datos.' : 'Tu cita médica ha sido agendada en la base de
+        datos de la Clínica San Gabriel.' }}</p>
 
       <div class="voucher-details-box">
         <div class="v-row">
@@ -22,17 +27,24 @@
         </div>
         <div class="v-row">
           <span>Profesional:</span>
-          <strong>Dr(a). {{ turnoConfirmado()?.medico?.nombre }} {{ turnoConfirmado()?.medico?.apellido }} (M.N. {{
-            turnoConfirmado()?.medico?.matricula }})</strong>
+          <strong>Dr(a). {{ turnoConfirmado()?.medico?.nombre || turnoBorrador.medico?.nombre }} {{
+            turnoConfirmado()?.medico?.apellido || turnoBorrador.medico?.apellido }} (M.N. {{
+            turnoConfirmado()?.medico?.matricula || turnoBorrador.medico?.matricula }})</strong>
         </div>
         <div class="v-row">
           <span>Fecha y Hora:</span>
-          <strong>{{ turnoConfirmado()?.fecha | fechaFormato:'larga' }} a las {{ turnoConfirmado()?.hora }} hs</strong>
+          <strong>{{ (turnoConfirmado()?.fecha || turnoBorrador.fecha) | fechaFormato:'larga' }} a las {{
+            turnoConfirmado()?.hora || turnoBorrador.hora }} hs</strong>
         </div>
         <div class="v-row">
           <span>Paciente:</span>
-          <strong>{{ turnoConfirmado()?.paciente?.nombre }} {{ turnoConfirmado()?.paciente?.apellido }} (DNI: {{
-            turnoConfirmado()?.paciente?.dni }})</strong>
+          <strong>{{ turnoConfirmado()?.paciente?.nombre || turnoBorrador.pacienteNombre }} {{
+            turnoConfirmado()?.paciente?.apellido || turnoBorrador.pacienteApellido }} (DNI: {{
+            turnoConfirmado()?.paciente?.dni || turnoBorrador.pacienteDni }})</strong>
+        </div>
+        <div class="v-row">
+          <span>Cobertura:</span>
+          <strong>{{ turnoConfirmado()?.paciente?.obraSocial?.nombre || turnoBorrador.obraSocial }}</strong>
         </div>
         <div class="v-row">
           <span>Lugar:</span>
@@ -41,14 +53,23 @@
       </div>
 
       <div class="success-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a *ngIf="authService.isLoggedIn()" routerLink="/mi-portal" class="btn-primary-success"
-          style="text-decoration: none;">
+        <a *ngIf="authService.isLoggedIn() && authService.isPaciente()" routerLink="/mi-portal"
+          class="btn-primary-success" style="text-decoration: none;">
           📋 Ver mis turnos en Mi Portal
+        </a>
+        <button type="button" class="btn-primary-success" *ngIf="authService.isAdmin() || authService.isRecepcionista()"
+          (click)="reiniciarWizard()">
+          ➕ Otorgar Otro Turno
+        </button>
+        <a *ngIf="authService.isAdmin() || authService.isRecepcionista()" routerLink="/turnos"
+          class="btn-secondary-success" style="text-decoration: none;">
+          📅 Ir a Grilla / Recepción
         </a>
         <button class="btn-primary-success" *ngIf="!authService.isLoggedIn()" (click)="volverAlInicio()">
           Volver a la Página Principal
         </button>
-        <button class="btn-secondary-success" *ngIf="authService.isLoggedIn()" (click)="volverAlInicio()">
+        <button class="btn-secondary-success" *ngIf="authService.isLoggedIn() && authService.isPaciente()"
+          (click)="volverAlInicio()">
           Volver al Inicio
         </button>
       </div>
@@ -407,7 +428,68 @@
             <div class="patient-data-card">
               <span class="card-sub-title">👤 DATOS DEL PACIENTE</span>
 
-              <div class="patient-fields-table" *ngIf="authService.isLoggedIn()">
+              <div *ngIf="authService.isAdmin() || authService.isRecepcionista()" class="patient-staff-form">
+                <div class="staff-form-notice">
+                  <span class="staff-notice-ico">🏢</span>
+                  <div class="staff-notice-text">
+                    <strong>Atención Presencial de Mostrador</strong>
+                    <p>Ingrese el DNI para buscar al paciente en el padrón o complete los datos para registrarlo.</p>
+                  </div>
+                </div>
+
+                <div class="staff-field-group">
+                  <label class="staff-field-label">DNI del Paciente <span class="req">*</span></label>
+                  <div class="dni-input-btn-group">
+                    <input type="text" class="staff-input" placeholder="Ej. 34567890"
+                      [(ngModel)]="turnoBorrador.pacienteDni" (input)="onDniInput()"
+                      (keyup.enter)="buscarPacientePorDni()">
+                    <button type="button" class="btn-buscar-dni" [disabled]="buscandoPacienteDni()"
+                      (click)="buscarPacientePorDni()">
+                      <span *ngIf="!buscandoPacienteDni()">🔍 Buscar</span>
+                      <span *ngIf="buscandoPacienteDni()">Buscando...</span>
+                    </button>
+                  </div>
+                  <div *ngIf="pacienteEncontradoEnPadron() === true" class="dni-status-badge badge-found">
+                    ✓ Paciente registrado encontrado en el padrón
+                  </div>
+                  <div *ngIf="pacienteEncontradoEnPadron() === false" class="dni-status-badge badge-new">
+                    ℹ️ Paciente nuevo presencial. Complete los datos para registrarlo.
+                  </div>
+                </div>
+
+                <div class="staff-fields-grid-2">
+                  <div class="staff-field-group">
+                    <label class="staff-field-label">Nombre <span class="req">*</span></label>
+                    <input type="text" class="staff-input" placeholder="Nombre(s)"
+                      [(ngModel)]="turnoBorrador.pacienteNombre">
+                  </div>
+                  <div class="staff-field-group">
+                    <label class="staff-field-label">Apellido <span class="req">*</span></label>
+                    <input type="text" class="staff-input" placeholder="Apellido(s)"
+                      [(ngModel)]="turnoBorrador.pacienteApellido">
+                  </div>
+                </div>
+
+                <div class="staff-fields-grid-2">
+                  <div class="staff-field-group">
+                    <label class="staff-field-label">Teléfono <span class="req">*</span></label>
+                    <input type="text" class="staff-input" placeholder="Ej. 11 4455-6677"
+                      [(ngModel)]="turnoBorrador.pacienteTelefono">
+                  </div>
+                  <div class="staff-field-group">
+                    <label class="staff-field-label">Obra Social / Prepaga <span class="req">*</span></label>
+                    <select class="staff-select" [ngModel]="turnoBorrador.idObraSocial"
+                      (ngModelChange)="onObraSocialChange($event)">
+                      <option [ngValue]="null" disabled>Seleccione obra social</option>
+                      <option *ngFor="let os of obrasSociales()" [ngValue]="os.idObraSocial">
+                        {{ os.nombre }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="patient-fields-table" *ngIf="authService.isLoggedIn() && authService.isPaciente()">
                 <div class="p-field-row">
                   <span>Paciente:</span>
                   <strong>{{ turnoBorrador.pacienteNombre || authService.currentUser()?.nombreUsuario }}</strong>
@@ -465,8 +547,10 @@
       </button>
 
       <button class="btn-action-next" [disabled]="cargandoReserva()" (click)="avanzar()">
-        <span *ngIf="!cargandoReserva()">{{ pasoActual() === 4 ? '✓ Confirmar Turno' : 'Siguiente →' }}</span>
-        <span *ngIf="cargandoReserva()">Procesando reserva...</span>
+        <span *ngIf="!cargandoReserva()">{{ pasoActual() === 4 ? (authService.isAdmin() || authService.isRecepcionista()
+          ? '✓ Otorgar Turno' : '✓ Confirmar Turno') : 'Siguiente →' }}</span>
+        <span *ngIf="cargandoReserva()">{{ (authService.isAdmin() || authService.isRecepcionista()) ? 'Otorgando
+          turno...' : 'Procesando reserva...' }}</span>
       </button>
     </div>
 
