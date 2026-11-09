@@ -125,7 +125,7 @@
                 <td>{{ t.motivo }}</td>
                 <td>
                   <span class="status-badge" [ngClass]="{
-                      'st-espera': t.estado === 'En Espera',
+                      'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
                       'st-confirmado': t.estado === 'Confirmado',
                       'st-atendido': t.estado === 'Atendido'
                     }">
@@ -236,7 +236,7 @@
                 <td>{{ t.obraSocial }}</td>
                 <td>
                   <span class="status-badge" [ngClass]="{
-                      'st-espera': t.estado === 'En Espera',
+                      'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
                       'st-confirmado': t.estado === 'Confirmado',
                       'st-atendido': t.estado === 'Atendido'
                     }">
@@ -412,7 +412,7 @@
                 <td>{{ t.obraSocial }}</td>
                 <td>
                   <span class="status-badge" [ngClass]="{
-                      'st-espera': t.estado === 'En Espera',
+                      'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
                       'st-confirmado': t.estado === 'Confirmado',
                       'st-atendido': t.estado === 'Atendido'
                     }">
