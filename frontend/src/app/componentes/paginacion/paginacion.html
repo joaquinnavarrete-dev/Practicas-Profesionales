@@ -1,0 +1,35 @@
+<div class="table-pagination-footer">
+  <div class="pagination-left">
+    <span class="pagination-legend">
+      Mostrando <strong>{{ desde() }}</strong>-<strong>{{ hasta() }}</strong> de <strong>{{ totalItems() }}</strong> registros
+    </span>
+
+    <div class="page-size-selector">
+      <label for="select-tamano-pag">Ver:</label>
+      <select id="select-tamano-pag" [ngModel]="tamanoPagina()" (ngModelChange)="onCambiarTamano($event)" class="select-size-dropdown">
+        <option *ngFor="let opt of opcionesTamano()" [value]="opt">
+          {{ opt }}
+        </option>
+      </select>
+      <span class="size-label">por pág.</span>
+    </div>
+  </div>
+
+  <div class="pages-list" *ngIf="totalPaginas() > 1 || totalItems() > 0">
+    <button type="button" class="page-nav-btn" [disabled]="paginaActual() <= 1" (click)="anterior()" title="Página anterior">
+      ‹
+    </button>
+
+    <ng-container *ngFor="let p of paginasVisibles()">
+      <span *ngIf="p === '...'" class="page-ellipsis">…</span>
+      <button *ngIf="p !== '...'" type="button" class="page-num-btn" [class.active]="p === paginaActual()" (click)="irAPagina(p)">
+        {{ p }}
+      </button>
+    </ng-container>
+
+    <button type="button" class="page-nav-btn" [disabled]="paginaActual() >= totalPaginas()" (click)="siguiente()" title="Página siguiente">
+      ›
+    </button>
+  </div>
+</div>
+

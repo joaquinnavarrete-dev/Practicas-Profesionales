@@ -1,0 +1,132 @@
+.table-pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pagination-legend {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.pagination-legend strong {
+  color: #0f172a;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.select-size-dropdown {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-size: 0.82rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.select-size-dropdown:hover {
+  border-color: #94a3b8;
+}
+
+.select-size-dropdown:focus {
+  border-color: #004b93;
+  box-shadow: 0 0 0 2px rgba(0, 75, 147, 0.15);
+}
+
+.size-label {
+  color: #64748b;
+}
+
+.pages-list {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.page-num-btn, .page-nav-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 0.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.page-num-btn:hover:not(.active), .page-nav-btn:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.page-num-btn.active {
+  background-color: #004b93;
+  color: #ffffff;
+  border-color: #004b93;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 75, 147, 0.25);
+}
+
+.page-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  color: #94a3b8;
+  font-weight: 700;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .table-pagination-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pagination-left {
+    justify-content: space-between;
+  }
+  .pages-list {
+    justify-content: center;
+  }
+}
+
