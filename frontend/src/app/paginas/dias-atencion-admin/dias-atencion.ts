@@ -219,7 +219,7 @@ export class DiasAtencionComponent implements OnInit {
     });
   }
 
-  guardarHorarioDia(diaItem: { idDiaAtencion: number; diaSemana: string; nombreDia: string; horaInicio: string; horaFin: string }): void {
+  async guardarHorarioDia(diaItem: { idDiaAtencion: number; diaSemana: string; nombreDia: string; horaInicio: string; horaFin: string }): Promise<void> {
     const med = this.medicoSeleccionado();
     if (!med) return;
 
@@ -233,18 +233,52 @@ export class DiasAtencionComponent implements OnInit {
       return;
     }
 
-    this.cargandoAccion.set(true);
+    const hIni = diaItem.horaInicio.length === 5 ? `${diaItem.horaInicio}:00` : diaItem.horaInicio;
+    const hFin = diaItem.horaFin.length === 5 ? `${diaItem.horaFin}:00` : diaItem.horaFin;
     const dto: DiaAtencionRequest = {
       idMedico: med.id,
       diaSemana: diaItem.diaSemana,
-      horaInicio: diaItem.horaInicio.length === 5 ? `${diaItem.horaInicio}:00` : diaItem.horaInicio,
-      horaFin: diaItem.horaFin.length === 5 ? `${diaItem.horaFin}:00` : diaItem.horaFin
+      horaInicio: hIni,
+      horaFin: hFin
     };
 
-    this.diaAtencionService.actualizar(diaItem.idDiaAtencion, dto).subscribe({
+    this.cargandoAccion.set(true);
+    this.diaAtencionService.obtenerTurnosAfectados(diaItem.idDiaAtencion, diaItem.diaSemana, hIni, hFin).subscribe({
+      next: async (afectados) => {
+        this.cargandoAccion.set(false);
+        if (afectados && afectados.length > 0) {
+          const confirmar = await this.confirmModal.confirm({
+            titulo: 'Turnos Afectados Detectados',
+            mensaje: `Se detectaron ${afectados.length} turno(s) agendado(s) en fechas futuras para este horario. Si continúa, el nuevo horario se guardará y los turnos afectados cambiarán su estado a "Pendiente de Reubicación" para que el personal de Recepción los reubique. ¿Desea proceder con la modificación?`,
+            tipo: 'warning',
+            textoConfirmar: 'Sí, Modificar y Reubicar',
+            textoCancelar: 'Cancelar'
+          });
+
+          if (!confirmar) return;
+
+          this.ejecutarActualizacionHorario(diaItem.idDiaAtencion, dto, diaItem.nombreDia, true, afectados.length);
+        } else {
+          this.ejecutarActualizacionHorario(diaItem.idDiaAtencion, dto, diaItem.nombreDia, false);
+        }
+      },
+      error: (err) => {
+        this.cargandoAccion.set(false);
+        console.error('Error al consultar turnos afectados:', err);
+        this.ejecutarActualizacionHorario(diaItem.idDiaAtencion, dto, diaItem.nombreDia, false);
+      }
+    });
+  }
+
+  private ejecutarActualizacionHorario(id: number, dto: DiaAtencionRequest, nombreDia: string, forzar: boolean, cantReubicados: number = 0): void {
+    this.cargandoAccion.set(true);
+    this.diaAtencionService.actualizar(id, dto, forzar).subscribe({
       next: () => {
         this.cargandoAccion.set(false);
-        this.notify.show('success', `Horario de los días ${diaItem.nombreDia} actualizado correctamente.`, 'Horario Modificado');
+        const mensaje = forzar && cantReubicados > 0
+          ? `Horario de los días ${nombreDia} actualizado. ${cantReubicados} turno(s) fueron puestos como "Pendiente de Reubicación".`
+          : `Horario de los días ${nombreDia} actualizado correctamente.`;
+        this.notify.show('success', mensaje, 'Horario Modificado');
         this.cargarDatos();
       },
       error: (err) => {
@@ -260,28 +294,58 @@ export class DiasAtencionComponent implements OnInit {
     const med = this.medicoSeleccionado();
     if (!med) return;
 
-    const confirmado = await this.confirmModal.confirm({
-      titulo: '¿Eliminar Día de Atención?',
-      mensaje: `¿Confirma que desea quitar la atención de los días ${diaItem.nombreDia} para ${med.nombre}? Esta acción afectará la disponibilidad de turnos.`,
-      tipo: 'danger',
-      textoConfirmar: 'Eliminar Día',
-      textoCancelar: 'Cancelar'
-    });
-
-    if (!confirmado) return;
-
     this.cargandoAccion.set(true);
-    this.diaAtencionService.eliminar(diaItem.idDiaAtencion).subscribe({
+    this.diaAtencionService.obtenerTurnosAfectadosPorEliminacion(diaItem.idDiaAtencion).subscribe({
+      next: async (afectados) => {
+        this.cargandoAccion.set(false);
+        const cant = afectados ? afectados.length : 0;
+        let mensaje = `¿Confirma que desea quitar la atención de los días ${diaItem.nombreDia} para ${med.nombre}?`;
+        if (cant > 0) {
+          mensaje += ` Se detectaron ${cant} turno(s) agendado(s) que se quedarán sin día de atención médica. Si confirma, dichos turnos cambiarán a estado "Pendiente de Reubicación" para ser reprogramados en Recepción.`;
+        }
+
+        const confirmado = await this.confirmModal.confirm({
+          titulo: cant > 0 ? 'Turnos Afectados por Eliminación' : '¿Eliminar Día de Atención?',
+          mensaje,
+          tipo: 'danger',
+          textoConfirmar: cant > 0 ? 'Sí, Eliminar y Reubicar' : 'Eliminar Día',
+          textoCancelar: 'Cancelar'
+        });
+
+        if (!confirmado) return;
+
+        this.ejecutarEliminacionDia(diaItem.idDiaAtencion, diaItem.nombreDia, cant > 0);
+      },
+      error: async (err) => {
+        this.cargandoAccion.set(false);
+        console.error('Error al consultar turnos afectados por eliminación:', err);
+        const confirmado = await this.confirmModal.confirm({
+          titulo: '¿Eliminar Día de Atención?',
+          mensaje: `¿Confirma que desea quitar la atención de los días ${diaItem.nombreDia} para ${med.nombre}? Esta acción afectará la disponibilidad de turnos.`,
+          tipo: 'danger',
+          textoConfirmar: 'Eliminar Día',
+          textoCancelar: 'Cancelar'
+        });
+        if (confirmado) {
+          this.ejecutarEliminacionDia(diaItem.idDiaAtencion, diaItem.nombreDia, false);
+        }
+      }
+    });
+  }
+
+  private ejecutarEliminacionDia(id: number, nombreDia: string, forzar: boolean): void {
+    this.cargandoAccion.set(true);
+    this.diaAtencionService.eliminar(id, forzar).subscribe({
       next: () => {
         this.cargandoAccion.set(false);
-        this.notify.show('success', `Se eliminó la atención de los días ${diaItem.nombreDia}.`, 'Día Eliminado');
-        this.diasEdicion.set(this.diasEdicion().filter(d => d.idDiaAtencion !== diaItem.idDiaAtencion));
+        this.notify.show('success', `Se eliminó la atención de los días ${nombreDia}.${forzar ? ' Los turnos afectados fueron marcados para reubicación.' : ''}`, 'Día Eliminado');
+        this.diasEdicion.set(this.diasEdicion().filter(d => d.idDiaAtencion !== id));
         this.cargarDatos();
       },
       error: (err) => {
         this.cargandoAccion.set(false);
         console.error('Error al eliminar día de atención:', err);
-        this.notify.show('error', 'No se pudo eliminar el día de atención.', 'Error');
+        this.notify.show('error', err.error?.message || 'No se pudo eliminar el día de atención.', 'Error');
       }
     });
   }
