@@ -1179,6 +1179,151 @@
   padding: 1.25rem;
 }
 
+.patient-staff-form {
+  margin: 0.85rem 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.staff-form-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+}
+
+.staff-notice-ico {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.staff-notice-text strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #1e40af;
+  margin-bottom: 0.15rem;
+}
+
+.staff-notice-text p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #2563eb;
+  line-height: 1.35;
+}
+
+.staff-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.staff-field-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.staff-field-label .req {
+  color: #dc2626;
+}
+
+.dni-input-btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dni-input-btn-group .staff-input {
+  flex: 1;
+}
+
+.btn-buscar-dni {
+  background-color: #004b93;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-buscar-dni:hover:not(:disabled) {
+  background-color: #00366a;
+}
+
+.btn-buscar-dni:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.dni-status-badge {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dni-status-badge.badge-found {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.dni-status-badge.badge-new {
+  background-color: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
+.staff-fields-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.staff-input,
+.staff-select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.82rem;
+  color: #0f172a;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.staff-input:focus,
+.staff-select:focus {
+  border-color: #004b93;
+  box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+}
+
+@media (max-width: 640px) {
+  .staff-fields-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .patient-fields-table {
   background-color: #f8fafc;
   border-radius: 8px;
