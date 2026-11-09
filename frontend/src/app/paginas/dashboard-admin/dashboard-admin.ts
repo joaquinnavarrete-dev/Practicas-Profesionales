@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TurnoService, MedicoService, PacienteService, ObraSocialService, AuthService } from '../../services';
+import { TurnoService, MedicoService, PacienteService, ObraSocialService, AuthService, NotificationService } from '../../services';
 import { Turno, Medico, Paciente, ObraSocial, DemandaEspecialidad, ProximoTurno } from '../../models';
 import { formatearFecha } from '../../utils/date.utils';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
@@ -18,6 +18,7 @@ export class DashboardAdminComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly pacienteService = inject(PacienteService);
   private readonly obraSocialService = inject(ObraSocialService);
+  private readonly notify = inject(NotificationService);
   readonly authService = inject(AuthService);
 
   readonly cargando = signal<boolean>(false);
@@ -72,6 +73,23 @@ export class DashboardAdminComponent implements OnInit {
   ngOnInit(): void {
     this.formatearFechaHoy();
     this.cargarDatosDashboard();
+    if (this.authService.isRecepcionista() || this.authService.isAdmin()) {
+      this.verificarPendientesReubicacion();
+    }
+  }
+
+  private verificarPendientesReubicacion(): void {
+    this.turnoService.conteoPendientesReubicacion().subscribe({
+      next: (res) => {
+        const count = res?.conteo || 0;
+        if (count > 0 && this.authService.isRecepcionista()) {
+          this.notify.warning(`Hay ${count} turno(s) pendiente(s) de reubicación por cambios en la agenda médica de los profesionales.`, 'Atención Reubicación');
+        }
+      },
+      error: (err) => {
+        console.error('Error al verificar turnos pendientes de reubicación:', err);
+      }
+    });
   }
 
   private formatearFechaHoy(): void {
@@ -207,7 +225,7 @@ export class DashboardAdminComponent implements OnInit {
       medico: t.medico ? `Dr(a). ${t.medico.nombre} ${t.medico.apellido}` : 'Médico General',
       especialidad: t.medico?.especialidad?.nombre || t.especialidad?.nombre || 'Medicina General',
       obraSocial: t.paciente?.obraSocial?.nombre || 'Particular',
-      estado: this.calcularEstadoTurno(t.fecha),
+      estado: t.estado || this.calcularEstadoTurno(t.fecha),
       motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`
     };
   }
