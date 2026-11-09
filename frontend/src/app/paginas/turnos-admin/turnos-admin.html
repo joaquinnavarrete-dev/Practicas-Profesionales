@@ -33,6 +33,14 @@
           <strong class="stat-number">{{ turnosFiltrados().length }} Citas</strong>
         </div>
       </div>
+
+      <div class="stat-box" *ngIf="conteoReubicacion() > 0" style="border: 1px solid #fde68a; background-color: #fefce8;">
+        <div class="stat-icon-tile icon-yellow" style="background-color: #fef3c7; color: #b45309;">⚠️</div>
+        <div class="stat-body">
+          <span class="stat-caption" style="color: #b45309;">Pendientes de Reubicación</span>
+          <strong class="stat-number" style="color: #b45309;">{{ conteoReubicacion() }} Turnos</strong>
+        </div>
+      </div>
     </div>
 
     <div *ngIf="errorMessage()" class="error-banner">
@@ -121,8 +129,13 @@
             </td>
 
             <td>
-              <span class="badge-status status-activo">
-                ● Confirmado
+              <span class="badge-status" [ngClass]="{
+                'status-confirmado': !t.estado || t.estado === 'Confirmado',
+                'status-espera': t.estado === 'Pendiente de Reubicación',
+                'status-cancelado': t.estado === 'Cancelado',
+                'status-atendido': t.estado === 'Atendido'
+              }">
+                ● {{ t.estado || 'Confirmado' }}
               </span>
             </td>
 
