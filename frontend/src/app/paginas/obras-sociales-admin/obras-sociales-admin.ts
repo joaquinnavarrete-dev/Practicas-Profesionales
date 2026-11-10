@@ -77,7 +77,7 @@ export class ObrasSocialesAdminComponent implements OnInit {
     const n = nombre.toLowerCase();
 
     let tipo: 'Prepaga' | 'Obra Social' | 'Sindical' = 'Obra Social';
-    let sigla = nombre.split(' ')[0];
+    let sigla = (item.sigla && item.sigla.trim()) ? item.sigla.trim() : nombre.split(' ')[0];
     let logo = '🏥';
 
     if (n.includes('osde') || n.includes('swiss') || n.includes('galeno') || n.includes('omint') || n.includes('medifé')) {
@@ -89,13 +89,15 @@ export class ObrasSocialesAdminComponent implements OnInit {
     } else if (n.includes('pami')) {
       tipo = 'Obra Social';
       logo = '👴';
-      sigla = 'PAMI';
+      if (!item.sigla) sigla = 'PAMI';
     }
 
-    if (n.includes('osde')) sigla = 'OSDE';
-    if (n.includes('swiss')) sigla = 'Swiss Medical';
-    if (n.includes('galeno')) sigla = 'Galeno';
-    if (n.includes('osecac')) sigla = 'OSECAC';
+    if (!item.sigla) {
+      if (n.includes('osde')) sigla = 'OSDE';
+      if (n.includes('swiss')) sigla = 'Swiss Medical';
+      if (n.includes('galeno')) sigla = 'Galeno';
+      if (n.includes('osecac')) sigla = 'OSECAC';
+    }
 
     return {
       id,
