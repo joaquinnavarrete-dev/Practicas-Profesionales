@@ -14,6 +14,7 @@ export interface ProximoTurno {
   medico: string;
   especialidad: string;
   obraSocial: string;
+  obraSocialNombreCompleto?: string;
   estado: 'En Espera' | 'Confirmado' | 'Atendido' | 'Pendiente de Reubicación' | 'Cancelado' | string;
   motivo?: string;
 }

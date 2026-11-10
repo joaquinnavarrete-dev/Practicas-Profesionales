@@ -36,6 +36,7 @@ export interface PacienteCita {
   numHistoriaClinica: string;
   telefono: string;
   obraSocial: string;
+  obraSocialNombreCompleto?: string;
   planAfiliado: string;
   motivo: string;
   estado: 'Pendiente' | 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' | 'Cancelado' | string;
