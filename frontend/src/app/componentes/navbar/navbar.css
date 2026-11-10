@@ -115,22 +115,72 @@
   line-height: 1;
 }
 
-.btn-turno-nav {
+.btn-login-nav {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #004b93;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+}
+
+.btn-login-nav:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #00366a;
+}
+
+.btn-registro-nav {
   display: inline-flex;
   align-items: center;
   padding: 0.5rem 1.15rem;
   background-color: #004b93;
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 0.85rem;
   font-weight: 700;
   border-radius: 8px;
-  text-decoration: none;
+  border: 1px solid #004b93;
+  text-decoration: none !important;
+  box-shadow: 0 1px 3px rgba(0, 75, 147, 0.2);
   transition: all 0.2s ease;
 }
 
-.btn-turno-nav:hover {
-  background-color: #00366a;
-  box-shadow: 0 2px 8px rgba(0, 75, 147, 0.25);
+.btn-registro-nav:hover,
+.btn-registro-nav:focus,
+.btn-registro-nav:active {
+  background-color: #00366a !important;
+  border-color: #00366a !important;
+  box-shadow: 0 2px 8px rgba(0, 75, 147, 0.35);
+  color: #ffffff !important;
+}
+
+.mobile-auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.mobile-link-login {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #004b93 !important;
+  font-weight: 600 !important;
+  border-radius: 8px;
+}
+
+.mobile-link-registro {
+  background-color: #004b93 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border-radius: 8px;
 }
 
 .mobile-link-turno {
@@ -205,24 +255,6 @@
   .nav-links {
     display: none;
   }
-}
-
-.btn-registro-nav {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background-color: transparent;
-  color: #004b93;
-  border: 1px solid #004b93;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-registro-nav:hover {
-  background-color: #f0f7ff;
 }
 
 .btn-panel-admin {
