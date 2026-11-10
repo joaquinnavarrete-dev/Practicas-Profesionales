@@ -22,15 +22,15 @@
   </nav>
 
   <div class="nav-actions">
-    <a *ngIf="!authService.isLoggedIn()" routerLink="/" [fragment]="'guardia'" class="badge-guardia"
-      style="text-decoration: none;">
-      <span class="asterisk-icon">✱</span>
-      <span>Guardia 24hs</span>
-    </a>
+    <ng-container *ngIf="!authService.isLoggedIn()">
+      <a routerLink="/login" class="btn-login-nav">
+        <span>Iniciar Sesión</span>
+      </a>
 
-    <a *ngIf="!authService.isLoggedIn()" routerLink="/turnos/solicitar" class="btn-turno-nav">
-      <span>Sacar Turno</span>
-    </a>
+      <a routerLink="/registro" class="btn-registro-nav">
+        <span>Crear Cuenta</span>
+      </a>
+    </ng-container>
 
     <ng-container *ngIf="authService.isLoggedIn()">
       <a *ngIf="esPersonalClinico()" routerLink="/admin" class="btn-panel-admin">
@@ -99,9 +99,14 @@
     <a routerLink="/" [fragment]="'contacto'" (click)="cerrarMenuMovil()">
       📍 Contacto y Sedes
     </a>
-    <a routerLink="/turnos/solicitar" class="mobile-link-turno" (click)="cerrarMenuMovil()">
-      📅 Sacar Turno Online
-    </a>
+    <div class="mobile-auth-actions">
+      <a routerLink="/login" class="mobile-link-login" (click)="cerrarMenuMovil()">
+        🔑 Iniciar Sesión
+      </a>
+      <a routerLink="/registro" class="mobile-link-registro" (click)="cerrarMenuMovil()">
+        👤 Crear Cuenta
+      </a>
+    </div>
   </div>
 
   <div class="mobile-nav-links" *ngIf="authService.isLoggedIn()">
@@ -119,7 +124,7 @@
   <div class="mobile-nav-footer">
     <div *ngIf="!authService.isLoggedIn()" class="mobile-portal-note">
       <p>🏥 <strong>Portal de Pacientes</strong></p>
-      <small>Accedé o registrate desde la tarjeta de acceso en el inicio.</small>
+      <small>Accedé a tus turnos, recetas y consultas médicas digitales.</small>
     </div>
 
     <div *ngIf="authService.isLoggedIn()" class="mobile-user-box">
