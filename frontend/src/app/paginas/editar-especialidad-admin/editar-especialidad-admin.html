@@ -12,7 +12,12 @@
   </header>
 
   <main class="form-content-body">
-    <form class="esp-form-card" (ngSubmit)="actualizarEspecialidad()">
+    <div *ngIf="cargando()" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando información de la especialidad médica...</p>
+    </div>
+
+    <form class="esp-form-card" (ngSubmit)="actualizarEspecialidad()" *ngIf="!cargando()">
 
       <div class="form-section">
         <h3 class="section-title">1. Información General del Servicio</h3>
@@ -20,13 +25,13 @@
         <div class="form-grid-2">
           <div class="form-group">
             <label>NOMBRE DE LA ESPECIALIDAD *</label>
-            <input type="text" [(ngModel)]="especialidadForm.nombre" name="nombre" placeholder="Ej. Cardiología"
+            <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Ej. Cardiología"
               required />
           </div>
 
           <div class="form-group">
             <label>CÓDIGO INTERNO / ABREVIATURA *</label>
-            <input type="text" [(ngModel)]="especialidadForm.codigo" name="codigo" placeholder="Ej. ESP-CARD-01"
+            <input type="text" [(ngModel)]="codigo" name="codigo" placeholder="Ej. ESP-CARD-01"
               required />
             <small class="input-hint">Identificador único en cartilla.</small>
           </div>
@@ -34,7 +39,7 @@
 
         <div class="form-group">
           <label>DESCRIPCIÓN Y ÁREAS DE ATENCIÓN</label>
-          <input type="text" [(ngModel)]="especialidadForm.descripcion" name="descripcion"
+          <input type="text" [(ngModel)]="descripcion" name="descripcion"
             placeholder="Ej. Patologías del corazón" />
         </div>
       </div>
@@ -45,7 +50,7 @@
         <div class="form-grid-2">
           <div class="form-group">
             <label>DURACIÓN ESTIMADA POR CONSULTA *</label>
-            <select [(ngModel)]="especialidadForm.duracionTurno" name="duracionTurno">
+            <select [(ngModel)]="duracionTurno" name="duracionTurno">
               <option value="15">15 minutos (Consultas breves / Control)</option>
               <option value="20">20 minutos (Estándar clínico)</option>
               <option value="30">30 minutos (Primera vez / Especializado)</option>
@@ -55,7 +60,7 @@
 
           <div class="form-group">
             <label>ESTADO EN LA CARTILLA WEB *</label>
-            <select [(ngModel)]="especialidadForm.estado" name="estado">
+            <select [(ngModel)]="estado" name="estado">
               <option value="Activa">Activa (Visible para asignación de turnos)</option>
               <option value="Inactiva">Inactiva (Oculta temporalmente)</option>
             </select>
