@@ -160,11 +160,17 @@
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none !important;
   transition: background-color 0.15s ease;
 }
 
-.btn-create-modal:hover {
+.btn-create-modal:hover,
+.btn-create-modal:focus,
+.btn-create-modal:active,
+.btn-create-modal:visited {
   background-color: #00366a;
+  text-decoration: none !important;
+  color: #ffffff;
 }
 
 .stats-overview-grid {
