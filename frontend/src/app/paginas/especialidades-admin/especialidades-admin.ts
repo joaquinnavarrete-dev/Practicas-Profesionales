@@ -142,7 +142,7 @@ export class EspecialidadesAdminComponent implements OnInit {
   }
 
   verDetalle(item: EspecialidadRow): void {
-    this.notify.info(`Departamento: ${item.departamento} • ${item.medicos} médicos asignados`, item.nombre);
+    this.router.navigate(['/admin/especialidades', item.id, 'detalle']);
   }
 
   private inferirDepartamento(nombre: string): string {

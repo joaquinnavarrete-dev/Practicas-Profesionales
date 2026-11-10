@@ -130,11 +130,11 @@
 
             <td class="col-actions">
               <div class="action-buttons-group">
+                <a class="btn-action-icon" [routerLink]="['/admin/especialidades', item.id, 'detalle']" title="Ver Detalle">
+                  👁️
+                </a>
                 <button class="btn-action-icon" (click)="editarEspecialidad(item)" title="Editar">
                   ✏️
-                </button>
-                <button class="btn-action-icon" (click)="verDetalle(item)" title="Ver Detalle">
-                  👁️
                 </button>
                 <button class="btn-action-icon" style="color: #ef4444;" (click)="eliminarEspecialidad(item)"
                   title="Eliminar">
