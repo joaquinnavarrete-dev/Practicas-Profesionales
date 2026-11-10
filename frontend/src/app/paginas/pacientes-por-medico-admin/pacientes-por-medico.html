@@ -6,8 +6,10 @@
 
     <div class="page-title-row">
       <div class="title-block">
-        <h1 class="main-heading">{{ authService.isMedico() ? 'Mis Pacientes Citados de Hoy' : 'Nómina de Pacientes Citados' }}</h1>
-        <p class="sub-heading">{{ authService.isMedico() ? 'Pacientes programados en tu consultorio con acceso a su Historia Clínica.' : 'Consulte la agenda diaria de pacientes asignados a cada profesional médico.' }}</p>
+        <h1 class="main-heading">{{ authService.isMedico() ? 'Mis Pacientes Citados de Hoy' : 'Nómina de Pacientes
+          Citados' }}</h1>
+        <p class="sub-heading">{{ authService.isMedico() ? 'Pacientes programados en tu consultorio con acceso a su
+          Historia Clínica.' : 'Consulte la agenda diaria de pacientes asignados a cada profesional médico.' }}</p>
       </div>
 
       <div class="header-actions">
@@ -47,10 +49,12 @@
         <label>ESTADO:</label>
         <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event); paginaActual.set(1)">
           <option value="Todos">Todos los estados</option>
+          <option value="Pendiente">Pendiente de Check-In</option>
           <option value="Confirmado">Confirmado</option>
           <option value="En Espera">En Espera</option>
           <option value="Atendido">Atendido</option>
           <option value="Ausente">Ausente</option>
+          <option value="Cancelado">Cancelado</option>
         </select>
       </div>
 
@@ -143,10 +147,12 @@
 
             <td>
               <span class="badge-status" [ngClass]="{
+                  'status-pendiente': p.estado === 'Pendiente',
                   'status-confirmado': p.estado === 'Confirmado',
                   'status-espera': p.estado === 'En Espera',
                   'status-atendido': p.estado === 'Atendido',
-                  'status-ausente': p.estado === 'Ausente'
+                  'status-ausente': p.estado === 'Ausente',
+                  'status-cancelado': p.estado === 'Cancelado'
                 }">
                 ● {{ p.estado }}
               </span>
@@ -154,11 +160,12 @@
 
             <td class="col-actions">
               <div class="action-buttons-group">
-                <button class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
-                  📄
+                <button class="btn-action-icon btn-atender" (click)="abrirModalAtencion(p)"
+                  title="Atender paciente / Actualizar estado de consulta">
+                  🩺 Atender
                 </button>
-                <button class="btn-action-icon" (click)="cambiarEstado(p)" title="Cambiar Estado">
-                  ✏️
+                <button class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
+                  📄 HC
                 </button>
               </div>
             </td>
@@ -166,7 +173,8 @@
 
           <tr *ngIf="!cargando() && !medicoSeleccionadoId()">
             <td colspan="7" class="empty-table-row">
-              <span>👨‍⚕️ Por favor, seleccione un profesional médico para consultar su nómina de pacientes citados.</span>
+              <span>👨‍⚕️ Por favor, seleccione un profesional médico para consultar su nómina de pacientes
+                citados.</span>
             </td>
           </tr>
 
@@ -178,14 +186,111 @@
         </tbody>
       </table>
 
-      <app-paginacion
-        *ngIf="medicoSeleccionadoId()"
-        [totalItems]="pacientesFiltrados().length"
-        [paginaActual]="paginaActual()"
-        [tamanoPagina]="tamanoPagina()"
-        (cambioPagina)="paginaActual.set($event)"
+      <app-paginacion *ngIf="medicoSeleccionadoId()" [totalItems]="pacientesFiltrados().length"
+        [paginaActual]="paginaActual()" [tamanoPagina]="tamanoPagina()" (cambioPagina)="paginaActual.set($event)"
         (cambioTamano)="tamanoPagina.set($event)">
       </app-paginacion>
+    </div>
+
+    <div class="modal-backdrop" *ngIf="modalAtencionAbierto()" (click)="cerrarModalAtencion()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+          <div class="modal-title-box">
+            <span class="modal-icon">🩺</span>
+            <div>
+              <h3>Atención Médica y Estado de Consulta</h3>
+              <p>Actualice el estado del turno y registre la evolución en la historia clínica.</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close-modal" (click)="cerrarModalAtencion()">✕</button>
+        </div>
+
+        <div class="modal-body" *ngIf="pacienteSeleccionado() as pac">
+
+          <div class="patient-brief-card">
+            <div class="brief-row">
+              <span class="brief-name">👤 {{ pac.nombre }}</span>
+              <span class="brief-time">🕒 {{ pac.hora }}</span>
+            </div>
+            <div class="brief-details">
+              <span><strong>DNI:</strong> {{ pac.dni }}</span>
+              <span><strong>HC:</strong> {{ pac.numHistoriaClinica }}</span>
+              <span><strong>Cobertura:</strong> {{ pac.obraSocial }}</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estado de la Consulta <span class="req">*</span></label>
+            <div class="status-options-grid">
+              <label class="status-chip" [class.selected]="nuevoEstado === 'Atendido'">
+                <input type="radio" name="estadoAtencion" [(ngModel)]="nuevoEstado" value="Atendido">
+                <span>✓ Atendido</span>
+              </label>
+              <label class="status-chip" [class.selected]="nuevoEstado === 'En Espera'">
+                <input type="radio" name="estadoAtencion" [(ngModel)]="nuevoEstado" value="En Espera">
+                <span>⏳ En Espera</span>
+              </label>
+              <label class="status-chip" [class.selected]="nuevoEstado === 'Confirmado'">
+                <input type="radio" name="estadoAtencion" [(ngModel)]="nuevoEstado" value="Confirmado">
+                <span>● Confirmado</span>
+              </label>
+              <label class="status-chip" [class.selected]="nuevoEstado === 'Ausente'">
+                <input type="radio" name="estadoAtencion" [(ngModel)]="nuevoEstado" value="Ausente">
+                <span>✕ Ausente</span>
+              </label>
+              <label class="status-chip" [class.selected]="nuevoEstado === 'Cancelado'">
+                <input type="radio" name="estadoAtencion" [(ngModel)]="nuevoEstado" value="Cancelado">
+                <span>🚫 Cancelado</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="clinical-record-section" *ngIf="nuevoEstado === 'Atendido'">
+            <div class="section-title-line">
+              <span>📋 REGISTRO EN HISTORIA CLÍNICA</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Motivo de Consulta</label>
+              <input type="text" class="modal-input" placeholder="Ej. Control evolutivo, revisión de análisis..."
+                [(ngModel)]="motivoConsulta">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Diagnóstico Clínico <span class="req">*</span></label>
+              <textarea rows="2" class="modal-textarea"
+                placeholder="Indique el diagnóstico presuntivo o definitivo del paciente..."
+                [(ngModel)]="diagnostico"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tratamiento e Indicaciones Médicas (Opcional)</label>
+              <textarea rows="2" class="modal-textarea"
+                placeholder="Prescripción farmacológica, dosis, pautas de alarma o estudios requeridos..."
+                [(ngModel)]="tratamiento"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Observaciones y Notas de Consulta (Opcional)</label>
+              <textarea rows="2" class="modal-textarea" placeholder="Notas internas para el seguimiento del paciente..."
+                [(ngModel)]="observaciones"></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" [disabled]="guardandoAtencion()" (click)="cerrarModalAtencion()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-save-atencion" [disabled]="guardandoAtencion()" (click)="guardarAtencion()">
+            <span *ngIf="!guardandoAtencion()">💾 Guardar Atención</span>
+            <span *ngIf="guardandoAtencion()">Guardando...</span>
+          </button>
+        </div>
+
+      </div>
     </div>
 
   </section>
