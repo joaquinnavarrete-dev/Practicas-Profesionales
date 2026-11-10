@@ -38,6 +38,6 @@ export interface PacienteCita {
   obraSocial: string;
   planAfiliado: string;
   motivo: string;
-  estado: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente';
+  estado: 'Pendiente' | 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' | 'Cancelado' | string;
   fecha: string;
 }
