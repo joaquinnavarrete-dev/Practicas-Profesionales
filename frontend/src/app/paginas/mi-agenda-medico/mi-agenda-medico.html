@@ -51,11 +51,13 @@
             <div class="appt-time-row">
               <span class="appt-time">🕒 {{ t.hora ? (t.hora + ' hs') : '09:00 hs' }}</span>
               <span class="appt-status" [ngClass]="{
-                  'st-atendido': t.fecha < dia.fechaIso,
-                  'st-espera': dia.esHoy,
-                  'st-confirmado': t.fecha > dia.fechaIso
+                  'st-pendiente': t.estado === 'Pendiente',
+                  'st-atendido': t.estado === 'Atendido',
+                  'st-espera': t.estado === 'En Espera',
+                  'st-cancelado': t.estado === 'Cancelado',
+                  'st-confirmado': !t.estado || t.estado === 'Confirmado'
                 }">
-                ● {{ dia.esHoy ? 'En Espera' : (t.fecha < dia.fechaIso ? 'Atendido' : 'Confirmado' ) }} </span>
+                ● {{ t.estado || (dia.esHoy ? 'En Espera' : (t.fecha < dia.fechaIso ? 'Atendido' : 'Confirmado' )) }} </span>
             </div>
 
             <strong class="appt-patient" *ngIf="t.paciente">
