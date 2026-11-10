@@ -19,6 +19,22 @@
   --text-light: #94a3b8;
 }
 
+a[class*="btn"],
+a[class*="btn"]:hover,
+a[class*="btn"]:focus,
+a[class*="btn"]:active,
+a[class*="btn"]:visited,
+.btn-create-modal,
+.btn-create-modal:hover,
+.btn-create-modal:focus,
+.btn-create-modal:active,
+.btn-create-modal:visited,
+button,
+button:hover,
+button:focus {
+  text-decoration: none !important;
+}
+
 * {
   margin: 0;
   padding: 0;
