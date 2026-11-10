@@ -114,7 +114,7 @@
           <tr *ngFor="let t of turnosPaginados()">
             <td>
               <div class="datetime-cell">
-                <strong class="time-text">🕒 {{ t.hora }} hs</strong>
+                <strong class="time-text">🕒 {{ t.hora | horaFormato }}</strong>
                 <small class="date-text">{{ t.fecha | fechaFormato }}</small>
               </div>
             </td>
@@ -134,7 +134,7 @@
             </td>
 
             <td>
-              <span class="insurance-badge">{{ t.paciente.obraSocial?.nombre || 'Particular' }}</span>
+              <span class="insurance-badge" [title]="t.paciente.obraSocial?.nombre || ''">{{ t.paciente.obraSocial | cobertura }}</span>
             </td>
 
             <td>

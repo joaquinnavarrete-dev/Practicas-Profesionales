@@ -117,7 +117,7 @@
 
           <tr *ngFor="let p of pacientesPaginados()">
             <td>
-              <span class="time-tag">🕒 {{ p.hora }}</span>
+              <span class="time-tag">🕒 {{ p.hora | horaFormato }}</span>
             </td>
 
             <td>
@@ -136,7 +136,7 @@
 
             <td>
               <div class="coverage-cell">
-                <strong class="os-name">{{ p.obraSocial }}</strong>
+                <strong class="os-name" [title]="p.obraSocial || ''">{{ p.obraSocial | cobertura }}</strong>
                 <small class="plan-text">{{ p.planAfiliado }}</small>
               </div>
             </td>
@@ -211,12 +211,12 @@
           <div class="patient-brief-card">
             <div class="brief-row">
               <span class="brief-name">👤 {{ pac.nombre }}</span>
-              <span class="brief-time">🕒 {{ pac.hora }}</span>
+              <span class="brief-time">🕒 {{ pac.hora | horaFormato }}</span>
             </div>
             <div class="brief-details">
               <span><strong>DNI:</strong> {{ pac.dni }}</span>
               <span><strong>HC:</strong> {{ pac.numHistoriaClinica }}</span>
-              <span><strong>Cobertura:</strong> {{ pac.obraSocial }}</span>
+              <span [title]="pac.obraSocial || ''"><strong>Cobertura:</strong> {{ pac.obraSocial | cobertura }}</span>
             </div>
           </div>
 

@@ -118,10 +118,10 @@
                 </td>
               </tr>
               <tr *ngFor="let t of misTurnosHoy()">
-                <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+                <td><strong class="time-text">🕒 {{ t.hora | horaFormato }}</strong></td>
                 <td><strong class="patient-name">{{ t.paciente }}</strong></td>
                 <td>{{ t.dni }}</td>
-                <td><span class="esp-tag">{{ t.obraSocial }}</span></td>
+                <td><span class="esp-tag" [title]="t.obraSocial || ''">{{ t.obraSocial | cobertura }}</span></td>
                 <td>{{ t.motivo }}</td>
                 <td>
                   <span class="status-badge" [ngClass]="{
@@ -228,12 +228,12 @@
                 </td>
               </tr>
               <tr *ngFor="let t of turnosRecepcionHoy()">
-                <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+                <td><strong class="time-text">🕒 {{ t.hora | horaFormato }}</strong></td>
                 <td><strong class="patient-name">{{ t.paciente }}</strong></td>
                 <td>{{ t.dni }}</td>
                 <td>{{ t.medico }}</td>
                 <td><span class="esp-tag">{{ t.especialidad }}</span></td>
-                <td>{{ t.obraSocial }}</td>
+                <td><span [title]="t.obraSocial || ''">{{ t.obraSocial | cobertura }}</span></td>
                 <td>
                   <span class="status-badge" [ngClass]="{
                       'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
@@ -404,12 +404,12 @@
                 </td>
               </tr>
               <tr *ngFor="let t of proximosTurnosGlobal()">
-                <td><strong class="time-text">🕒 {{ t.hora }}</strong></td>
+                <td><strong class="time-text">🕒 {{ t.hora | horaFormato }}</strong></td>
                 <td><strong class="patient-name">{{ t.paciente }}</strong></td>
                 <td>{{ t.dni }}</td>
                 <td>{{ t.medico }}</td>
                 <td><span class="esp-tag">{{ t.especialidad }}</span></td>
-                <td>{{ t.obraSocial }}</td>
+                <td><span [title]="t.obraSocial || ''">{{ t.obraSocial | cobertura }}</span></td>
                 <td>
                   <span class="status-badge" [ngClass]="{
                       'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',

@@ -49,7 +49,7 @@
           <div class="appointment-card" *ngFor="let t of dia.turnos">
 
             <div class="appt-time-row">
-              <span class="appt-time">🕒 {{ t.hora ? (t.hora + ' hs') : '09:00 hs' }}</span>
+              <span class="appt-time">🕒 {{ (t.hora ? (t.hora | horaFormato) : '09:00 hs') }}</span>
               <span class="appt-status" [ngClass]="{
                   'st-pendiente': t.estado === 'Pendiente',
                   'st-atendido': t.estado === 'Atendido',
@@ -67,8 +67,8 @@
               DNI {{ t.paciente.dni }}
             </span>
 
-            <span class="appt-os" *ngIf="t.paciente?.obraSocial">
-              {{ t.paciente.obraSocial.nombre }}
+            <span class="appt-os" *ngIf="t.paciente?.obraSocial" [title]="t.paciente.obraSocial.nombre || ''">
+              {{ t.paciente.obraSocial | cobertura }}
             </span>
 
             <div class="appt-actions" *ngIf="t.paciente">

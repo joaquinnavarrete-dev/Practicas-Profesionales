@@ -103,7 +103,7 @@
           <div class="highlight-info">
             <span class="highlight-label">TU PRÓXIMA ATENCIÓN PROGRAMADA:</span>
             <strong class="highlight-text">
-              {{ proximo.fecha | fechaFormato:'completa' }} a las {{ proximo.hora }} hs con Dr(a). {{
+              {{ proximo.fecha | fechaFormato:'completa' }} a las {{ proximo.hora | horaFormato }} con Dr(a). {{
               proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
             </strong>
           </div>
@@ -128,7 +128,7 @@
             <div class="card-date-badge">
               <span class="badge-month">{{ t.fecha | fechaFormato:'mesAbrev' }}</span>
               <strong class="badge-day">{{ t.fecha | fechaFormato:'dia' }}</strong>
-              <span class="badge-time">{{ t.hora }} hs</span>
+              <span class="badge-time">{{ t.hora | horaFormato }}</span>
             </div>
 
             <div class="card-main-info">
@@ -150,7 +150,7 @@
               </div>
 
               <p class="date-full-text">
-                🗓️ <strong>{{ t.fecha | fechaFormato:'completa' }}</strong> a las <strong>{{ t.hora }} hs</strong>
+                🗓️ <strong>{{ t.fecha | fechaFormato:'completa' }}</strong> a las <strong>{{ t.hora | horaFormato }}</strong>
               </p>
             </div>
 
@@ -188,7 +188,7 @@
             <div class="card-date-badge past-badge">
               <span class="badge-month">{{ t.fecha | fechaFormato:'mesAbrev' }}</span>
               <strong class="badge-day">{{ t.fecha | fechaFormato:'dia' }}</strong>
-              <span class="badge-time">{{ t.hora }} hs</span>
+              <span class="badge-time">{{ t.hora | horaFormato }}</span>
             </div>
 
             <div class="card-main-info">

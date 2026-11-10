@@ -34,7 +34,7 @@
         <div class="v-row">
           <span>Fecha y Hora:</span>
           <strong>{{ (turnoConfirmado()?.fecha || turnoBorrador.fecha) | fechaFormato:'larga' }} a las {{
-            turnoConfirmado()?.hora || turnoBorrador.hora }} hs</strong>
+            (turnoConfirmado()?.hora || turnoBorrador.hora) | horaFormato }}</strong>
         </div>
         <div class="v-row">
           <span>Paciente:</span>
@@ -345,7 +345,7 @@
             <span class="check-circle-green">✓</span>
             <div>
               <small>Turno seleccionado:</small>
-              <strong>{{ turnoBorrador.fecha | fechaFormato:'larga' }} a las {{ turnoBorrador.hora }} hs con Dr(a). {{
+              <strong>{{ turnoBorrador.fecha | fechaFormato:'larga' }} a las {{ turnoBorrador.hora | horaFormato }} con Dr(a). {{
                 turnoBorrador.medico?.nombre }} {{ turnoBorrador.medico?.apellido }}</strong>
             </div>
           </div>
@@ -414,7 +414,7 @@
                 <div class="time-badge-box">
                   <span class="clock-ico">🕒</span>
                   <div>
-                    <strong>{{ turnoBorrador.hora }} hs</strong>
+                    <strong>{{ turnoBorrador.hora | horaFormato }}</strong>
                     <small>Duración estimada: 30 minutos</small>
                   </div>
                 </div>
