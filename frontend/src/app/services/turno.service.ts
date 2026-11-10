@@ -76,6 +76,11 @@ export class TurnoService {
     return this.http.get<Turno[]>(`${this.apiUrl}/pendientes-reubicacion`);
   }
 
+  cambiarEstado(idTurno: number, nuevoEstado: string): Observable<Turno> {
+    const params = new HttpParams().set('estado', nuevoEstado);
+    return this.http.patch<Turno>(`${this.apiUrl}/${idTurno}/estado`, {}, { params });
+  }
+
   cancelar(idTurno: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${idTurno}`);
   }
