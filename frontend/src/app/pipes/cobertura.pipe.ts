@@ -14,7 +14,14 @@ export class CoberturaPipe implements PipeTransform {
       if (!limpia || lower.includes('particular') || lower.includes('ningun') || lower.includes('sin obra')) {
         return 'Particular';
       }
-      return limpia;
+      if (limpia.length <= 16) {
+        return limpia;
+      }
+      const matchParen = limpia.match(/\(([^)]+)\)/);
+      if (matchParen && matchParen[1].length <= 15) {
+        return matchParen[1].trim();
+      }
+      return 'Cubierto';
     }
 
     const nombre = value.nombre?.trim() || '';
@@ -25,6 +32,15 @@ export class CoberturaPipe implements PipeTransform {
 
     if (value.sigla && value.sigla.trim()) {
       return value.sigla.trim();
+    }
+
+    if (nombre.length <= 16) {
+      return nombre;
+    }
+
+    const matchParen = nombre.match(/\(([^)]+)\)/);
+    if (matchParen && matchParen[1].length <= 15) {
+      return matchParen[1].trim();
     }
 
     return 'Cubierto';
