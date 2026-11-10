@@ -225,7 +225,8 @@ export class DashboardAdminComponent implements OnInit {
       dni: t.paciente?.dni || 'Sin DNI',
       medico: t.medico ? `Dr(a). ${t.medico.nombre} ${t.medico.apellido}` : 'Médico General',
       especialidad: t.medico?.especialidad?.nombre || t.especialidad?.nombre || 'Medicina General',
-      obraSocial: t.paciente?.obraSocial?.nombre || 'Particular',
+      obraSocial: t.paciente?.obraSocial?.sigla || t.paciente?.obraSocial?.nombre || 'Particular',
+      obraSocialNombreCompleto: t.paciente?.obraSocial?.nombre || 'Particular',
       estado: t.estado || this.calcularEstadoTurno(t.fecha),
       motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`
     };
