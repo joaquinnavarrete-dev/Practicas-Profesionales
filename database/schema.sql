@@ -118,7 +118,7 @@ CREATE TABLE turno (
     id_especialidad INT NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
-    estado VARCHAR(40) NOT NULL DEFAULT 'Confirmado',
+    estado VARCHAR(40) NOT NULL DEFAULT 'Pendiente',
     CONSTRAINT pk_turno PRIMARY KEY (id_turno),
     CONSTRAINT fk_turno_paciente
         FOREIGN KEY (id_paciente)
