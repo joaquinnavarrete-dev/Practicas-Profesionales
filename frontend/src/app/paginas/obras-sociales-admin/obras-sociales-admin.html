@@ -87,14 +87,13 @@
             <th>TIPO</th>
             <th>PLANES ADMITIDOS</th>
             <th>COPAGO REQUERIDO</th>
-            <th>CÓDIGO RNS</th>
             <th>ESTADO</th>
             <th class="col-actions" *ngIf="authService.isAdmin()">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td [attr.colspan]="authService.isAdmin() ? 7 : 6" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td [attr.colspan]="authService.isAdmin() ? 6 : 5" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando catálogo de obras sociales y convenios...
             </td>
           </tr>
@@ -123,10 +122,6 @@
             </td>
 
             <td>
-              <span class="rns-code">{{ os.codigoRns }}</span>
-            </td>
-
-            <td>
               <span class="badge-status" [ngClass]="{
                   'status-activa': os.estado === 'Activa',
                   'status-revision': os.estado === 'En Revisión',
@@ -150,7 +145,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && obrasSocialesFiltradas().length === 0">
-            <td [attr.colspan]="authService.isAdmin() ? 7 : 6" class="empty-table-row">
+            <td [attr.colspan]="authService.isAdmin() ? 6 : 5" class="empty-table-row">
               <span>🔍 No se encontraron obras sociales con los filtros seleccionados.</span>
             </td>
           </tr>
