@@ -72,6 +72,19 @@
         </select>
       </div>
 
+      <div class="filter-group">
+        <label>ESTADO:</label>
+        <select [ngModel]="estadoFiltro()" (ngModelChange)="estadoFiltro.set($event); paginaActual.set(1)">
+          <option value="Todos">Todos los estados</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="En Espera">En Espera</option>
+          <option value="Atendido">Atendido</option>
+          <option value="Pendiente de Reubicación">Pendiente de Reubicación</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+      </div>
+
       <button class="btn-reset-filters" (click)="resetearFiltros()">
         ↺ Limpiar Filtros
       </button>
@@ -130,17 +143,21 @@
 
             <td>
               <span class="badge-status" [ngClass]="{
+                'status-pendiente': t.estado === 'Pendiente',
                 'status-confirmado': !t.estado || t.estado === 'Confirmado',
-                'status-espera': t.estado === 'Pendiente de Reubicación',
+                'status-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
                 'status-cancelado': t.estado === 'Cancelado',
                 'status-atendido': t.estado === 'Atendido'
               }">
-                ● {{ t.estado || 'Confirmado' }}
+                ● {{ t.estado || 'Pendiente' }}
               </span>
             </td>
 
             <td class="col-actions">
               <div class="action-buttons-group">
+                <button *ngIf="t.estado === 'Pendiente'" class="btn-action-icon success" (click)="confirmarAsistencia(t)" title="Confirmar asistencia / Check-In de mostrador">
+                  ✓ Confirmar
+                </button>
                 <button class="btn-action-icon danger" (click)="cancelarTurno(t)" title="Cancelar este turno">
                   ✕ Cancelar
                 </button>
