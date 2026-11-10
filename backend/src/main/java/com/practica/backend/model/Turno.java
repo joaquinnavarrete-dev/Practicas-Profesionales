@@ -56,5 +56,5 @@ public class Turno {
 
     @Column(name = "estado", nullable = false, length = 40)
     @Builder.Default
-    private String estado = "Confirmado";
+    private String estado = "Pendiente";
 }

@@ -203,7 +203,7 @@ public class TurnoServiceImpl implements TurnoService {
                 .especialidad(especialidad)
                 .fecha(dto.getFecha())
                 .hora(dto.getHora())
-                .estado(dto.getEstado() != null && !dto.getEstado().isBlank() ? dto.getEstado() : "Confirmado")
+                .estado(dto.getEstado() != null && !dto.getEstado().isBlank() ? dto.getEstado() : "Pendiente")
                 .build();
 
         return mapToResponseDto(turnoRepository.save(turno));
@@ -299,6 +299,7 @@ public class TurnoServiceImpl implements TurnoService {
                 .idEspecialidad(dto.getIdEspecialidad())
                 .fecha(dto.getFecha())
                 .hora(dto.getHora())
+                .estado("Pendiente")
                 .build();
 
         return reservarTurno(turnoRequestDto);
@@ -333,6 +334,34 @@ public class TurnoServiceImpl implements TurnoService {
     @Transactional(readOnly = true)
     public long contarPendientesReubicacion() {
         return turnoRepository.countByEstado("Pendiente de Reubicación");
+    }
+
+    @Override
+    @Transactional
+    public TurnoResponseDto cambiarEstado(Integer idTurno, String nuevoEstado) {
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            throw new BadRequestException("El nuevo estado no puede estar vacío");
+        }
+
+        Turno turno = turnoRepository.findById(idTurno)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con id: " + idTurno));
+
+        Set<String> estadosValidos = Set.of(
+                "Pendiente", "Confirmado", "En Espera", "Atendido", "Ausente", "Cancelado", "Pendiente de Reubicación"
+        );
+
+        boolean esValido = estadosValidos.stream().anyMatch(e -> e.equalsIgnoreCase(nuevoEstado.trim()));
+        if (!esValido) {
+            throw new BadRequestException("Estado de turno no válido: " + nuevoEstado);
+        }
+
+        String estadoNormalizado = estadosValidos.stream()
+                .filter(e -> e.equalsIgnoreCase(nuevoEstado.trim()))
+                .findFirst()
+                .orElse(nuevoEstado.trim());
+
+        turno.setEstado(estadoNormalizado);
+        return mapToResponseDto(turnoRepository.save(turno));
     }
 
     private TurnoResponseDto mapToResponseDto(Turno entity) {

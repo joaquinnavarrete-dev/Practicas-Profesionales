@@ -41,4 +41,6 @@ public interface TurnoService {
     List<TurnoResponseDto> listarPendientesReubicacion();
 
     long contarPendientesReubicacion();
+
+    TurnoResponseDto cambiarEstado(Integer id, String nuevoEstado);
 }
