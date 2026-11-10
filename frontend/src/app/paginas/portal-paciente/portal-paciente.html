@@ -155,7 +155,12 @@
             </div>
 
             <div class="card-status-actions">
-              <span class="badge-pill-success">✓ Programado</span>
+              <span class="badge-pill-warning" *ngIf="t.estado === 'Pendiente'" title="Debe presentarse en recepción el día del turno para confirmar su asistencia">
+                ⏳ Pendiente de Confirmación
+              </span>
+              <span class="badge-pill-success" *ngIf="t.estado !== 'Pendiente'">
+                ✓ {{ t.estado || 'Confirmado' }}
+              </span>
 
               <button type="button" class="btn-cancel-appointment" (click)="confirmarCancelacionTurno(t)"
                 title="Cancelar este turno">
