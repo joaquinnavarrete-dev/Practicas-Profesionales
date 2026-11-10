@@ -105,7 +105,7 @@
             </td>
 
             <td>
-              <span class="os-badge">{{ p.obraSocial?.nombre || 'Particular' }}</span>
+              <span class="os-badge" [title]="p.obraSocial?.nombre || ''">{{ p.obraSocial | cobertura }}</span>
             </td>
 
             <td class="col-actions">
