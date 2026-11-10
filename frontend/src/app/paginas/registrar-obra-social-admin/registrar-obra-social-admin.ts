@@ -38,7 +38,8 @@ export class RegistrarObraSocialAdminComponent {
 
     this.guardando.set(true);
     this.obraSocialService.crear({
-      nombre: this.obraSocialForm.nombre.trim()
+      nombre: this.obraSocialForm.nombre.trim(),
+      sigla: this.obraSocialForm.siglas.trim()
     }).subscribe({
       next: (nuevaOS) => {
         this.guardando.set(false);
