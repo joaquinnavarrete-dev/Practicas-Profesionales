@@ -57,13 +57,6 @@
       </div>
 
       <div class="hero-buttons">
-        <button class="btn-primary" routerLink="/turnos/solicitar">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-            <path
-              d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" />
-          </svg>
-          Reservar Consulta
-        </button>
         <a class="btn-outline" href="#nosotros" style="text-decoration: none;">
           🏛️ La Clínica
         </a>
@@ -77,77 +70,29 @@
       </div>
     </div>
 
-    <div class="hero-card-wrapper">
-      <div class="login-card">
+    <div class="hero-banner-wrapper">
+      <div class="hero-banner-card">
+        <div class="hero-banner-image-container">
+          <img src="/img/banner.jpg" alt="Instalaciones y equipo médico de Clínica San Gabriel" class="hero-banner-img" />
+          <div class="hero-banner-badge">
+            <span class="badge-pulse"></span>
+            <span>Atención Médica Integral</span>
+          </div>
+        </div>
 
-        <ng-container *ngIf="authService.isLoggedIn()">
-          <div class="user-logged-hero" style="text-align: center; padding: 1.5rem 0 1rem;">
-            <div class="logged-avatar"
-              style="width: 64px; height: 64px; border-radius: 50%; background: #004b93; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 700; margin: 0 auto 0.75rem;">
-              {{ authService.currentUser()?.nombreUsuario?.charAt(0)?.toUpperCase() || 'U' }}
-            </div>
-            <h3 style="color: #0f172a; font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem;">
-              ¡Hola, {{ authService.currentUser()?.nombreUsuario }}!
-            </h3>
-            <span
-              style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-              {{ authService.userRole()?.replace('ROLE_', '') }}
-            </span>
-            <p style="color: #64748b; font-size: 0.85rem; margin: 0.75rem 0 1.5rem;">
-              Tenés acceso inmediato a tus turnos, historial y consultas activas.
+        <div class="hero-action-box">
+          <div class="hero-action-text">
+            <h3 class="hero-action-title">Atención Médica y Consultas</h3>
+            <p class="hero-action-subtitle">
+              Elegí el profesional, la especialidad médica y el horario que mejor se adapte a tu disponibilidad.
             </p>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a *ngIf="esPaciente()" routerLink="/mi-portal" class="btn-submit-portal"
-              style="text-decoration: none; text-align: center; display: block;">
-              📋 Ir a Mi Portal de Paciente →
-            </a>
-            <a *ngIf="esPersonalClinico()" routerLink="/admin" class="btn-submit-portal"
-              style="text-decoration: none; text-align: center; display: block;">
-              ⚙️ Ir al Panel Administrativo →
-            </a>
-            <a routerLink="/turnos/solicitar"
-              style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.9rem;">
-              ➕ Solicitar Nuevo Turno
-            </a>
-          </div>
-        </ng-container>
-
-        <ng-container *ngIf="!authService.isLoggedIn()">
-          <div class="card-tabs">
-            <button class="tab-btn active" routerLink="/login">Iniciar Sesión</button>
-            <button class="tab-btn" routerLink="/registro">Registrarme</button>
-          </div>
-
-          <div style="text-align: center; padding: 1.5rem 0.5rem 1rem;">
-            <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">🏥</div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0 0 0.4rem;">
-              Portal de Salud San Gabriel
-            </h3>
-            <p style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin: 0 0 1.5rem;">
-              Accedé a tus turnos programados, historial médico y recetas de forma rápida y segura.
-            </p>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a routerLink="/login" class="btn-submit-portal"
-              style="text-decoration: none; text-align: center; display: block;">
-              Ingresar al Portal →
-            </a>
-            <a routerLink="/registro"
-              style="text-decoration: none; text-align: center; display: block; padding: 0.75rem; border: 1px solid #004b93; border-radius: 8px; color: #004b93; font-weight: 600; font-size: 0.88rem;">
-              Crear mi Cuenta de Paciente
-            </a>
-          </div>
-        </ng-container>
-
-        <div class="quick-turno-box" style="margin-top: 1.25rem;">
-          <div class="quick-text">
-            <span class="bolt-icon">⚡</span>
-            <span>¿Turno rápido sin espera?</span>
-          </div>
-          <button class="btn-pedir" routerLink="/turnos/solicitar">Pedir</button>
+          <a routerLink="/turnos/solicitar" class="btn-reservar-principal">
+            <span class="btn-icon">📅</span>
+            <span>Reservar Consulta</span>
+            <span class="btn-arrow">→</span>
+          </a>
         </div>
       </div>
     </div>
