@@ -44,7 +44,7 @@
         </div>
         <div class="v-row">
           <span>Cobertura:</span>
-          <strong>{{ turnoConfirmado()?.paciente?.obraSocial?.nombre || turnoBorrador.obraSocial }}</strong>
+          <strong [title]="turnoConfirmado()?.paciente?.obraSocial?.nombre || turnoBorrador.obraSocial">{{ (turnoConfirmado()?.paciente?.obraSocial || turnoBorrador.obraSocial) | cobertura }}</strong>
         </div>
         <div class="v-row">
           <span>Lugar:</span>
@@ -504,7 +504,7 @@
                 </div>
                 <div class="p-field-row">
                   <span>Cobertura:</span>
-                  <strong>{{ turnoBorrador.obraSocial }}</strong>
+                  <strong [title]="turnoBorrador.obraSocial">{{ turnoBorrador.obraSocial | cobertura }}</strong>
                 </div>
               </div>
 

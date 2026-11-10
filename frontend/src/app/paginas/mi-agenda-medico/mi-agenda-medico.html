@@ -67,8 +67,8 @@
               DNI {{ t.paciente.dni }}
             </span>
 
-            <span class="appt-os" *ngIf="t.paciente?.obraSocial" [title]="t.paciente.obraSocial.nombre || ''">
-              {{ t.paciente.obraSocial | cobertura }}
+            <span class="appt-os" [title]="t.paciente?.obraSocial?.nombre || 'Particular'">
+              {{ t.paciente?.obraSocial | cobertura }}
             </span>
 
             <div class="appt-actions" *ngIf="t.paciente">
