@@ -1,7 +1,3 @@
-/* ==========================================================
-   ESTILOS DE LA VISTA DE EDICIÓN DE ESPECIALIDAD (ADMIN)
-   ========================================================== */
-
 .register-esp-wrapper {
   display: flex;
   flex-direction: column;
@@ -11,7 +7,6 @@
   padding-bottom: 3rem;
 }
 
-/* Topbar Administrativo */
 .topbar-admin {
   height: 64px;
   background-color: #ffffff;
@@ -25,12 +20,33 @@
   z-index: 30;
 }
 
-.topbar-left { display: flex; align-items: center; }
-.module-title-box { display: flex; align-items: center; gap: 0.6rem; }
-.module-icon { font-size: 1.15rem; }
-.module-title { font-size: 0.98rem; font-weight: 700; color: #0f172a; margin: 0; }
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
 
-.topbar-right { display: flex; align-items: center; gap: 1.15rem; }
+.module-title-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.module-icon {
+  font-size: 1.15rem;
+}
+
+.module-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
 
 .profile-card {
   display: flex;
@@ -52,11 +68,22 @@
   font-size: 1.1rem;
 }
 
-.profile-info { display: flex; flex-direction: column; }
-.profile-name { font-size: 0.82rem; font-weight: 700; color: #0f172a; }
-.profile-role { font-size: 0.7rem; color: #64748b; }
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
 
-/* Cabecera del Formulario */
+.profile-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.profile-role {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
 .form-header-bar {
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
@@ -86,7 +113,6 @@
   margin: 0;
 }
 
-/* Cuerpo del Contenedor */
 .form-content-body {
   max-width: 850px;
   width: 100%;
@@ -125,7 +151,6 @@
   margin: 0;
 }
 
-/* Grillas de Formulario */
 .form-grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -170,7 +195,6 @@
   margin-top: 0.1rem;
 }
 
-/* Pie de Acciones */
 .form-actions-footer {
   display: flex;
   justify-content: flex-end;
@@ -207,25 +231,60 @@
   background-color: #00366a;
 }
 
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 3.5rem 1.5rem;
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #004b93;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px) {
   .form-content-body {
     padding: 0 1rem;
     margin-top: 1rem;
   }
+
   .esp-form-card {
     padding: 1.25rem 1rem;
   }
+
   .form-grid-2 {
     grid-template-columns: 1fr;
     gap: 0.85rem;
   }
+
   .form-header-bar {
     padding: 1rem 1.25rem;
   }
+
   .form-actions-footer {
     flex-direction: column-reverse;
     gap: 0.75rem;
   }
+
   .btn-cancel,
   .btn-submit {
     width: 100%;
