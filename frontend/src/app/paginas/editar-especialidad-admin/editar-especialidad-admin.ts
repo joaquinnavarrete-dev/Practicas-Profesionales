@@ -21,16 +21,14 @@ export class EditarEspecialidadAdminComponent implements OnInit {
   readonly authService = inject(AuthService);
 
   readonly especialidadId = signal<string | null>(null);
-  readonly cargando = signal<boolean>(false);
+  readonly cargando = signal<boolean>(true);
   readonly guardando = signal<boolean>(false);
 
-  especialidadForm = {
-    nombre: '',
-    codigo: '',
-    descripcion: '',
-    duracionTurno: '30',
-    estado: 'Activa'
-  };
+  readonly nombre = signal<string>('');
+  readonly codigo = signal<string>('');
+  readonly descripcion = signal<string>('');
+  readonly duracionTurno = signal<string>('30');
+  readonly estado = signal<string>('Activa');
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -41,14 +39,12 @@ export class EditarEspecialidadAdminComponent implements OnInit {
       this.cargando.set(true);
       this.especialidadService.buscarPorId(idNum).subscribe({
         next: (esp: Especialidad) => {
+          this.nombre.set(esp.nombre);
+          this.codigo.set(`ESP-${esp.idEspecialidad}`);
+          this.descripcion.set(`Servicio de ${esp.nombre}`);
+          this.duracionTurno.set('30');
+          this.estado.set('Activa');
           this.cargando.set(false);
-          this.especialidadForm = {
-            nombre: esp.nombre,
-            codigo: `ESP-${esp.idEspecialidad}`,
-            descripcion: `Servicio de ${esp.nombre}`,
-            duracionTurno: '30',
-            estado: 'Activa'
-          };
         },
         error: (err: any) => {
           this.cargando.set(false);
@@ -61,7 +57,7 @@ export class EditarEspecialidadAdminComponent implements OnInit {
   }
 
   actualizarEspecialidad(): void {
-    if (!this.especialidadForm.nombre.trim()) {
+    if (!this.nombre().trim()) {
       this.notify.warning('Por favor, ingrese el nombre de la especialidad.');
       return;
     }
@@ -73,7 +69,7 @@ export class EditarEspecialidadAdminComponent implements OnInit {
     const idNum = Number(id);
 
     this.especialidadService.actualizar(idNum, {
-      nombre: this.especialidadForm.nombre.trim()
+      nombre: this.nombre().trim()
     }).subscribe({
       next: (espActualizada: Especialidad) => {
         this.guardando.set(false);
