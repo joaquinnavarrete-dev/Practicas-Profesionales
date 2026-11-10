@@ -30,6 +30,7 @@ export class TurnosAdminComponent implements OnInit {
   readonly busquedaGlobal = signal<string>('');
   readonly fechaFiltro = signal<string>('');
   readonly especialidadFiltro = signal<string>('Todas');
+  readonly estadoFiltro = signal<string>('Todos');
   readonly conteoReubicacion = signal<number>(0);
 
   readonly paginaActual = signal<number>(1);
@@ -44,11 +45,13 @@ export class TurnosAdminComponent implements OnInit {
     const q = this.busquedaGlobal().toLowerCase().trim();
     const fFecha = this.fechaFiltro();
     const fEsp = this.especialidadFiltro();
+    const fEstado = this.estadoFiltro();
     const lista = this.turnos();
 
     return lista.filter(t => {
       const matchFecha = !fFecha || t.fecha === fFecha;
       const matchEsp = fEsp === 'Todas' || t.especialidad.nombre === fEsp;
+      const matchEstado = fEstado === 'Todos' || t.estado === fEstado;
 
       const pacienteFull = `${t.paciente.nombre} ${t.paciente.apellido}`.toLowerCase();
       const medicoFull = `${t.medico.nombre} ${t.medico.apellido}`.toLowerCase();
@@ -59,7 +62,7 @@ export class TurnosAdminComponent implements OnInit {
         t.especialidad.nombre.toLowerCase().includes(q) ||
         (t.estado && t.estado.toLowerCase().includes(q));
 
-      return matchFecha && matchEsp && matchQuery;
+      return matchFecha && matchEsp && matchEstado && matchQuery;
     });
   });
 
@@ -127,7 +130,26 @@ export class TurnosAdminComponent implements OnInit {
     this.busquedaGlobal.set('');
     this.fechaFiltro.set('');
     this.especialidadFiltro.set('Todas');
+    this.estadoFiltro.set('Todos');
     this.paginaActual.set(1);
+  }
+
+  confirmarAsistencia(t: Turno): void {
+    this.turnoService.cambiarEstado(t.idTurno, 'Confirmado').subscribe({
+      next: () => {
+        this.turnos.update(lista =>
+          lista.map(item => item.idTurno === t.idTurno ? { ...item, estado: 'Confirmado' } : item)
+        );
+        this.notify.success(
+          `Asistencia confirmada para ${t.paciente.nombre} ${t.paciente.apellido}. El médico ya puede atenderlo.`,
+          'Check-In Exitoso'
+        );
+      },
+      error: (err) => {
+        console.error('Error al confirmar asistencia de turno:', err);
+        this.notify.error(err.error?.message || 'No se pudo confirmar el turno.');
+      }
+    });
   }
 
   async cancelarTurno(t: Turno): Promise<void> {
