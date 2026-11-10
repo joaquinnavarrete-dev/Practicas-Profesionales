@@ -215,6 +215,10 @@
   font-weight: 700;
 }
 
+.st-pendiente {
+  color: #b45309;
+}
+
 .st-atendido {
   color: #15803d;
 }
@@ -225,6 +229,10 @@
 
 .st-confirmado {
   color: #0369a1;
+}
+
+.st-cancelado {
+  color: #dc2626;
 }
 
 .appt-patient {
