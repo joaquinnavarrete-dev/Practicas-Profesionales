@@ -41,7 +41,7 @@ export function formatearFecha(
   if (!fecha) return '';
 
   let anio: number;
-  let mes: number; // 1-indexed (1..12)
+  let mes: number;
   let dia: number;
 
   if (fecha instanceof Date) {
@@ -56,7 +56,6 @@ export function formatearFecha(
     dia = parsed.dia;
   }
 
-  // Objeto local seguro para determinar el día de la semana sin desviación por huso horario UTC
   const fechaObj = new Date(anio, mes - 1, dia);
   const diaSemana = DIAS_SEMANA_COMPLETOS[fechaObj.getDay()] || '';
   const mesNombre = MESES_COMPLETOS[mes - 1] || '';
@@ -66,22 +65,16 @@ export function formatearFecha(
 
   switch (formato) {
     case 'corta':
-      // DD/MM/AAAA
       return `${diaStr}/${mesStr}/${anio}`;
     case 'larga':
-      // D de mes de AAAA (ej. 3 de noviembre de 2026)
       return `${dia} de ${mesNombre} de ${anio}`;
     case 'completa':
-      // Martes, 3 de noviembre de 2026
       return `${diaSemana}, ${dia} de ${mesNombre} de ${anio}`;
     case 'mesAbrev':
-      // NOV
       return mesAbrev;
     case 'dia':
-      // 03
       return diaStr;
     case 'mesAnio':
-      // Noviembre 2026
       return `${mesNombre.charAt(0).toUpperCase() + mesNombre.slice(1)} ${anio}`;
     default:
       return `${diaStr}/${mesStr}/${anio}`;
@@ -98,5 +91,18 @@ export function obtenerMesAbreviado(fecha: string | null | undefined): string {
 
 export function formatearFechaLegible(fecha: string | null | undefined): string {
   return formatearFecha(fecha, 'completa');
+}
+
+export function formatearHora(hora: string | null | undefined, incluirHs: boolean = true): string {
+  if (!hora) return '';
+  const limpia = hora.trim();
+  const soloNumeros = limpia.replace(/hs|\s/gi, '');
+  const partes = soloNumeros.split(':');
+  if (partes.length >= 2) {
+    const hh = partes[0].padStart(2, '0');
+    const mm = partes[1].padStart(2, '0');
+    return incluirHs ? `${hh}:${mm} hs` : `${hh}:${mm}`;
+  }
+  return incluirHs ? `${limpia} hs` : limpia;
 }
 
