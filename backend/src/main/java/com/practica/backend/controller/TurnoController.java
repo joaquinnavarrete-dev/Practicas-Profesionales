@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -129,6 +130,14 @@ public class TurnoController {
             return ResponseEntity.ok(turnoService.reprogramarTurno(id, nuevaFecha, nuevaHora));
         }
         throw new BadRequestException("Debe proporcionar la nueva fecha y hora para reprogramar el turno");
+    }
+
+    @PatchMapping("/{id}/estado")
+    @Operation(summary = "Actualizar el estado de un turno")
+    public ResponseEntity<TurnoResponseDto> cambiarEstado(
+            @PathVariable Integer id,
+            @RequestParam String estado) {
+        return ResponseEntity.ok(turnoService.cambiarEstado(id, estado));
     }
 
     @DeleteMapping("/{id}")
