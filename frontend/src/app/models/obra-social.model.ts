@@ -6,6 +6,7 @@ export interface ObraSocial {
 
 export interface ObraSocialRequest {
   nombre: string;
+  sigla?: string;
 }
 
 export interface ObraSocialItem {
