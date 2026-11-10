@@ -34,7 +34,7 @@
             <div class="info-chip">
               <span class="chip-icon">🛡️</span>
               <span class="chip-label">Cobertura:</span>
-              <strong class="chip-val">{{ p.obraSocial?.nombre || 'Particular' }}</strong>
+              <strong class="chip-val" [title]="p.obraSocial?.nombre || 'Particular'">{{ p.obraSocial | cobertura }}</strong>
             </div>
 
             <div class="info-chip" *ngIf="p.telefono">
