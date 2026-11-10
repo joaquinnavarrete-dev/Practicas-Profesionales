@@ -46,15 +46,9 @@
 
         <div class="detail-item">
           <span class="detail-label">Cobertura / Obra Social</span>
-          <span class="detail-value os-pill">
-            {{ pac.obraSocial?.nombre || 'Particular' }}
-            <span *ngIf="pac.obraSocial?.sigla">({{ pac.obraSocial.sigla }})</span>
+          <span class="detail-value os-pill" [title]="pac.obraSocial?.nombre || ''">
+            {{ pac.obraSocial | cobertura }}
           </span>
-        </div>
-
-        <div class="detail-item">
-          <span class="detail-label">N° de Historia Clínica</span>
-          <span class="detail-value badge-hc">HC-{{ pac.idPaciente }}</span>
         </div>
       </div>
     </div>
