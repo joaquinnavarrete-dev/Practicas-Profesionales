@@ -5,11 +5,12 @@ import { TurnoService, MedicoService, PacienteService, ObraSocialService, AuthSe
 import { Turno, Medico, Paciente, ObraSocial, DemandaEspecialidad, ProximoTurno } from '../../models';
 import { formatearFecha } from '../../utils/date.utils';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { HoraFormatoPipe, CoberturaPipe } from '../../pipes';
 
 @Component({
   selector: 'app-dashboard-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, RouterLink, AdminTopbarComponent, HoraFormatoPipe, CoberturaPipe],
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css'
 })

@@ -11,12 +11,12 @@ import { ObraSocialService } from '../../services/obra-social.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { Especialidad, Medico, TurnoDisponible, Turno, DiaAtencion, DiaCalendario, ObraSocial } from '../../models';
-import { FechaFormatoPipe } from '../../pipes';
+import { FechaFormatoPipe, HoraFormatoPipe } from '../../pipes';
 
 @Component({
   selector: 'app-solicitar-turno',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe],
+  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe, HoraFormatoPipe],
   templateUrl: './solicitar-turno.html',
   styleUrl: './solicitar-turno.css'
 })

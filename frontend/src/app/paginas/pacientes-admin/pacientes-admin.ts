@@ -10,11 +10,12 @@ import { AuthService } from '../../services/auth.service';
 import { Paciente, ObraSocial } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
+import { CoberturaPipe } from '../../pipes';
 
 @Component({
   selector: 'app-pacientes-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminTopbarComponent, PaginacionComponent, CoberturaPipe],
   templateUrl: './pacientes-admin.html',
   styleUrl: './pacientes-admin.css'
 })

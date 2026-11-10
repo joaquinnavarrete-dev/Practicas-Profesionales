@@ -8,14 +8,14 @@ import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { AuthService } from '../../services/auth.service';
 import { Turno, Especialidad } from '../../models';
-import { FechaFormatoPipe } from '../../pipes';
+import { FechaFormatoPipe, HoraFormatoPipe, CoberturaPipe } from '../../pipes';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 
 @Component({
   selector: 'app-turnos-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe, AdminTopbarComponent, PaginacionComponent],
+  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe, HoraFormatoPipe, CoberturaPipe, AdminTopbarComponent, PaginacionComponent],
   templateUrl: './turnos-admin.html',
   styleUrl: './turnos-admin.css'
 })

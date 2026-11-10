@@ -6,11 +6,12 @@ import { MedicoService, TurnoService, HistoriaClinicaService, NotificationServic
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
+import { HoraFormatoPipe, CoberturaPipe } from '../../pipes';
 
 @Component({
   selector: 'app-pacientes-por-medico',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminTopbarComponent, PaginacionComponent],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent, PaginacionComponent, HoraFormatoPipe, CoberturaPipe],
   templateUrl: './pacientes-por-medico.html',
   styleUrl: './pacientes-por-medico.css'
 })

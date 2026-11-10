@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { TurnoService, AuthService } from '../../services';
 import { Turno, DiaAgendaSemanal } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
+import { HoraFormatoPipe, CoberturaPipe } from '../../pipes';
 
 @Component({
   selector: 'app-mi-agenda-medico',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdminTopbarComponent],
+  imports: [CommonModule, RouterLink, AdminTopbarComponent, HoraFormatoPipe, CoberturaPipe],
   templateUrl: './mi-agenda-medico.html',
   styleUrl: './mi-agenda-medico.css'
 })

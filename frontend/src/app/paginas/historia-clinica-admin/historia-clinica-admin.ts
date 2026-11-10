@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 import { PacienteService, MedicoService, HistoriaClinicaService, NotificationService, ConfirmModalService, AuthService } from '../../services';
 import { Paciente, Medico, HistoriaClinica, HistoriaClinicaRequest } from '../../models';
+import { CoberturaPipe } from '../../pipes';
 
 @Component({
   selector: 'app-historia-clinica-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdminTopbarComponent],
+  imports: [CommonModule, FormsModule, AdminTopbarComponent, CoberturaPipe],
   templateUrl: './historia-clinica-admin.html',
   styleUrl: './historia-clinica-admin.css'
 })

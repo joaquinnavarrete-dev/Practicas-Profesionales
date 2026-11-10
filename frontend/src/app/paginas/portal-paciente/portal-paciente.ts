@@ -9,13 +9,13 @@ import { ObraSocialService } from '../../services/obra-social.service';
 import { NotificationService } from '../../services/notification.service';
 import { ConfirmModalService } from '../../services/confirm-modal.service';
 import { Turno, Paciente, ObraSocial, ActualizarPerfilPacienteRequest } from '../../models';
-import { FechaFormatoPipe } from '../../pipes';
+import { FechaFormatoPipe, HoraFormatoPipe } from '../../pipes';
 import { obtenerDia, obtenerMesAbreviado, formatearFechaLegible } from '../../utils/date.utils';
 
 @Component({
   selector: 'app-portal-paciente',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe],
+  imports: [CommonModule, FormsModule, RouterLink, FechaFormatoPipe, HoraFormatoPipe],
   templateUrl: './portal-paciente.html',
   styleUrl: './portal-paciente.css'
 })
