@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MedicoService, TurnoService, NotificationService, AuthService } from '../../services';
+import { MedicoService, TurnoService, HistoriaClinicaService, NotificationService, AuthService } from '../../services';
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
@@ -17,6 +17,7 @@ import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
 export class PacientesPorMedicoComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly turnoService = inject(TurnoService);
+  private readonly historiaClinicaService = inject(HistoriaClinicaService);
   private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
   readonly authService = inject(AuthService);
@@ -33,6 +34,16 @@ export class PacientesPorMedicoComponent implements OnInit {
 
   readonly medicos = signal<MedicoInfo[]>([]);
   readonly pacientes = signal<PacienteCita[]>([]);
+
+  readonly modalAtencionAbierto = signal<boolean>(false);
+  readonly pacienteSeleccionado = signal<PacienteCita | null>(null);
+  readonly guardandoAtencion = signal<boolean>(false);
+
+  nuevoEstado: string = 'Atendido';
+  motivoConsulta: string = '';
+  diagnostico: string = '';
+  tratamiento: string = '';
+  observaciones: string = '';
 
   readonly medicoActual = computed(() => {
     const id = Number(this.medicoSeleccionadoId());
@@ -52,7 +63,12 @@ export class PacientesPorMedicoComponent implements OnInit {
     return lista.filter(p => {
       const coincideMedico = p.medicoId === idMed;
       const coincideFecha = !fFecha || p.fecha === fFecha;
-      const coincideEstado = fEstado === 'Todos' || p.estado === fEstado;
+      let coincideEstado = false;
+      if (fEstado === 'Todos') {
+        coincideEstado = this.authService.isMedico() ? p.estado !== 'Pendiente' : true;
+      } else {
+        coincideEstado = p.estado === fEstado;
+      }
       const coincideQuery = !query ||
         p.nombre.toLowerCase().includes(query) ||
         p.dni.includes(query) ||
@@ -123,14 +139,6 @@ export class PacientesPorMedicoComponent implements OnInit {
         const turnosDelMedico = turnos.filter(t => t.medico?.idMedico === idMedico);
 
         const mapped = turnosDelMedico.map(t => {
-          const hoy = new Date().toISOString().split('T')[0];
-          let estadoCalc: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' = 'Confirmado';
-          if (t.fecha < hoy) {
-            estadoCalc = 'Atendido';
-          } else if (t.fecha === hoy) {
-            estadoCalc = 'En Espera';
-          }
-
           return {
             id: t.idTurno,
             medicoId: t.medico?.idMedico || idMedico,
@@ -143,7 +151,7 @@ export class PacientesPorMedicoComponent implements OnInit {
             obraSocial: t.paciente?.obraSocial?.nombre || 'Particular',
             planAfiliado: 'Plan Estándar',
             motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`,
-            estado: estadoCalc,
+            estado: t.estado || 'Confirmado',
             fecha: t.fecha
           };
         });
@@ -187,16 +195,80 @@ export class PacientesPorMedicoComponent implements OnInit {
     }
   }
 
-  cambiarEstado(p: PacienteCita): void {
-    let nuevoEstado: 'Confirmado' | 'En Espera' | 'Atendido' | 'Ausente' = 'Confirmado';
-    if (p.estado === 'Confirmado') nuevoEstado = 'En Espera';
-    else if (p.estado === 'En Espera') nuevoEstado = 'Atendido';
-    else if (p.estado === 'Atendido') nuevoEstado = 'Ausente';
-    else nuevoEstado = 'Confirmado';
+  abrirModalAtencion(p: PacienteCita): void {
+    this.pacienteSeleccionado.set(p);
+    this.nuevoEstado = p.estado === 'Pendiente' ? 'Confirmado' : (p.estado === 'Confirmado' ? 'Atendido' : p.estado);
+    this.motivoConsulta = p.motivo || 'Consulta médica de control';
+    this.diagnostico = '';
+    this.tratamiento = '';
+    this.observaciones = '';
+    this.modalAtencionAbierto.set(true);
+  }
 
-    this.pacientes.update(lista =>
-      lista.map(item => item.id === p.id ? { ...item, estado: nuevoEstado } : item)
-    );
-    this.notify.info(`Estado del turno actualizado a: ${nuevoEstado}`, p.nombre);
+  cerrarModalAtencion(): void {
+    this.modalAtencionAbierto.set(false);
+    this.pacienteSeleccionado.set(null);
+  }
+
+  guardarAtencion(): void {
+    const p = this.pacienteSeleccionado();
+    if (!p) return;
+
+    if (this.nuevoEstado === 'Atendido' && !this.diagnostico.trim()) {
+      this.notify.warning('Para marcar el turno como Atendido debe ingresar el Diagnóstico médico.', 'Diagnóstico Requerido');
+      return;
+    }
+
+    this.guardandoAtencion.set(true);
+
+    this.turnoService.cambiarEstado(p.id, this.nuevoEstado).subscribe({
+      next: () => {
+        if (this.nuevoEstado === 'Atendido' && p.pacienteId) {
+          this.historiaClinicaService.crear({
+            idPaciente: p.pacienteId,
+            idMedico: p.medicoId,
+            idTurno: p.id,
+            fecha: p.fecha || new Date().toISOString().split('T')[0],
+            motivoConsulta: this.motivoConsulta.trim() || 'Consulta médica',
+            diagnostico: this.diagnostico.trim(),
+            tratamiento: this.tratamiento.trim() || undefined,
+            observaciones: this.observaciones.trim() || undefined
+          }).subscribe({
+            next: () => {
+              this.guardandoAtencion.set(false);
+              this.cerrarModalAtencion();
+              this.pacientes.update(lista =>
+                lista.map(item => item.id === p.id ? { ...item, estado: this.nuevoEstado } : item)
+              );
+              this.notify.success(
+                `Turno marcado como Atendido y consulta asentada en la Historia Clínica de ${p.nombre}.`,
+                'Atención Guardada'
+              );
+            },
+            error: (errHc) => {
+              this.guardandoAtencion.set(false);
+              this.cerrarModalAtencion();
+              this.pacientes.update(lista =>
+                lista.map(item => item.id === p.id ? { ...item, estado: this.nuevoEstado } : item)
+              );
+              console.error('Error al guardar en historia clínica:', errHc);
+              this.notify.warning('El turno se marcó como Atendido, pero hubo un error al guardar en la Historia Clínica.', 'Atención Guardada');
+            }
+          });
+        } else {
+          this.guardandoAtencion.set(false);
+          this.cerrarModalAtencion();
+          this.pacientes.update(lista =>
+            lista.map(item => item.id === p.id ? { ...item, estado: this.nuevoEstado } : item)
+          );
+          this.notify.success(`Estado del turno actualizado a: ${this.nuevoEstado}`, p.nombre);
+        }
+      },
+      error: (err) => {
+        this.guardandoAtencion.set(false);
+        console.error('Error al actualizar estado del turno:', err);
+        this.notify.error(err.error?.message || 'No se pudo actualizar el estado del turno.', 'Error');
+      }
+    });
   }
 }
