@@ -460,6 +460,12 @@
   font-weight: 700;
 }
 
+.status-pendiente {
+  background-color: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
 .status-confirmado {
   background-color: #e0f2fe;
   color: #0369a1;
@@ -480,6 +486,11 @@
   color: #b91c1c;
 }
 
+.status-cancelado {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
 .col-actions {
   text-align: right;
 }
@@ -487,19 +498,296 @@
 .action-buttons-group {
   display: inline-flex;
   gap: 0.4rem;
+  align-items: center;
 }
 
 .btn-action-icon {
   background: transparent;
   border: none;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  padding: 0.3rem;
-  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
 }
 
 .btn-action-icon:hover {
   background-color: #e2e8f0;
+}
+
+.btn-action-icon.btn-atender {
+  background-color: #004b93;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: background-color 0.2s;
+}
+
+.btn-action-icon.btn-atender:hover {
+  background-color: #00366a;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.25rem;
+}
+
+.modal-dialog {
+  background-color: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.modal-title-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-icon {
+  font-size: 1.6rem;
+}
+
+.modal-title-box h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.modal-title-box p {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0.15rem 0 0;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.btn-close-modal:hover {
+  color: #0f172a;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.patient-brief-card {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.brief-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.brief-name {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+.brief-time {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.brief-details {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.78rem;
+  color: #334155;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.form-label .req {
+  color: #dc2626;
+}
+
+.status-options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  background-color: #ffffff;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.status-chip input {
+  display: none;
+}
+
+.status-chip:hover {
+  border-color: #94a3b8;
+  background-color: #f8fafc;
+}
+
+.status-chip.selected {
+  border-color: #004b93;
+  background-color: #eff6ff;
+  color: #004b93;
+  font-weight: 700;
+}
+
+.clinical-record-section {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.section-title-line {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #004b93;
+  letter-spacing: 0.5px;
+}
+
+.modal-input,
+.modal-textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.82rem;
+  color: #0f172a;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.modal-input:focus,
+.modal-textarea:focus {
+  border-color: #004b93;
+  box-shadow: 0 0 0 3px rgba(0, 75, 147, 0.12);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.btn-cancel {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background-color: #f1f5f9;
+}
+
+.btn-save-atencion {
+  background-color: #004b93;
+  border: none;
+  color: #ffffff;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-save-atencion:hover:not(:disabled) {
+  background-color: #00366a;
+}
+
+.btn-save-atencion:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .empty-table-row {
