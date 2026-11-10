@@ -1,0 +1,158 @@
+<div class="admin-view-wrapper">
+
+  <app-admin-topbar titulo="Detalle de Especialidad Médica" icono="⚕️"></app-admin-topbar>
+
+  <section class="admin-main-body">
+
+    <div class="page-header-row">
+      <div class="back-link-box">
+        <a routerLink="/admin/especialidades" class="back-link">
+          ← Volver al Catálogo de Especialidades
+        </a>
+      </div>
+
+      <div class="header-actions" *ngIf="especialidad() as esp">
+        <a [routerLink]="['/admin/especialidades/editar', esp.idEspecialidad]" class="btn-edit-action">
+          ✏️ Editar Especialidad
+        </a>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage()" class="error-banner">
+      <span>⚠️ {{ errorMessage() }}</span>
+      <a routerLink="/admin/especialidades" class="btn-back-error">Regresar al catálogo</a>
+    </div>
+
+    <div *ngIf="cargando()" class="loading-state-card">
+      <div class="spinner"></div>
+      <p>Cargando información clínica de la especialidad y profesionales asignados...</p>
+    </div>
+
+    <div *ngIf="!cargando() && especialidad() as esp" class="detail-container">
+
+      <div class="specialty-hero-card">
+        <div class="hero-icon-box">
+          <span class="hero-icon">{{ icono() }}</span>
+        </div>
+
+        <div class="hero-info">
+          <div class="hero-badge-row">
+            <span class="badge-dept">🏢 {{ departamento() }}</span>
+            <span class="badge-code">ESP-#{{ esp.idEspecialidad }}</span>
+            <span class="badge-status-active">● Activa en Cartilla</span>
+          </div>
+
+          <h1 class="hero-title">{{ esp.nombre }}</h1>
+          <p class="hero-desc">
+            Área médica encargada de la prevención, diagnóstico, seguimiento y tratamiento clínico especializado en {{
+            esp.nombre }}.
+          </p>
+        </div>
+      </div>
+
+      <div class="stats-overview-grid">
+        <div class="stat-box">
+          <div class="stat-icon-tile icon-blue">👥</div>
+          <div class="stat-body">
+            <span class="stat-caption">Profesionales Médicos</span>
+            <strong class="stat-number">{{ medicosAsignados().length }} Asignados</strong>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon-tile icon-cyan">🕒</div>
+          <div class="stat-body">
+            <span class="stat-caption">Duración Estándar</span>
+            <strong class="stat-number">30 minutos</strong>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon-tile icon-green">📅</div>
+          <div class="stat-body">
+            <span class="stat-caption">Disponibilidad en Turnero</span>
+            <strong class="stat-number">Habilitada</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="doctors-section-card">
+        <div class="section-card-header">
+          <div>
+            <h2 class="section-card-title">👨‍⚕️ Cuerpo Médico Especialista</h2>
+            <p class="section-card-subtitle">
+              Profesionales habilitados para la atención de consultas y asignación de turnos en {{ esp.nombre }}.
+            </p>
+          </div>
+
+          <a routerLink="/admin/medicos/nuevo" class="btn-add-doctor">
+            + Asignar Profesional
+          </a>
+        </div>
+
+        <div *ngIf="medicosAsignados().length === 0" class="empty-doctors-box">
+          <span class="empty-icon">👨‍⚕️</span>
+          <h3>Sin profesionales asignados</h3>
+          <p>Actualmente no hay médicos vinculados a esta especialidad en el cuerpo médico.</p>
+          <a routerLink="/admin/medicos/nuevo" class="btn-empty-action">
+            + Registrar o Asignar Médico
+          </a>
+        </div>
+
+        <div *ngIf="medicosAsignados().length > 0" class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>PROFESIONAL MÉDICO</th>
+                <th>MATRÍCULA</th>
+                <th>TELÉFONO DE CONTACTO</th>
+                <th>ESTADO</th>
+                <th class="col-actions">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let m of medicosAsignados()">
+                <td>
+                  <div class="doctor-cell">
+                    <div class="doctor-avatar">
+                      <span>🩺</span>
+                    </div>
+                    <div>
+                      <strong class="doctor-fullname">Dr(a). {{ m.nombre }} {{ m.apellido }}</strong>
+                      <small class="doctor-sub">{{ esp.nombre }}</small>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="mat-badge">M.N. {{ m.matricula }}</span>
+                </td>
+
+                <td>
+                  <span class="phone-text">📞 {{ m.telefono || 'No informado' }}</span>
+                </td>
+
+                <td>
+                  <span class="badge-status-active">● Activo</span>
+                </td>
+
+                <td class="col-actions">
+                  <div class="action-buttons-group">
+                    <a [routerLink]="['/admin/medicos/editar', m.idMedico]" class="btn-action-icon"
+                      title="Editar Ficha del Médico">
+                      ✏️
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
