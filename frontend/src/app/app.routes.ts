@@ -23,6 +23,7 @@ import { RegistrarPacientePublicoComponent } from './paginas/registrar-paciente-
 import { RegistrarObraSocialAdminComponent } from './paginas/registrar-obra-social-admin/registrar-obra-social-admin';
 import { RegistrarEspecialidadAdminComponent } from './paginas/registrar-especialidad-admin/registrar-especialidad-admin';
 import { EditarEspecialidadAdminComponent } from './paginas/editar-especialidad-admin/editar-especialidad-admin';
+import { DetalleEspecialidadAdminComponent } from './paginas/detalle-especialidad-admin/detalle-especialidad-admin';
 import { PortalPacienteComponent } from './paginas/portal-paciente/portal-paciente';
 import { HistoriaClinicaAdminComponent } from './paginas/historia-clinica-admin/historia-clinica-admin';
 import { MiAgendaMedicoComponent } from './paginas/mi-agenda-medico/mi-agenda-medico';
@@ -77,7 +78,8 @@ export const routes: Routes = [
       { path: 'medicos/editar/:id', component: EditarMedicoAdminComponent },
       { path: 'obras-sociales/nuevo', component: RegistrarObraSocialAdminComponent },
       { path: 'especialidades/nuevo', component: RegistrarEspecialidadAdminComponent },
-      { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent }
+      { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent },
+      { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent }
     ]
   },
 
