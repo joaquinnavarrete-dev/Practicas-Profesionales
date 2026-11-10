@@ -9,7 +9,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 3rem;
-  padding: 4.5rem 3rem 4rem;
+  padding: 3rem 3rem 4rem;
   background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
   max-width: 1320px;
   margin: 0 auto;
@@ -191,193 +191,132 @@
   cursor: pointer;
 }
 
-.hero-card-wrapper {
-  flex: 0.95;
-  max-width: 440px;
-}
-
-.login-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.5rem 1.75rem;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
-}
-
-.card-tabs {
-  display: flex;
-  background-color: #f1f5f9;
-  padding: 3px;
-  border-radius: 8px;
-  margin-bottom: 1.25rem;
-}
-
-.tab-btn {
+.hero-banner-wrapper {
   flex: 1;
-  padding: 0.5rem 0;
-  border: none;
-  background: transparent;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #64748b;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.tab-btn.active {
-  background-color: #ffffff;
-  color: #0f172a;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-.role-selector {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.role-chip {
-  flex: 1;
-  padding: 0.45rem 0;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: #475569;
-  cursor: pointer;
-}
-
-.role-chip.active {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
-  color: #004b93;
-  font-weight: 700;
-}
-
-.login-form .form-group {
-  margin-bottom: 1rem;
-}
-
-.login-form label {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  color: #475569;
-  margin-bottom: 0.35rem;
-}
-
-.label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgot-link {
-  font-size: 0.72rem;
-  color: #004b93;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.input-icon-wrap {
-  display: flex;
-  align-items: center;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 0 0.75rem;
-  background-color: #ffffff;
-}
-
-.input-icon-wrap input {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 0.65rem 0.5rem;
-  font-size: 0.88rem;
-  color: #0f172a;
-}
-
-.toggle-pwd {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #94a3b8;
-}
-
-.form-footer-check {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
-  color: #64748b;
-  margin: 1rem 0 1.25rem;
-}
-
-.check-container {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  cursor: pointer;
-}
-
-.tls-security {
-  font-size: 0.72rem;
-  color: #475569;
-}
-
-.btn-submit-portal {
+  max-width: 480px;
   width: 100%;
-  padding: 0.75rem;
-  background-color: #004b93;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.btn-submit-portal:hover {
-  background-color: #00366a;
-}
-
-.quick-turno-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 0.65rem 0.85rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-
-.quick-text {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: #334155;
-}
-
-.bolt-icon {
-  color: #0284c7;
-}
-
-.btn-pedir {
-  padding: 0.35rem 0.9rem;
-  border: 1px solid #cbd5e1;
+.hero-banner-card {
   background-color: #ffffff;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-banner-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -8px rgba(0, 75, 147, 0.15);
+}
+
+.hero-banner-image-container {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background-color: #002b55;
+}
+
+.hero-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.hero-banner-card:hover .hero-banner-img {
+  transform: scale(1.03);
+}
+
+.hero-banner-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.hero-action-box {
+  padding: 1.15rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background-color: #ffffff;
+}
+
+.hero-action-title {
+  font-size: 1.05rem;
   font-weight: 700;
   color: #0f172a;
+  margin: 0 0 0.2rem;
+}
+
+.hero-action-subtitle {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.btn-reservar-principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background-color: #004b93;
+  color: #ffffff !important;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none !important;
+  box-shadow: 0 2px 6px rgba(0, 75, 147, 0.25);
+  transition: all 0.2s ease;
   cursor: pointer;
+  align-self: flex-start;
+}
+
+.btn-reservar-principal:hover {
+  background-color: #00366a;
+  box-shadow: 0 4px 10px rgba(0, 75, 147, 0.35);
+  transform: translateY(-1px);
+  color: #ffffff !important;
+}
+
+.btn-icon {
+  font-size: 1rem;
+}
+
+.btn-arrow {
+  font-size: 1rem;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.btn-reservar-principal:hover .btn-arrow {
+  transform: translateX(3px);
 }
 
 .prepagas-bar {
@@ -1128,6 +1067,11 @@
 @media (max-width: 1100px) {
   .hero-section {
     flex-direction: column;
+  }
+
+  .hero-banner-wrapper {
+    max-width: 100%;
+    width: 100%;
   }
 
   .cards-grid,
