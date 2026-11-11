@@ -54,6 +54,12 @@ export class HistoriaClinicaAdminComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (this.authService.isRecepcionista()) {
+      this.notify.warning('El rol de Recepción no tiene autorización para acceder a la historia clínica confidencial del paciente.');
+      this.router.navigate(['/admin/pacientes']);
+      return;
+    }
+
     const idParam = this.route.snapshot.paramMap.get('idPaciente');
     const idPaciente = Number(idParam);
 
