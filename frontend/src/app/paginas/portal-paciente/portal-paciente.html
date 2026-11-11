@@ -107,7 +107,8 @@
               proximo.medico?.nombre }} {{ proximo.medico?.apellido }} ({{ proximo.especialidad?.nombre }})
             </strong>
           </div>
-          <span class="badge-status-confirmed">Confirmado</span>
+          <span class="badge-status-confirmed" *ngIf="proximo.estado !== 'Pendiente'">{{ proximo.estado || 'Confirmado' }}</span>
+          <span class="badge-pill-warning" *ngIf="proximo.estado === 'Pendiente'">Pendiente de Confirmación</span>
         </div>
 
         <div class="empty-state-card" *ngIf="turnosActivos().length === 0">
@@ -200,13 +201,27 @@
                 Dr(a). {{ t.medico?.nombre }} {{ t.medico?.apellido }}
               </h3>
 
-              <p class="date-full-text muted">
-                Atención finalizada el {{ t.fecha | fechaFormato:'completa' }}
+              <p class="date-full-text muted" *ngIf="t.estado === 'Atendido'">
+                ✓ Atención médica completada el {{ t.fecha | fechaFormato:'completa' }}
+              </p>
+              <p class="date-full-text muted" *ngIf="t.estado === 'Ausente'">
+                ✕ Turno no asistido el {{ t.fecha | fechaFormato:'completa' }}
+              </p>
+              <p class="date-full-text muted" *ngIf="t.estado === 'Cancelado'">
+                🚫 Turno cancelado para el {{ t.fecha | fechaFormato:'completa' }}
+              </p>
+              <p class="date-full-text muted" *ngIf="t.estado !== 'Atendido' && t.estado !== 'Ausente' && t.estado !== 'Cancelado'">
+                Consulta del {{ t.fecha | fechaFormato:'completa' }}
               </p>
             </div>
 
             <div class="card-status-actions">
-              <span class="badge-pill-past">Concluido</span>
+              <span class="badge-pill-success" *ngIf="t.estado === 'Atendido'">✓ Atendido</span>
+              <span class="badge-pill-danger" *ngIf="t.estado === 'Ausente'">✕ Ausente</span>
+              <span class="badge-pill-warning" *ngIf="t.estado === 'Cancelado'">Cancelado</span>
+              <span class="badge-pill-past" *ngIf="t.estado !== 'Atendido' && t.estado !== 'Ausente' && t.estado !== 'Cancelado'">
+                {{ t.estado || 'Finalizado' }}
+              </span>
             </div>
 
           </div>

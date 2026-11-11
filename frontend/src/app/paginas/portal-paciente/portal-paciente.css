@@ -570,6 +570,17 @@
   text-transform: uppercase;
 }
 
+.badge-pill-danger {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
 .badge-pill-past {
   background: #f1f5f9;
   color: #64748b;

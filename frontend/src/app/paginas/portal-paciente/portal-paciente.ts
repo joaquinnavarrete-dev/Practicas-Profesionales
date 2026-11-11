@@ -45,8 +45,21 @@ export class PortalPacienteComponent implements OnInit {
 
   readonly turnosActivos = computed(() => {
     const hoyStr = this.getFechaHoyIso();
+    const ahoraHora = new Date().toTimeString().substring(0, 5);
     return this.turnos()
-      .filter(t => t.fecha >= hoyStr)
+      .filter(t => {
+        const estado = t.estado || 'Confirmado';
+        if (estado === 'Atendido' || estado === 'Cancelado' || estado === 'Ausente') {
+          return false;
+        }
+        if (t.fecha > hoyStr) {
+          return true;
+        }
+        if (t.fecha === hoyStr) {
+          return !t.hora || t.hora >= ahoraHora;
+        }
+        return false;
+      })
       .sort((a, b) => {
         if (a.fecha === b.fecha) {
           return a.hora.localeCompare(b.hora);
@@ -57,8 +70,21 @@ export class PortalPacienteComponent implements OnInit {
 
   readonly turnosPasados = computed(() => {
     const hoyStr = this.getFechaHoyIso();
+    const ahoraHora = new Date().toTimeString().substring(0, 5);
     return this.turnos()
-      .filter(t => t.fecha < hoyStr)
+      .filter(t => {
+        const estado = t.estado || 'Confirmado';
+        if (estado === 'Atendido' || estado === 'Cancelado' || estado === 'Ausente') {
+          return true;
+        }
+        if (t.fecha < hoyStr) {
+          return true;
+        }
+        if (t.fecha === hoyStr && t.hora && t.hora < ahoraHora) {
+          return true;
+        }
+        return false;
+      })
       .sort((a, b) => {
         if (a.fecha === b.fecha) {
           return b.hora.localeCompare(a.hora);
@@ -196,7 +222,6 @@ export class PortalPacienteComponent implements OnInit {
     });
   }
 
-  // --- Helpers de Fecha sin Desplazamiento UTC ---
   getFechaHoyIso(): string {
     const hoy = new Date();
     const anio = hoy.getFullYear();
