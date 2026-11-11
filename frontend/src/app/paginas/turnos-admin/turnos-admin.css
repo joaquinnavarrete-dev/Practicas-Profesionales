@@ -457,6 +457,11 @@
   color: #b91c1c;
 }
 
+.status-ausente {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
 .col-actions {
   text-align: right;
 }

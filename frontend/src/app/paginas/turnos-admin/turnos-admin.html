@@ -80,6 +80,7 @@
           <option value="Confirmado">Confirmado</option>
           <option value="En Espera">En Espera</option>
           <option value="Atendido">Atendido</option>
+          <option value="Ausente">Ausente</option>
           <option value="Pendiente de Reubicación">Pendiente de Reubicación</option>
           <option value="Cancelado">Cancelado</option>
         </select>
@@ -147,6 +148,7 @@
                 'status-confirmado': !t.estado || t.estado === 'Confirmado',
                 'status-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
                 'status-cancelado': t.estado === 'Cancelado',
+                'status-ausente': t.estado === 'Ausente',
                 'status-atendido': t.estado === 'Atendido'
               }">
                 ● {{ t.estado || 'Pendiente' }}

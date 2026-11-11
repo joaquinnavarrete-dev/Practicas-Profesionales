@@ -142,13 +142,13 @@ export class DashboardAdminComponent implements OnInit {
     const misTurnosDeHoy = turnosDelMedico.filter(t => t.fecha === fechaHoyIso);
 
     const pendientes = misTurnosDeHoy.filter(t => {
-      const estado = this.calcularEstadoTurno(t.fecha);
-      return estado !== 'Atendido';
+      const estado = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
+      return estado === 'Confirmado' || estado === 'En Espera' || estado === 'Pendiente';
     }).length;
     this.medicoTurnosPendientesHoy.set(pendientes);
 
     const atendidos = misTurnosDeHoy.filter(t => {
-      const estado = this.calcularEstadoTurno(t.fecha);
+      const estado = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
       return estado === 'Atendido';
     }).length;
     this.medicoTurnosAtendidosHoy.set(atendidos);
@@ -176,19 +176,19 @@ export class DashboardAdminComponent implements OnInit {
     this.recepTurnosHoyTotal.set(turnosDeHoy.length);
 
     const confirmados = turnosDeHoy.filter(t => {
-      const st = this.calcularEstadoTurno(t.fecha);
+      const st = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
       return st === 'Confirmado' || st === 'En Espera';
     }).length;
     this.recepTurnosConfirmadosHoy.set(confirmados);
 
     const ausentes = turnosDeHoy.filter(t => {
-      const st = this.calcularEstadoTurno(t.fecha) as string;
-      return st === 'Ausente';
+      const st = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
+      return st === 'Ausente' || st === 'Cancelado';
     }).length;
     this.recepTurnosCanceladosAusentesHoy.set(ausentes);
 
     const atendidos = turnosDeHoy.filter(t => {
-      const st = this.calcularEstadoTurno(t.fecha);
+      const st = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
       return st === 'Atendido';
     }).length;
     this.recepTurnosAtendidosHoy.set(atendidos);
@@ -200,7 +200,7 @@ export class DashboardAdminComponent implements OnInit {
   private procesarMetricasAdmin(turnos: Turno[], fechaHoyIso: string): void {
     if (turnos.length > 0) {
       const turnosAusentes = turnos.filter(t => {
-        const st = this.calcularEstadoTurno(t.fecha) as string;
+        const st = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
         return st === 'Ausente';
       }).length;
       const tasa = Math.round((turnosAusentes / turnos.length) * 100);
@@ -227,7 +227,7 @@ export class DashboardAdminComponent implements OnInit {
       especialidad: t.medico?.especialidad?.nombre || t.especialidad?.nombre || 'Medicina General',
       obraSocial: t.paciente?.obraSocial?.sigla || t.paciente?.obraSocial?.nombre || 'Particular',
       obraSocialNombreCompleto: t.paciente?.obraSocial?.nombre || 'Particular',
-      estado: t.estado || this.calcularEstadoTurno(t.fecha),
+      estado: this.calcularEstadoTurno(t.fecha, t.hora, t.estado),
       motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`
     };
   }
@@ -266,13 +266,17 @@ export class DashboardAdminComponent implements OnInit {
     this.demandaEspecialidades.set(lista);
   }
 
-  private calcularEstadoTurno(fechaTurno: string): 'En Espera' | 'Confirmado' | 'Atendido' {
-    const hoy = new Date().toISOString().split('T')[0];
-    if (fechaTurno < hoy) {
-      return 'Atendido';
-    } else if (fechaTurno === hoy) {
-      return 'En Espera';
+  private calcularEstadoTurno(fechaTurno: string, horaTurno?: string, estadoActual?: string): string {
+    if (estadoActual && estadoActual !== 'Pendiente') {
+      return estadoActual;
     }
-    return 'Confirmado';
+    const hoy = new Date().toISOString().split('T')[0];
+    const ahoraHora = new Date().toTimeString().substring(0, 5);
+    if (fechaTurno < hoy || (fechaTurno === hoy && horaTurno && horaTurno < ahoraHora)) {
+      return 'Ausente';
+    } else if (fechaTurno === hoy) {
+      return estadoActual || 'En Espera';
+    }
+    return estadoActual || 'Confirmado';
   }
 }
