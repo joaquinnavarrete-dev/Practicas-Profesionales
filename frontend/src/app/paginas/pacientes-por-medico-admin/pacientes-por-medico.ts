@@ -197,7 +197,29 @@ export class PacientesPorMedicoComponent implements OnInit {
     window.print();
   }
 
+  puedeAtender(p: PacienteCita): boolean {
+    if (p.estado === 'Atendido' || p.estado === 'Ausente' || p.estado === 'Cancelado') {
+      return false;
+    }
+    const hoyStr = new Date().toISOString().split('T')[0];
+    if (p.fecha && p.fecha < hoyStr) {
+      return false;
+    }
+    if (p.fecha && p.fecha === hoyStr) {
+      const ahoraHora = new Date().toTimeString().substring(0, 5);
+      const horaClean = (p.hora || '').replace(' hs', '').trim().substring(0, 5);
+      if (horaClean && horaClean < ahoraHora) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   verHistoriaClinica(p: PacienteCita): void {
+    if (this.authService.isRecepcionista()) {
+      this.notify.warning('El rol de Recepción no tiene autorización para acceder a la historia clínica confidencial.');
+      return;
+    }
     if (p.pacienteId) {
       this.router.navigate(['/admin/pacientes', p.pacienteId, 'historia-clinica']);
     } else {
