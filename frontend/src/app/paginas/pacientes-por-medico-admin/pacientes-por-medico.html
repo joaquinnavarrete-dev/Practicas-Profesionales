@@ -164,11 +164,11 @@
 
             <td class="col-actions">
               <div class="action-buttons-group">
-                <button class="btn-action-icon btn-atender" (click)="abrirModalAtencion(p)"
+                <button *ngIf="puedeAtender(p)" class="btn-action-icon btn-atender" (click)="abrirModalAtencion(p)"
                   title="Atender paciente / Actualizar estado de consulta">
                   🩺 Atender
                 </button>
-                <button class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
+                <button *ngIf="authService.isAdmin() || authService.isMedico()" class="btn-action-icon" (click)="verHistoriaClinica(p)" title="Ver Historia Clínica">
                   📄 HC
                 </button>
               </div>
