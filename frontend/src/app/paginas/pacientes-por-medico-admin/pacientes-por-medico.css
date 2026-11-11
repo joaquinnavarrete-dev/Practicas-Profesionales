@@ -346,6 +346,10 @@
   color: #004b93;
 }
 
+.kpi-mini.red strong {
+  color: #dc2626;
+}
+
 .data-table-container {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;

@@ -54,10 +54,11 @@
                   'st-pendiente': t.estado === 'Pendiente',
                   'st-atendido': t.estado === 'Atendido',
                   'st-espera': t.estado === 'En Espera',
+                  'st-ausente': t.estado === 'Ausente',
                   'st-cancelado': t.estado === 'Cancelado',
                   'st-confirmado': !t.estado || t.estado === 'Confirmado'
                 }">
-                ● {{ t.estado || (dia.esHoy ? 'En Espera' : (t.fecha < dia.fechaIso ? 'Atendido' : 'Confirmado' )) }} </span>
+                ● {{ t.estado || (dia.esHoy ? 'En Espera' : (t.fecha < dia.fechaIso ? 'Ausente' : 'Confirmado' )) }} </span>
             </div>
 
             <strong class="appt-patient" *ngIf="t.paciente">

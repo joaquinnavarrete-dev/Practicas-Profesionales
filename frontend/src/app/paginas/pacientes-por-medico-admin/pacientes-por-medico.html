@@ -91,6 +91,10 @@
           <span>ATENDIDOS</span>
           <strong>{{ contarPorEstado('Atendido') }}</strong>
         </div>
+        <div class="kpi-mini red" *ngIf="contarPorEstado('Ausente') > 0">
+          <span>AUSENTES</span>
+          <strong>{{ contarPorEstado('Ausente') }}</strong>
+        </div>
       </div>
     </div>
 

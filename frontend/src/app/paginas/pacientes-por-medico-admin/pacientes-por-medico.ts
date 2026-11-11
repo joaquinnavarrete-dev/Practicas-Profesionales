@@ -138,8 +138,16 @@ export class PacientesPorMedicoComponent implements OnInit {
     this.turnoService.listarTodos().subscribe({
       next: (turnos: Turno[]) => {
         const turnosDelMedico = turnos.filter(t => t.medico?.idMedico === idMedico);
+        const hoyStr = new Date().toISOString().split('T')[0];
+        const ahoraHora = new Date().toTimeString().substring(0, 5);
 
         const mapped = turnosDelMedico.map(t => {
+          let estadoFinal = t.estado || 'Confirmado';
+          if (t.fecha < hoyStr || (t.fecha === hoyStr && t.hora && t.hora < ahoraHora)) {
+            if (estadoFinal === 'Pendiente' || estadoFinal === 'Confirmado' || estadoFinal === 'En Espera') {
+              estadoFinal = 'Ausente';
+            }
+          }
           return {
             id: t.idTurno,
             medicoId: t.medico?.idMedico || idMedico,
@@ -153,7 +161,7 @@ export class PacientesPorMedicoComponent implements OnInit {
             obraSocialNombreCompleto: t.paciente?.obraSocial?.nombre || 'Particular',
             planAfiliado: 'Plan Estándar',
             motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`,
-            estado: t.estado || 'Confirmado',
+            estado: estadoFinal,
             fecha: t.fecha
           };
         });
@@ -199,7 +207,7 @@ export class PacientesPorMedicoComponent implements OnInit {
 
   abrirModalAtencion(p: PacienteCita): void {
     this.pacienteSeleccionado.set(p);
-    this.nuevoEstado = p.estado === 'Pendiente' ? 'Confirmado' : (p.estado === 'Confirmado' ? 'Atendido' : p.estado);
+    this.nuevoEstado = p.estado === 'Pendiente' ? 'Confirmado' : (p.estado === 'Confirmado' || p.estado === 'En Espera' ? 'Atendido' : p.estado);
     this.motivoConsulta = p.motivo || 'Consulta médica de control';
     this.diagnostico = '';
     this.tratamiento = '';
