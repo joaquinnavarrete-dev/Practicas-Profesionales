@@ -262,28 +262,6 @@
   margin-top: 0.15rem;
 }
 
-.appt-actions {
-  margin-top: 0.35rem;
-  padding-top: 0.35rem;
-  border-top: 1px dashed #e2e8f0;
-}
-
-.btn-open-hc {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #0284c7;
-  text-decoration: none;
-  transition: color 0.15s;
-}
-
-.btn-open-hc:hover {
-  color: #0369a1;
-  text-decoration: underline;
-}
-
 .no-appts-placeholder {
   text-align: center;
   padding: 3rem 0.5rem;
