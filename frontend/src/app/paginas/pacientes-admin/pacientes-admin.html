@@ -110,12 +110,13 @@
 
             <td class="col-actions">
               <div class="action-buttons-group">
-                <a class="btn-action-icon" [routerLink]="['/admin/pacientes', p.idPaciente, 'historia-clinica']" title="Ver Historia Clínica">
+                <a *ngIf="authService.isAdmin() || authService.isMedico()" class="btn-action-icon" [routerLink]="['/admin/pacientes', p.idPaciente, 'historia-clinica']" title="Ver Historia Clínica">
                   📋
                 </a>
                 <button *ngIf="authService.isAdmin()" class="btn-action-icon danger" (click)="eliminarPaciente(p)" title="Eliminar Ficha">
                   🗑️
                 </button>
+                <span *ngIf="!authService.isAdmin() && !authService.isMedico()" class="text-muted">—</span>
               </div>
             </td>
           </tr>
