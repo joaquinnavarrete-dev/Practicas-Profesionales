@@ -2,6 +2,7 @@ package com.practica.backend.service.impl;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,49 +51,58 @@ public class TurnoServiceImpl implements TurnoService {
     private final DiaAtencionRepository diaAtencionRepository;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<TurnoResponseDto> listarTodos() {
-        return turnoRepository.findAll().stream()
+        List<Turno> turnos = turnoRepository.findAll();
+        actualizarEstadosVencidos(turnos);
+        return turnos.stream()
                 .map(this::mapToResponseDto)
                 .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public TurnoResponseDto buscarPorId(Integer id) {
         Turno turno = turnoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado con id: " + id));
+        actualizarEstadosVencidos(List.of(turno));
         return mapToResponseDto(turno);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<TurnoResponseDto> listarPorMedicoYFecha(Integer idMedico, LocalDate fecha) {
         if (!medicoRepository.existsById(idMedico)) {
             throw new ResourceNotFoundException("Médico no encontrado con id: " + idMedico);
         }
-        return turnoRepository.findByMedicoIdMedicoAndFecha(idMedico, fecha).stream()
+        List<Turno> turnos = turnoRepository.findByMedicoIdMedicoAndFecha(idMedico, fecha);
+        actualizarEstadosVencidos(turnos);
+        return turnos.stream()
                 .sorted(Comparator.comparing(Turno::getHora))
                 .map(this::mapToResponseDto)
                 .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<TurnoResponseDto> listarPorPaciente(Integer idPaciente) {
         if (!pacienteRepository.existsById(idPaciente)) {
             throw new ResourceNotFoundException("Paciente no encontrado con id: " + idPaciente);
         }
-        return turnoRepository.findByPacienteIdPaciente(idPaciente).stream()
+        List<Turno> turnos = turnoRepository.findByPacienteIdPaciente(idPaciente);
+        actualizarEstadosVencidos(turnos);
+        return turnos.stream()
                 .sorted(Comparator.comparing(Turno::getFecha).thenComparing(Turno::getHora))
                 .map(this::mapToResponseDto)
                 .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<TurnoResponseDto> listarPorFecha(LocalDate fecha) {
-        return turnoRepository.findByFecha(fecha).stream()
+        List<Turno> turnos = turnoRepository.findByFecha(fecha);
+        actualizarEstadosVencidos(turnos);
+        return turnos.stream()
                 .sorted(Comparator.comparing(Turno::getHora))
                 .map(this::mapToResponseDto)
                 .toList();
@@ -362,6 +372,32 @@ public class TurnoServiceImpl implements TurnoService {
 
         turno.setEstado(estadoNormalizado);
         return mapToResponseDto(turnoRepository.save(turno));
+    }
+
+    private void actualizarEstadosVencidos(List<Turno> turnos) {
+        if (turnos == null || turnos.isEmpty()) {
+            return;
+        }
+        LocalDateTime ahora = LocalDateTime.now();
+        List<Turno> modificados = new ArrayList<>();
+        for (Turno t : turnos) {
+            if (t.getFecha() != null && t.getHora() != null) {
+                LocalDateTime fechaHora = LocalDateTime.of(t.getFecha(), t.getHora());
+                if (fechaHora.isBefore(ahora)) {
+                    String st = t.getEstado();
+                    if (st == null || st.isBlank()
+                            || "Pendiente".equalsIgnoreCase(st)
+                            || "Confirmado".equalsIgnoreCase(st)
+                            || "En Espera".equalsIgnoreCase(st)) {
+                        t.setEstado("Ausente");
+                        modificados.add(t);
+                    }
+                }
+            }
+        }
+        if (!modificados.isEmpty()) {
+            turnoRepository.saveAll(modificados);
+        }
     }
 
     private TurnoResponseDto mapToResponseDto(Turno entity) {
