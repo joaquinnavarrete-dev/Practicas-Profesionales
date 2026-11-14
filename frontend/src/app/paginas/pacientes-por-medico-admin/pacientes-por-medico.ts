@@ -27,6 +27,7 @@ export class PacientesPorMedicoComponent implements OnInit {
   readonly medicoSeleccionadoId = signal<number>(0);
   readonly fechaFiltro = signal<string>('');
   readonly estadoFiltro = signal<string>('Todos');
+  readonly fechaHoyIso = new Date().toISOString().split('T')[0];
 
   readonly paginaActual = signal<number>(1);
   readonly tamanoPagina = signal<number>(10);
@@ -194,7 +195,14 @@ export class PacientesPorMedicoComponent implements OnInit {
   }
 
   exportarListado(): void {
-    window.print();
+    const tamanoPrevio = this.tamanoPagina();
+    this.tamanoPagina.set(100);
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => {
+        this.tamanoPagina.set(tamanoPrevio);
+      }, 500);
+    }, 100);
   }
 
   puedeAtender(p: PacienteCita): boolean {

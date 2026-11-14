@@ -906,3 +906,197 @@
     min-width: 720px;
   }
 }
+
+.print-header,
+.print-footer,
+.col-print-obs {
+  display: none;
+}
+
+@media print {
+  .app-admin-topbar,
+  .page-title-row,
+  .filters-card,
+  .doctor-summary-banner,
+  .col-actions,
+  app-paginacion,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  .admin-view-wrapper {
+    background: #ffffff !important;
+  }
+
+  .admin-main-body {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .print-header {
+    display: flex !important;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #004b93;
+  }
+
+  .print-brand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .print-logo-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .print-cross {
+    font-size: 2.2rem;
+    color: #004b93;
+    line-height: 1;
+  }
+
+  .print-clinic-name {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #004b93;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
+  .print-clinic-sub {
+    font-size: 0.78rem;
+    color: #475569;
+    font-weight: 500;
+  }
+
+  .print-doc-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.2rem;
+  }
+
+  .print-meta-badge {
+    background: #e0f2fe;
+    color: #004b93;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .print-meta-text {
+    font-size: 0.75rem;
+    color: #334155;
+  }
+
+  .print-divider {
+    height: 1px;
+    background: #cbd5e1;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .print-doc-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-align: center;
+    margin: 0.35rem 0 0;
+    letter-spacing: 0.5px;
+  }
+
+  .data-table-container {
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    border-radius: 0 !important;
+  }
+
+  .data-table {
+    min-width: 100% !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .data-table th,
+  .data-table td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.5rem 0.6rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .data-table th {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-weight: 800 !important;
+  }
+
+  .col-print-obs {
+    display: table-cell !important;
+    width: 190px !important;
+  }
+
+  .print-obs-box {
+    min-height: 24px;
+  }
+
+  .time-tag {
+    background: transparent !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    font-weight: 700;
+  }
+
+  .badge-status {
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.15rem 0.4rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  .print-footer {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #cbd5e1;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-stats-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: #334155;
+  }
+
+  .print-signature-box {
+    text-align: center;
+    min-width: 240px;
+  }
+
+  .signature-line {
+    border-bottom: 1px solid #000000;
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .signature-title {
+    display: block;
+    font-size: 0.78rem;
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  .signature-sub {
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+}
