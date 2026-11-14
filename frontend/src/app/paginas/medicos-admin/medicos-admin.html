@@ -73,13 +73,12 @@
             <th>MATRÍCULA</th>
             <th>ESPECIALIDAD</th>
             <th>TELÉFONO</th>
-            <th>SEDE</th>
             <th class="col-actions">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="6" class="loading-table-row">
+            <td colspan="5" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Cargando cuerpo médico desde el servidor...</span>
             </td>
@@ -111,10 +110,6 @@
               <span class="days-text">{{ m.telefono }}</span>
             </td>
 
-            <td>
-              <span class="room-tag">📍 Sede Central</span>
-            </td>
-
             <td class="col-actions">
               <div class="action-buttons-group">
                 <button class="btn-action-icon" (click)="verAgenda(m)" title="Ver Agenda de Turnos">
@@ -131,7 +126,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && medicosFiltrados().length === 0">
-            <td colspan="6" class="empty-table-row">
+            <td colspan="5" class="empty-table-row">
               <span>🔍 No se encontraron profesionales médicos registrados con los filtros aplicados.</span>
             </td>
           </tr>
