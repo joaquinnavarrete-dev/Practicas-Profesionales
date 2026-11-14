@@ -414,9 +414,11 @@
   color: #0f172a;
 }
 
-.patient-phone {
+.patient-phone,
+.patient-dni {
   font-size: 0.75rem;
   color: #64748b;
+  font-weight: 600;
 }
 
 .hc-cell {
