@@ -21,14 +21,19 @@ export class MisMetricasMedicoComponent implements OnInit {
   readonly totalConsultas = computed(() => this.turnosMedico().length);
 
   readonly totalAtendidos = computed(() => {
-    const hoy = new Date().toISOString().split('T')[0];
-    return this.turnosMedico().filter(t => t.fecha < hoy).length;
+    return this.turnosMedico().filter(t => t.estado === 'Atendido').length;
+  });
+
+  readonly totalAusentes = computed(() => {
+    return this.turnosMedico().filter(t => t.estado === 'Ausente').length;
   });
 
   readonly tasaAsistencia = computed(() => {
-    const total = this.totalConsultas();
-    if (!total) return 100;
-    return Math.round((this.totalAtendidos() / total) * 100);
+    const atendidos = this.totalAtendidos();
+    const ausentes = this.totalAusentes();
+    const concluidos = atendidos + ausentes;
+    if (!concluidos) return 100;
+    return Math.round((atendidos / concluidos) * 100);
   });
 
   readonly distribucionObrasSociales = computed<MetricaObraSocial[]>(() => {
@@ -76,7 +81,11 @@ export class MisMetricasMedicoComponent implements OnInit {
       if (!mapa[clave]) {
         mapa[clave] = { atendidos: 0, ausentes: 0 };
       }
-      mapa[clave].atendidos++;
+      if (t.estado === 'Atendido') {
+        mapa[clave].atendidos++;
+      } else if (t.estado === 'Ausente') {
+        mapa[clave].ausentes++;
+      }
     });
 
     return Object.keys(mapa).map(k => {
