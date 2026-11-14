@@ -43,7 +43,9 @@ export class TurnosAdminComponent implements OnInit {
 
   readonly turnosFiltrados = computed(() => {
     const q = this.busquedaGlobal().toLowerCase().trim();
-    const fFecha = this.fechaFiltro();
+    const fFecha = this.authService.isRecepcionista() && !this.fechaFiltro()
+      ? new Date().toISOString().split('T')[0]
+      : this.fechaFiltro();
     const fEsp = this.especialidadFiltro();
     const fEstado = this.estadoFiltro();
     const lista = this.turnos();
@@ -72,6 +74,10 @@ export class TurnosAdminComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (this.authService.isRecepcionista()) {
+      this.fechaFiltro.set(new Date().toISOString().split('T')[0]);
+    }
+
     const idMedicoParam = this.route.snapshot.queryParams['idMedico'];
 
     this.cargarEspecialidades();
@@ -128,7 +134,7 @@ export class TurnosAdminComponent implements OnInit {
 
   resetearFiltros(): void {
     this.busquedaGlobal.set('');
-    this.fechaFiltro.set('');
+    this.fechaFiltro.set(this.authService.isRecepcionista() ? new Date().toISOString().split('T')[0] : '');
     this.especialidadFiltro.set('Todas');
     this.estadoFiltro.set('Todos');
     this.paginaActual.set(1);
