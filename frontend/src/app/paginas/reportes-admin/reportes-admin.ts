@@ -31,13 +31,13 @@ export class ReportesAdminComponent implements OnInit {
   readonly reporteEspecialidades = computed<ReporteItemEspecialidad[]>(() => {
     const turnos = this.turnos();
     const espList = this.especialidades();
-    const hoy = new Date().toISOString().split('T')[0];
 
     return espList.map(esp => {
       const turnosEsp = turnos.filter(t => t.especialidad?.idEspecialidad === esp.idEspecialidad || t.medico?.especialidad?.idEspecialidad === esp.idEspecialidad);
-      const atendidos = turnosEsp.filter(t => t.fecha < hoy).length;
-      const ausentes = turnosEsp.filter(t => (t as any).estado === 'Ausente').length;
-      const efectividad = turnosEsp.length > 0 ? Math.round((atendidos / turnosEsp.length) * 100) : 100;
+      const atendidos = turnosEsp.filter(t => t.estado === 'Atendido').length;
+      const ausentes = turnosEsp.filter(t => t.estado === 'Ausente' || t.estado === 'Cancelado').length;
+      const concluidos = atendidos + ausentes;
+      const efectividad = concluidos > 0 ? Math.round((atendidos / concluidos) * 100) : 100;
 
       return {
         nombre: esp.nombre,
@@ -52,13 +52,13 @@ export class ReportesAdminComponent implements OnInit {
   readonly reporteMedicos = computed<ReporteItemMedico[]>(() => {
     const turnos = this.turnos();
     const medicosList = this.medicos();
-    const hoy = new Date().toISOString().split('T')[0];
 
     return medicosList.map(m => {
       const turnosMed = turnos.filter(t => t.medico?.idMedico === m.idMedico);
-      const atendidos = turnosMed.filter(t => t.fecha < hoy).length;
-      const ausentes = turnosMed.filter(t => (t as any).estado === 'Ausente').length;
-      const efectividad = turnosMed.length > 0 ? Math.round((atendidos / turnosMed.length) * 100) : 100;
+      const atendidos = turnosMed.filter(t => t.estado === 'Atendido').length;
+      const ausentes = turnosMed.filter(t => t.estado === 'Ausente' || t.estado === 'Cancelado').length;
+      const concluidos = atendidos + ausentes;
+      const efectividad = concluidos > 0 ? Math.round((atendidos / concluidos) * 100) : 100;
 
       return {
         nombre: `Dr(a). ${m.nombre} ${m.apellido}`,
