@@ -104,7 +104,6 @@
           <tr>
             <th>HORA</th>
             <th>PACIENTE</th>
-            <th>DNI / HISTORIA CLÍNICA</th>
             <th>COBERTURA / OS</th>
             <th>MOTIVO CONSULTA</th>
             <th>ESTADO</th>
@@ -113,7 +112,7 @@
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="7" class="loading-table-row">
+            <td colspan="6" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Cargando pacientes del profesional médico...</span>
             </td>
@@ -127,14 +126,7 @@
             <td>
               <div class="patient-cell">
                 <strong class="patient-name">{{ p.nombre }}</strong>
-                <span class="patient-phone">📱 {{ p.telefono }}</span>
-              </div>
-            </td>
-
-            <td>
-              <div class="hc-cell">
-                <span>DNI {{ p.dni }}</span>
-                <small class="hc-num">HC: {{ p.numHistoriaClinica }}</small>
+                <span class="patient-dni">DNI {{ p.dni }}</span>
               </div>
             </td>
 
@@ -176,14 +168,14 @@
           </tr>
 
           <tr *ngIf="!cargando() && !medicoSeleccionadoId()">
-            <td colspan="7" class="empty-table-row">
+            <td colspan="6" class="empty-table-row">
               <span>👨‍⚕️ Por favor, seleccione un profesional médico para consultar su nómina de pacientes
                 citados.</span>
             </td>
           </tr>
 
           <tr *ngIf="!cargando() && medicoSeleccionadoId() && pacientesFiltrados().length === 0">
-            <td colspan="7" class="empty-table-row">
+            <td colspan="6" class="empty-table-row">
               <span>🔍 No se encontraron pacientes agendados para este profesional con los filtros aplicados.</span>
             </td>
           </tr>
