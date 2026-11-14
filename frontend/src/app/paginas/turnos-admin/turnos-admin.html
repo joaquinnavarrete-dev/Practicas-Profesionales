@@ -99,14 +99,13 @@
             <th>PACIENTE</th>
             <th>MÉDICO / ESPECIALIDAD</th>
             <th>COBERTURA</th>
-            <th>SEDE</th>
             <th>ESTADO</th>
             <th class="col-actions">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="7" class="loading-table-row">
+            <td colspan="6" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Consultando turnos en tiempo real...</span>
             </td>
@@ -139,10 +138,6 @@
             </td>
 
             <td>
-              <span class="motivo-text">Sede Central</span>
-            </td>
-
-            <td>
               <span class="badge-status" [ngClass]="{
                 'status-pendiente': t.estado === 'Pendiente',
                 'status-confirmado': !t.estado || t.estado === 'Confirmado',
@@ -168,7 +163,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && turnosFiltrados().length === 0">
-            <td colspan="7" class="empty-table-row">
+            <td colspan="6" class="empty-table-row">
               <span>🔍 No se encontraron turnos registrados con los filtros seleccionados.</span>
             </td>
           </tr>
