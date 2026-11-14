@@ -4,6 +4,26 @@
 
   <section class="admin-main-body">
 
+    <div class="print-header">
+      <div class="print-brand-row">
+        <div class="print-logo-box">
+          <span class="print-cross">✚</span>
+          <div>
+            <h2 class="print-clinic-name">CLÍNICA SAN GABRIEL</h2>
+            <span class="print-clinic-sub">Centro Médico Integral de Atención y Diagnóstico</span>
+          </div>
+        </div>
+        <div class="print-doc-meta">
+          <span class="print-meta-badge">DOCUMENTO MÉDICO OFICIAL</span>
+          <span class="print-meta-text"><strong>Fecha de Emisión:</strong> {{ fechaEmision }}</span>
+          <span class="print-meta-text" *ngIf="paciente() as pac"><strong>Expediente N°:</strong> HC-{{ pac.idPaciente
+            }}</span>
+        </div>
+      </div>
+      <div class="print-divider"></div>
+      <h1 class="print-doc-title">EXPEDIENTE DE HISTORIA CLÍNICA</h1>
+    </div>
+
     <div class="page-title-row">
       <div class="title-block">
         <button class="btn-back-link" (click)="volver()">
@@ -207,6 +227,21 @@
     <div class="loading-state" *ngIf="cargando()">
       <div class="spinner"></div>
       <p>Cargando historia clínica del paciente...</p>
+    </div>
+
+    <div class="print-footer" *ngIf="paciente() as pac">
+      <div class="print-legal-notice">
+        <p><strong>Aviso de Confidencialidad:</strong> El presente documento contiene datos sensibles y antecedentes de
+          salud protegidos por la Ley de Derechos del Paciente e Historia Clínica. Su divulgación no autorizada está
+          penada por la legislación vigente.</p>
+        <span class="print-timestamp">Generado por el Sistema Informático • Clínica San Gabriel • {{ fechaEmision
+          }}</span>
+      </div>
+      <div class="print-signature-box">
+        <div class="signature-line"></div>
+        <strong class="signature-title">Firma y Sello del Profesional Médico</strong>
+        <span class="signature-sub">Matrícula Nacional / Especialidad</span>
+      </div>
     </div>
 
   </section>

@@ -31,6 +31,7 @@ export class HistoriaClinicaAdminComponent implements OnInit {
   readonly guardando = signal<boolean>(false);
   readonly mostrarFormulario = signal<boolean>(false);
   readonly busqueda = signal<string>('');
+  readonly fechaEmision = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
   formFecha = '';
   formIdMedico: number = 0;
