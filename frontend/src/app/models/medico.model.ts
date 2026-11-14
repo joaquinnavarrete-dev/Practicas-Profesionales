@@ -42,6 +42,7 @@ export interface MedicoCartelera {
   especialidad: string;
   consultorio: string;
   telefono: string;
+  matricula?: string;
   horarios: HorarioCartelera[];
 }
 
