@@ -188,3 +188,26 @@ body {
     gap: 0.4rem !important;
   }
 }
+
+@media print {
+  .sidebar-container,
+  app-sidebar,
+  .topbar-admin,
+  app-admin-topbar,
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  .admin-layout,
+  .admin-view-wrapper,
+  .admin-main-body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    box-shadow: none !important;
+  }
+}
