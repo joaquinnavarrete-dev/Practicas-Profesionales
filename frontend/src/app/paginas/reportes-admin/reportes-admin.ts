@@ -22,6 +22,13 @@ export class ReportesAdminComponent implements OnInit {
 
   readonly cargando = signal<boolean>(false);
   readonly tabActiva = signal<'especialidades' | 'medicos' | 'obrasSociales'>('especialidades');
+  readonly fechaEmision = new Date().toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 
   readonly turnos = signal<Turno[]>([]);
   readonly medicos = signal<Medico[]>([]);
@@ -156,6 +163,12 @@ export class ReportesAdminComponent implements OnInit {
     document.body.removeChild(link);
 
     this.notify.success('Archivo CSV generado y descargado con éxito.');
+  }
+
+  getNombreTabActiva(): string {
+    if (this.tabActiva() === 'especialidades') return 'Rendimiento por Especialidad Médica';
+    if (this.tabActiva() === 'medicos') return 'Rendimiento por Profesional Médico';
+    return 'Distribución por Obra Social y Cobertura';
   }
 
   imprimir(): void {

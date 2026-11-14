@@ -4,6 +4,25 @@
 
   <section class="admin-main-body">
 
+    <div class="print-header">
+      <div class="print-brand-row">
+        <div class="print-logo-box">
+          <span class="print-cross">✚</span>
+          <div>
+            <h2 class="print-clinic-name">CLÍNICA SAN GABRIEL</h2>
+            <span class="print-clinic-sub">Dirección Médica • Control de Gestión y Auditoría</span>
+          </div>
+        </div>
+        <div class="print-doc-meta">
+          <span class="print-meta-badge">INFORME ESTADÍSTICO OFICIAL</span>
+          <span class="print-meta-text"><strong>Fecha de Emisión:</strong> {{ fechaEmision }}</span>
+          <span class="print-meta-text"><strong>Módulo:</strong> {{ getNombreTabActiva() }}</span>
+        </div>
+      </div>
+      <div class="print-divider"></div>
+      <h1 class="print-doc-title">{{ getNombreTabActiva() | uppercase }}</h1>
+    </div>
+
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">Informes Ejecutivos y Estadísticas</h1>
@@ -116,6 +135,19 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="print-footer">
+        <div class="print-legal-notice">
+          <p>Documento oficial emitido para evaluación operativa y auditoría de gestión institucional. Confidencial.</p>
+          <span class="print-timestamp">Generado por el Sistema de Gestión Clínica • Clínica San Gabriel • {{
+            fechaEmision }}</span>
+        </div>
+        <div class="print-signature-box">
+          <div class="signature-line"></div>
+          <strong class="signature-title">Dirección Médica / Auditoría General</strong>
+          <span class="signature-sub">Clínica San Gabriel</span>
+        </div>
       </div>
 
     </div>
