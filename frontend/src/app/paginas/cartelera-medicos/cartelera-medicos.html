@@ -67,6 +67,9 @@
         </div>
 
         <div class="card-footer-action">
+          <button type="button" class="btn-contact-doc" (click)="abrirModalContacto(m)">
+            📞 Contactar / Detalle
+          </button>
           <a routerLink="/turnos/solicitar" class="btn-book-slot">
             ➕ Asignar Turno
           </a>
@@ -74,12 +77,10 @@
       </div>
     </div>
 
-    <div class="cartelera-pagination-wrapper" *ngIf="!cargando() && carteleraFiltrada().length > 0" style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 1rem;">
-      <app-paginacion
-        [totalItems]="carteleraFiltrada().length"
-        [paginaActual]="paginaActual()"
-        [tamanoPagina]="tamanoPagina()"
-        (cambioPagina)="paginaActual.set($event)"
+    <div class="cartelera-pagination-wrapper" *ngIf="!cargando() && carteleraFiltrada().length > 0"
+      style="background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; overflow: hidden; margin-top: 1rem;">
+      <app-paginacion [totalItems]="carteleraFiltrada().length" [paginaActual]="paginaActual()"
+        [tamanoPagina]="tamanoPagina()" (cambioPagina)="paginaActual.set($event)"
         (cambioTamano)="tamanoPagina.set($event)">
       </app-paginacion>
     </div>
@@ -91,6 +92,71 @@
     <div class="loading-state" *ngIf="cargando()">
       <div class="spinner"></div>
       <p>Cargando cartelera de médicos...</p>
+    </div>
+
+    <div class="modal-backdrop" *ngIf="modalContactoAbierto()" (click)="cerrarModalContacto()">
+      <div class="modal-dialog-custom" (click)="$event.stopPropagation()" *ngIf="medicoSeleccionado() as doc">
+        <div class="modal-header-custom">
+          <div class="modal-title-box">
+            <span class="modal-avatar-icon">👨‍⚕️</span>
+            <div>
+              <h3 class="modal-doc-title">{{ doc.nombreCompleto }}</h3>
+              <span class="modal-doc-sub">{{ doc.especialidad }}</span>
+            </div>
+          </div>
+          <button type="button" class="modal-btn-close" (click)="cerrarModalContacto()">✕</button>
+        </div>
+
+        <div class="modal-body-custom">
+          <div class="doc-info-badges">
+            <div class="info-badge-item">
+              <span class="badge-label">UBICACIÓN / CONSULTORIO</span>
+              <strong class="badge-val">🏢 {{ doc.consultorio }}</strong>
+            </div>
+            <div class="info-badge-item">
+              <span class="badge-label">MATRÍCULA PROFESIONAL</span>
+              <strong class="badge-val">🆔 {{ doc.matricula }}</strong>
+            </div>
+          </div>
+
+          <div class="contact-channel-card">
+            <span class="channel-title">DIRECTORIO DE COMUNICACIÓN INTERNA / TELÉFONO:</span>
+            <div class="channel-row">
+              <div class="tel-display">
+                <span class="tel-icon">📞</span>
+                <a [href]="'tel:' + doc.telefono" class="tel-number">{{ doc.telefono }}</a>
+              </div>
+              <button type="button" class="btn-copy-tel" (click)="copiarTelefono(doc.telefono)"
+                [class.copied]="telefonoCopiado()">
+                {{ telefonoCopiado() ? '✓ ¡Copiado!' : '📋 Copiar Teléfono' }}
+              </button>
+            </div>
+            <p class="channel-hint">Línea directa para recepción y coordinación de interconsultas de mostrador.</p>
+          </div>
+
+          <div class="modal-schedule-card">
+            <span class="modal-sched-heading">📅 CRONOGRAMA SEMANAL DE ATENCIÓN:</span>
+            <div class="modal-sched-list" *ngIf="doc.horarios.length > 0">
+              <div class="modal-sched-row" *ngFor="let h of doc.horarios">
+                <span class="sched-day-name">{{ h.diaNombre }}</span>
+                <span class="sched-hours-badge">🕒 {{ h.horaInicio }} a {{ h.horaFin }} hs</span>
+              </div>
+            </div>
+            <div class="empty-sched" *ngIf="doc.horarios.length === 0">
+              <span>Este profesional no tiene horarios de atención programados en el sistema.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer-custom">
+          <button type="button" class="btn-modal-cancel" (click)="cerrarModalContacto()">
+            Cerrar
+          </button>
+          <a routerLink="/turnos/solicitar" (click)="cerrarModalContacto()" class="btn-modal-action">
+            ➕ Asignar Turno con este Médico
+          </a>
+        </div>
+      </div>
     </div>
 
   </section>

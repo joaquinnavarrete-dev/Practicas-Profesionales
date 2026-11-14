@@ -30,6 +30,10 @@ export class CarteleraMedicosComponent implements OnInit {
   readonly especialidades = signal<Especialidad[]>([]);
   readonly cartelera = signal<MedicoCartelera[]>([]);
 
+  readonly modalContactoAbierto = signal<boolean>(false);
+  readonly medicoSeleccionado = signal<MedicoCartelera | null>(null);
+  readonly telefonoCopiado = signal<boolean>(false);
+
   readonly carteleraFiltrada = computed(() => {
     const q = this.busqueda().toLowerCase().trim();
     const esp = this.filtroEspecialidad();
@@ -86,6 +90,7 @@ export class CarteleraMedicosComponent implements OnInit {
                 especialidad: m.especialidad?.nombre || 'Medicina General',
                 consultorio: `Consultorio ${100 + m.idMedico}`,
                 telefono: m.telefono || 'Sin teléfono',
+                matricula: m.matricula || 'M.P. Registrada',
                 horarios
               };
             });
@@ -104,6 +109,34 @@ export class CarteleraMedicosComponent implements OnInit {
         this.cargando.set(false);
       }
     });
+  }
+
+  abrirModalContacto(m: MedicoCartelera): void {
+    this.medicoSeleccionado.set(m);
+    this.telefonoCopiado.set(false);
+    this.modalContactoAbierto.set(true);
+  }
+
+  cerrarModalContacto(): void {
+    this.modalContactoAbierto.set(false);
+    this.medicoSeleccionado.set(null);
+    this.telefonoCopiado.set(false);
+  }
+
+  copiarTelefono(tel: string): void {
+    if (!tel || tel === 'Sin teléfono') return;
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(tel).then(() => {
+        this.telefonoCopiado.set(true);
+        setTimeout(() => this.telefonoCopiado.set(false), 2000);
+      }).catch(() => {
+        this.telefonoCopiado.set(true);
+        setTimeout(() => this.telefonoCopiado.set(false), 2000);
+      });
+    } else {
+      this.telefonoCopiado.set(true);
+      setTimeout(() => this.telefonoCopiado.set(false), 2000);
+    }
   }
 }
 
