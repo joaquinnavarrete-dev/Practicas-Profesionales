@@ -34,9 +34,6 @@ export class Sidebar {
   });
 
   readonly rutaInicio = computed(() => {
-    if (this.authService.isMedico()) {
-      return '/admin/pacientes-por-medico';
-    }
     return '/admin';
   });
 

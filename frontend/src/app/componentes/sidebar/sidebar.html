@@ -23,6 +23,11 @@
   <nav class="sidebar-menu">
 
     <ng-container *ngIf="authService.isMedico()">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-item">
+        <span class="menu-icon">📊</span>
+        <span>Dashboard Principal</span>
+      </a>
+
       <a routerLink="/admin/pacientes-por-medico" routerLinkActive="active" class="menu-item">
         <span class="menu-icon">👥</span>
         <span>Mis pacientes citados hoy</span>
@@ -49,12 +54,17 @@
       </a>
 
       <a routerLink="/admin/mis-metricas" routerLinkActive="active" class="menu-item">
-        <span class="menu-icon">📊</span>
+        <span class="menu-icon">📈</span>
         <span>Mis métricas y Rendimiento</span>
       </a>
     </ng-container>
 
     <ng-container *ngIf="authService.isRecepcionista()">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="menu-item">
+        <span class="menu-icon">📊</span>
+        <span>Dashboard Principal</span>
+      </a>
+
       <a routerLink="/admin/turnos" routerLinkActive="active" class="menu-item">
         <span class="menu-icon">🕒</span>
         <span>Recepción y Check-In</span>
