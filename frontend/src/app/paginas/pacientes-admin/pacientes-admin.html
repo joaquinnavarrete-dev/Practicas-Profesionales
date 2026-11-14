@@ -72,12 +72,12 @@
             <th>DOCUMENTO (DNI)</th>
             <th>TELÉFONO DE CONTACTO</th>
             <th>COBERTURA MÉDICA</th>
-            <th class="col-actions">ACCIONES</th>
+            <th class="col-actions" *ngIf="!authService.isRecepcionista()">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="5" class="loading-table-row">
+            <td [attr.colspan]="authService.isRecepcionista() ? 4 : 5" class="loading-table-row">
               <div class="spinner-small"></div>
               <span>Cargando padrón de pacientes...</span>
             </td>
@@ -108,7 +108,7 @@
               <span class="os-badge" [title]="p.obraSocial?.nombre || 'Particular'">{{ p.obraSocial | cobertura }}</span>
             </td>
 
-            <td class="col-actions">
+            <td class="col-actions" *ngIf="!authService.isRecepcionista()">
               <div class="action-buttons-group">
                 <a *ngIf="authService.isAdmin() || authService.isMedico()" class="btn-action-icon" [routerLink]="['/admin/pacientes', p.idPaciente, 'historia-clinica']" title="Ver Historia Clínica">
                   📋
@@ -116,13 +116,12 @@
                 <button *ngIf="authService.isAdmin()" class="btn-action-icon danger" (click)="eliminarPaciente(p)" title="Eliminar Ficha">
                   🗑️
                 </button>
-                <span *ngIf="!authService.isAdmin() && !authService.isMedico()" class="text-muted">—</span>
               </div>
             </td>
           </tr>
 
           <tr *ngIf="!cargando() && pacientesFiltrados().length === 0">
-            <td colspan="5" class="empty-table-row">
+            <td [attr.colspan]="authService.isRecepcionista() ? 4 : 5" class="empty-table-row">
               <span>🔍 No se encontraron pacientes registrados con los filtros aplicados.</span>
             </td>
           </tr>
