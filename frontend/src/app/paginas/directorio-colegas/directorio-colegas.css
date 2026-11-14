@@ -183,12 +183,24 @@
 }
 
 .dia-pill {
-  background: #f1f5f9;
-  color: #334155;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  box-shadow: 0 1px 2px rgba(3, 105, 161, 0.08);
+  letter-spacing: 0.2px;
+  transition: all 0.15s ease;
+}
+
+.dia-pill:hover {
+  background: linear-gradient(135deg, #bae6fd 0%, #bfdbfe 100%);
+  color: #0284c7;
+  transform: translateY(-1px);
 }
 
 .empty-state {
