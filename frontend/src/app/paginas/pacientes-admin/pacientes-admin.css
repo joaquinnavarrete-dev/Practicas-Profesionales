@@ -419,6 +419,20 @@
   color: #0f172a;
 }
 
+.os-badge {
+  display: inline-block;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .plan-sub {
   font-size: 0.72rem;
   color: #64748b;

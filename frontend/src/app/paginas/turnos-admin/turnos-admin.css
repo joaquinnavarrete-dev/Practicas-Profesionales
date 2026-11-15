@@ -462,14 +462,31 @@
   color: #b91c1c;
 }
 
+.insurance-badge {
+  display: inline-block;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .col-actions {
   text-align: right;
+  white-space: nowrap;
+  min-width: 160px;
 }
 
 .action-buttons-group {
   display: inline-flex;
   gap: 0.4rem;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .btn-action-icon {

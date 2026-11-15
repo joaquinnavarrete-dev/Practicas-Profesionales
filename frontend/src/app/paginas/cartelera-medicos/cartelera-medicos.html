@@ -38,6 +38,10 @@
           </option>
         </select>
       </div>
+
+      <button class="btn-reset-filters" (click)="resetearFiltros()">
+        ↺ Limpiar Filtros
+      </button>
     </div>
 
     <div class="cartelera-grid" *ngIf="!cargando()">
@@ -67,8 +71,8 @@
         </div>
 
         <div class="card-footer-action">
-          <button type="button" class="btn-contact-doc" (click)="abrirModalContacto(m)">
-            📞 Contactar / Detalle
+          <button type="button" class="btn-contact-doc" (click)="abrirModalContacto(m)" title="Ver detalle y datos de contacto">
+            📞 Contactar
           </button>
           <a routerLink="/turnos/solicitar" class="btn-book-slot">
             ➕ Asignar Turno

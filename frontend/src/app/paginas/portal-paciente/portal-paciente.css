@@ -149,16 +149,16 @@
 .btn-new-appointment {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
   background-color: #ffffff;
   color: #004b93;
-  font-weight: 800;
-  font-size: 1rem;
-  padding: 0.9rem 1.75rem;
-  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: 8px;
   text-decoration: none;
   border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -354,11 +354,12 @@
 }
 
 .badge-status-confirmed {
-  background: #16a34a;
-  color: #ffffff;
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
   font-size: 0.78rem;
   font-weight: 700;
-  padding: 0.35rem 0.85rem;
+  padding: 0.3rem 0.8rem;
   border-radius: 9999px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -402,9 +403,10 @@
   gap: 0.5rem;
   background-color: #2563eb;
   color: #ffffff;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: 8px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -462,7 +464,7 @@
 }
 
 .badge-day {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
   font-weight: 800;
   line-height: 1.1;
   color: #ffffff;
@@ -758,11 +760,11 @@
   gap: 0.5rem;
   background-color: #1e3a8a;
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 0.85rem 2rem;
+  padding: 0.65rem 1.5rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);

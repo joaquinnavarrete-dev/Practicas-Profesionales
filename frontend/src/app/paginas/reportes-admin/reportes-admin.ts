@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TurnoService, MedicoService, EspecialidadService, ObraSocialService, NotificationService, AuthService } from '../../services';
+import { TurnoService, MedicoService, EspecialidadService, ObraSocialService, NotificationService, AuthService, DocumentosPdfService } from '../../services';
 import { Turno, Medico, Especialidad, ObraSocial, ReporteItemEspecialidad, ReporteItemMedico, ReporteItemObraSocial } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 
@@ -18,6 +18,7 @@ export class ReportesAdminComponent implements OnInit {
   private readonly especialidadService = inject(EspecialidadService);
   private readonly obraSocialService = inject(ObraSocialService);
   private readonly notify = inject(NotificationService);
+  private readonly pdfService = inject(DocumentosPdfService);
   readonly authService = inject(AuthService);
 
   readonly cargando = signal<boolean>(false);
@@ -34,6 +35,16 @@ export class ReportesAdminComponent implements OnInit {
   readonly medicos = signal<Medico[]>([]);
   readonly especialidades = signal<Especialidad[]>([]);
   readonly obrasSociales = signal<ObraSocial[]>([]);
+
+  readonly totalTurnosGeneral = computed<number>(() => this.turnos().length);
+  readonly totalAtendidosGeneral = computed<number>(() => this.turnos().filter(t => t.estado === 'Atendido').length);
+  readonly totalAusentesGeneral = computed<number>(() => this.turnos().filter(t => t.estado === 'Ausente' || t.estado === 'Cancelado').length);
+  readonly tasaEfectividadGeneral = computed<number>(() => {
+    const atendidos = this.totalAtendidosGeneral();
+    const ausentes = this.totalAusentesGeneral();
+    const concluidos = atendidos + ausentes;
+    return concluidos > 0 ? Math.round((atendidos / concluidos) * 100) : 100;
+  });
 
   readonly reporteEspecialidades = computed<ReporteItemEspecialidad[]>(() => {
     const turnos = this.turnos();
@@ -172,7 +183,20 @@ export class ReportesAdminComponent implements OnInit {
   }
 
   imprimir(): void {
-    window.print();
+    this.pdfService.imprimirReporteEstadistico({
+      modulo: this.getNombreTabActiva(),
+      fechaEmision: this.fechaEmision,
+      kpi: {
+        totalTurnos: this.totalTurnosGeneral(),
+        atendidos: this.totalAtendidosGeneral(),
+        ausentes: this.totalAusentesGeneral(),
+        efectividad: this.tasaEfectividadGeneral()
+      },
+      tipo: this.tabActiva(),
+      itemsEspecialidades: this.tabActiva() === 'especialidades' ? this.reporteEspecialidades() : undefined,
+      itemsMedicos: this.tabActiva() === 'medicos' ? this.reporteMedicos() : undefined,
+      itemsObrasSociales: this.tabActiva() === 'obrasSociales' ? this.reporteObrasSociales() : undefined
+    });
   }
 }
 

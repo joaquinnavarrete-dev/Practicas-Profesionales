@@ -123,6 +123,12 @@ export class CarteleraMedicosComponent implements OnInit {
     this.telefonoCopiado.set(false);
   }
 
+  resetearFiltros(): void {
+    this.busqueda.set('');
+    this.filtroEspecialidad.set('Todas');
+    this.paginaActual.set(1);
+  }
+
   copiarTelefono(tel: string): void {
     if (!tel || tel === 'Sin teléfono') return;
     if (navigator?.clipboard) {

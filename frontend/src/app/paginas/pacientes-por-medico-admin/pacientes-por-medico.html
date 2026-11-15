@@ -4,28 +4,6 @@
 
   <section class="admin-main-body">
 
-    <div class="print-header">
-      <div class="print-brand-row">
-        <div class="print-logo-box">
-          <span class="print-cross">✚</span>
-          <div>
-            <h2 class="print-clinic-name">CLÍNICA SAN GABRIEL</h2>
-            <span class="print-clinic-sub">Consultorios Externos • Planilla Diaria de Pacientes Citados</span>
-          </div>
-        </div>
-        <div class="print-doc-meta" *ngIf="medicoActual() as med">
-          <span class="print-meta-badge">PLANILLA DIARIA DE TRABAJO</span>
-          <span class="print-meta-text"><strong>Profesional:</strong> {{ med.nombre }}</span>
-          <span class="print-meta-text"><strong>Especialidad:</strong> {{ med.especialidad }} (Mat. {{ med.matricula
-            }})</span>
-          <span class="print-meta-text"><strong>Consultorio:</strong> {{ med.consultorio }}</span>
-          <span class="print-meta-text"><strong>Fecha:</strong> {{ fechaFiltro() || fechaHoyIso }}</span>
-        </div>
-      </div>
-      <div class="print-divider"></div>
-      <h1 class="print-doc-title">NÓMINA DE CONSULTAS Y ASISTENCIA DEL DÍA</h1>
-    </div>
-
     <div class="page-title-row">
       <div class="title-block">
         <h1 class="main-heading">{{ authService.isMedico() ? 'Mis Pacientes Citados de Hoy' : 'Nómina de Pacientes
@@ -129,7 +107,6 @@
             <th>COBERTURA / OS</th>
             <th>MOTIVO CONSULTA</th>
             <th>ESTADO</th>
-            <th class="col-print-obs">FIRMA PACIENTE / OBSERVACIONES</th>
             <th class="col-actions">ACCIONES</th>
           </tr>
         </thead>
@@ -178,10 +155,6 @@
               </span>
             </td>
 
-            <td class="col-print-obs">
-              <div class="print-obs-box"></div>
-            </td>
-
             <td class="col-actions">
               <div class="action-buttons-group">
                 <button *ngIf="puedeAtender(p)" class="btn-action-icon btn-atender" (click)="abrirModalAtencion(p)"
@@ -210,21 +183,6 @@
           </tr>
         </tbody>
       </table>
-
-      <div class="print-footer">
-        <div class="print-stats-summary">
-          <span><strong>Total Turnos Citados:</strong> {{ pacientesFiltrados().length }}</span>
-          <span><strong>Atendidos:</strong> {{ contarPorEstado('Atendido') }}</span>
-          <span><strong>Ausentes:</strong> {{ contarPorEstado('Ausente') }}</span>
-          <span><strong>En Espera / Confirmados:</strong> {{ contarPorEstado('Confirmado') + contarPorEstado('En
-            Espera') }}</span>
-        </div>
-        <div class="print-signature-box">
-          <div class="signature-line"></div>
-          <strong class="signature-title">Firma y Sello del Médico</strong>
-          <span class="signature-sub">Consultorios Externos • Clínica San Gabriel</span>
-        </div>
-      </div>
 
       <app-paginacion *ngIf="medicoSeleccionadoId()" [totalItems]="pacientesFiltrados().length"
         [paginaActual]="paginaActual()" [tamanoPagina]="tamanoPagina()" (cambioPagina)="paginaActual.set($event)"

@@ -1,35 +1,42 @@
-<app-admin-topbar titulo="Días y Horarios de Atención" icono="📅"></app-admin-topbar>
+<div class="admin-view-wrapper">
 
-<div class="dias-atencion-wrapper">
+  <app-admin-topbar titulo="Días y Horarios de Atención" icono="📅"></app-admin-topbar>
 
-  <header class="header-section">
-    <div class="header-titles">
-      <span class="badge-cat">GESTIÓN DE ATENCIÓN MÉDICA</span>
-      <h1 class="main-title">Días y Horarios de Atención</h1>
-      <p class="subtitle">
-        {{ authService.isMedico() ? 'Configuración de tus franjas horarias y días de atención en consultorio.' : 'Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.' }}
-      </p>
+  <section class="admin-main-body">
+
+    <div class="page-title-row">
+      <div class="title-block">
+        <h1 class="main-heading">Días y Horarios de Atención</h1>
+        <p class="sub-heading">
+          {{ authService.isMedico() ? 'Configuración de tus franjas horarias y días de atención en consultorio.' : 'Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.' }}
+        </p>
+      </div>
     </div>
 
-    <div class="filter-card" *ngIf="!authService.isMedico()">
-      <div class="search-input-group">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Buscar por médico o especialidad..." [ngModel]="busquedaGeneral()"
-          (ngModelChange)="busquedaGeneral.set($event)" />
+    <div class="filters-card" *ngIf="!authService.isMedico()">
+      <div class="filter-group filter-search-group">
+        <label>BUSCAR:</label>
+        <div class="input-search-inner">
+          <span class="search-lens">🔍</span>
+          <input type="text" placeholder="Buscar por médico o especialidad..." [ngModel]="busquedaGeneral()"
+            (ngModelChange)="busquedaGeneral.set($event)" />
+        </div>
       </div>
 
-      <div class="select-group">
+      <div class="filter-group">
+        <label>ESPECIALIDAD:</label>
         <select [ngModel]="filtroEspecialidad()" (ngModelChange)="filtroEspecialidad.set($event)">
-          <option value="Todas">Especialidad: Todas</option>
+          <option value="Todas">Todas las especialidades</option>
           <option *ngFor="let esp of especialidadesList()" [value]="esp.nombre">
             {{ esp.nombre }}
           </option>
         </select>
       </div>
 
-      <div class="select-group">
+      <div class="filter-group">
+        <label>DÍA DE ATENCIÓN:</label>
         <select [ngModel]="filtroDia()" (ngModelChange)="filtroDia.set($event)">
-          <option value="Todos">Día: Todos</option>
+          <option value="Todos">Todos los días</option>
           <option value="Lunes">Lunes</option>
           <option value="Martes">Martes</option>
           <option value="Miércoles">Miércoles</option>
@@ -40,9 +47,8 @@
         </select>
       </div>
 
-      <button class="btn-reset" (click)="resetearFiltros()">↺ Limpiar</button>
+      <button class="btn-reset-filters" (click)="resetearFiltros()">↺ Limpiar Filtros</button>
     </div>
-  </header>
 
   <section class="results-grid">
     <div *ngIf="cargando()" style="text-align: center; padding: 3rem; color: #64748b; font-size: 1.1rem;">
@@ -155,11 +161,11 @@
 
               <div class="dia-actions-box">
                 <button type="button" class="btn-save-dia" (click)="guardarHorarioDia(dia)"
-                  [disabled]="cargandoAccion()" title="Guardar horario de este día">
-                  💾 Guardar
+                  [disabled]="cargandoAccion()" title="Guardar horario de este día" aria-label="Guardar horario">
+                  💾
                 </button>
                 <button type="button" class="btn-delete-dia" (click)="eliminarDiaAtencion(dia)"
-                  [disabled]="cargandoAccion()" title="Quitar este día de atención">
+                  [disabled]="cargandoAccion()" title="Quitar este día de atención" aria-label="Eliminar día">
                   🗑️
                 </button>
               </div>
@@ -208,4 +214,5 @@
     </div>
   </div>
 
+  </section>
 </div>

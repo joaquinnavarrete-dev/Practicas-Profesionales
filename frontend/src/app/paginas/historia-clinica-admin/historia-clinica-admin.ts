@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
-import { PacienteService, MedicoService, HistoriaClinicaService, NotificationService, ConfirmModalService, AuthService } from '../../services';
+import { PacienteService, MedicoService, HistoriaClinicaService, NotificationService, ConfirmModalService, AuthService, DocumentosPdfService } from '../../services';
 import { Paciente, Medico, HistoriaClinica, HistoriaClinicaRequest } from '../../models';
 import { CoberturaPipe } from '../../pipes';
 
@@ -22,6 +22,7 @@ export class HistoriaClinicaAdminComponent implements OnInit {
   private readonly historiaClinicaService = inject(HistoriaClinicaService);
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
+  private readonly pdfService = inject(DocumentosPdfService);
   readonly authService = inject(AuthService);
 
   readonly paciente = signal<Paciente | null>(null);
@@ -203,7 +204,34 @@ export class HistoriaClinicaAdminComponent implements OnInit {
   }
 
   imprimirHistoria(): void {
-    window.print();
+    const pac = this.paciente();
+    if (!pac) {
+      this.notify.warning('No se ha cargado el paciente para emitir la historia clínica.');
+      return;
+    }
+
+    const registrosMapped = this.registrosFiltrados().map(r => ({
+      fecha: r.fecha || 'Sin fecha',
+      medicoNombre: r.medico ? `Dr(a). ${r.medico.nombre} ${r.medico.apellido}` : 'Profesional Médico',
+      medicoEspecialidad: r.medico?.especialidad?.nombre || 'Medicina General',
+      medicoMatricula: r.medico?.matricula || 'Registrada',
+      motivoConsulta: r.motivoConsulta || 'Consulta médica',
+      diagnostico: r.diagnostico || 'Sin diagnóstico registrado',
+      tratamiento: r.tratamiento,
+      observaciones: r.observaciones
+    }));
+
+    this.pdfService.imprimirHistoriaClinica({
+      fechaEmision: this.fechaEmision,
+      paciente: {
+        nombreCompleto: `${pac.nombre} ${pac.apellido}`,
+        dni: pac.dni || 'Sin DNI',
+        numHistoriaClinica: `HC-${pac.idPaciente}`,
+        telefono: pac.telefono || 'No informado',
+        obraSocial: pac.obraSocial?.nombre || 'Particular / Sin Obra Social'
+      },
+      registros: registrosMapped
+    });
   }
 
   volver(): void {

@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MedicoService, TurnoService, HistoriaClinicaService, NotificationService, AuthService } from '../../services';
+import { MedicoService, TurnoService, HistoriaClinicaService, NotificationService, AuthService, DocumentosPdfService } from '../../services';
 import { Medico, Turno, MedicoInfo, PacienteCita } from '../../models';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
 import { PaginacionComponent } from '../../componentes/paginacion/paginacion';
@@ -21,6 +21,7 @@ export class PacientesPorMedicoComponent implements OnInit {
   private readonly historiaClinicaService = inject(HistoriaClinicaService);
   private readonly notify = inject(NotificationService);
   private readonly router = inject(Router);
+  private readonly pdfService = inject(DocumentosPdfService);
   readonly authService = inject(AuthService);
 
   readonly busquedaGlobal = signal<string>('');
@@ -195,14 +196,39 @@ export class PacientesPorMedicoComponent implements OnInit {
   }
 
   exportarListado(): void {
-    const tamanoPrevio = this.tamanoPagina();
-    this.tamanoPagina.set(100);
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => {
-        this.tamanoPagina.set(tamanoPrevio);
-      }, 500);
-    }, 100);
+    const med = this.medicoActual();
+    if (!med) {
+      this.notify.warning('Por favor, seleccione un profesional médico para emitir la planilla.');
+      return;
+    }
+
+    const lista = this.pacientesFiltrados();
+    const mapped = lista.map(p => ({
+      hora: p.hora,
+      nombre: p.nombre,
+      dni: p.dni,
+      obraSocial: p.obraSocial,
+      plan: p.planAfiliado,
+      motivo: p.motivo,
+      estado: p.estado
+    }));
+
+    this.pdfService.imprimirPlanillaTurnos({
+      medico: {
+        nombre: med.nombre,
+        especialidad: med.especialidad,
+        matricula: med.matricula,
+        consultorio: med.consultorio,
+        fecha: this.fechaFiltro() || this.fechaHoyIso
+      },
+      turnos: mapped,
+      resumen: {
+        total: lista.length,
+        atendidos: this.contarPorEstado('Atendido'),
+        enEspera: this.contarPorEstado('Confirmado') + this.contarPorEstado('En Espera'),
+        ausentes: this.contarPorEstado('Ausente') + this.contarPorEstado('Cancelado')
+      }
+    });
   }
 
   puedeAtender(p: PacienteCita): boolean {
