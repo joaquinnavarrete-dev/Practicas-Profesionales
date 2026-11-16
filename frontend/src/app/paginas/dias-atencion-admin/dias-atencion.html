@@ -8,7 +8,7 @@
       <div class="title-block">
         <h1 class="main-heading">Días y Horarios de Atención</h1>
         <p class="sub-heading">
-          {{ authService.isMedico() ? 'Configuración de tus franjas horarias y días de atención en consultorio.' : 'Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.' }}
+          {{ authService.isMedico() ? 'Configuración de tus franjas horarias y días de atención.' : 'Supervisión de la disponibilidad semanal, consultorios y franjas horarias del cuerpo médico.' }}
         </p>
       </div>
     </div>
@@ -87,7 +87,7 @@
           <span class="hours-empty" *ngIf="item.franjasDetalle.length === 0">
             Sin días configurados
           </span>
-          <span class="office-tag">📍 {{ item.consultorio }}</span>
+          <span class="office-tag" *ngIf="!authService.isMedico()">📍 {{ item.consultorio }}</span>
         </div>
       </div>
 
