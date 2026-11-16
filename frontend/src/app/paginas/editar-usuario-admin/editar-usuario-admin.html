@@ -1,0 +1,78 @@
+<div class="edit-user-wrapper">
+
+  <app-admin-topbar titulo="Gestión de Accesos y Cuentas" icono="👥"></app-admin-topbar>
+
+  <header class="form-header-bar">
+    <div class="header-titles">
+      <span class="back-link" routerLink="/admin/usuarios">← Volver al Padrón de Usuarios</span>
+      <h1 class="main-title">Modificar Usuario del Sistema</h1>
+      <p class="sub-title">Actualice los datos de acceso, rol de seguridad o modifique el estado de la cuenta ID: {{ usuarioId() }}.</p>
+    </div>
+  </header>
+
+  <main class="form-content-body">
+    <div *ngIf="cargando()" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando información del usuario...</p>
+    </div>
+
+    <form class="user-form-card" (ngSubmit)="guardarUsuario()" *ngIf="!cargando()">
+
+      <div class="form-section">
+        <h3 class="section-title">1. Credenciales y Acceso</h3>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NOMBRE DE USUARIO *</label>
+            <input type="text" [(ngModel)]="usuarioForm.username" name="username" placeholder="Ej. mgomez" required />
+            <small class="input-hint">Identificador para inicio de sesión en el sistema.</small>
+          </div>
+
+          <div class="form-group">
+            <label>ROL DE SEGURIDAD ASIGNADO *</label>
+            <select [(ngModel)]="usuarioForm.idRol" name="idRol" required>
+              <option *ngFor="let r of roles()" [ngValue]="r.idRol">
+                {{ r.nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1rem;">
+          <label>ESTADO DE LA CUENTA *</label>
+          <select [(ngModel)]="usuarioForm.activo" name="activo">
+            <option [ngValue]="true">Activo (Habilitado para ingresar al sistema)</option>
+            <option [ngValue]="false">Bloqueado / Inactivo (Acceso suspendido)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">2. Actualización de Contraseña (Opcional)</h3>
+        <p class="section-desc">Complete estos campos solo si desea restablecer o asignar una nueva clave de acceso para el usuario.</p>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>NUEVA CONTRASEÑA</label>
+            <input type="password" [(ngModel)]="usuarioForm.nuevaPassword" name="nuevaPassword" placeholder="••••••••••••" />
+          </div>
+
+          <div class="form-group">
+            <label>CONFIRMAR NUEVA CONTRASEÑA</label>
+            <input type="password" [(ngModel)]="usuarioForm.confirmarPassword" name="confirmarPassword" placeholder="••••••••••••" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions-footer">
+        <button type="button" class="btn-cancel" routerLink="/admin/usuarios">Cancelar</button>
+        <button type="submit" class="btn-submit" [disabled]="guardando()">
+          <span *ngIf="!guardando()">💾 Guardar Cambios</span>
+          <span *ngIf="guardando()">Guardando cambios...</span>
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+</div>
