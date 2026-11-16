@@ -19,14 +19,14 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label>NOMBRE DE USUARIO (USERNAME) *</label>
+            <label>NOMBRE DE USUARIO *</label>
             <input type="text" [(ngModel)]="usuarioForm.username" name="username" placeholder="Ej. mgomez, recepcion02"
               required />
             <small class="input-hint">Será el identificador único para iniciar sesión en la clínica.</small>
           </div>
 
           <div class="form-group">
-            <label>CORREO ELECTRÓNICO INSTITUCIONAL *</label>
+            <label>CORREO ELECTRÓNICO *</label>
             <input type="email" [(ngModel)]="usuarioForm.email" name="email" placeholder="Ej. usuario@sangabriel.com"
               required />
           </div>
@@ -34,7 +34,7 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label>CONTRASEÑA TEMPORAL *</label>
+            <label>CONTRASEÑA *</label>
             <input type="password" [(ngModel)]="usuarioForm.password" name="password" placeholder="••••••••••••"
               required />
             <small class="input-hint">El usuario deberá cambiarla obligatoriamente en su primer ingreso.</small>

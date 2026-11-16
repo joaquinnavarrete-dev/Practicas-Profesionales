@@ -32,11 +32,6 @@
 
         <div class="colega-body">
           <div class="data-row">
-            <span class="data-label">🏢 Consultorio:</span>
-            <strong class="data-val">{{ c.consultorio }}</strong>
-          </div>
-
-          <div class="data-row">
             <span class="data-label">📞 Teléfono:</span>
             <span class="data-val phone-val">
               <a *ngIf="c.telefono !== 'Sin teléfono informado'" [href]="'tel:' + c.telefono">{{ c.telefono }}</a>

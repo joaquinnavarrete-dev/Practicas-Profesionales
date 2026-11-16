@@ -84,8 +84,6 @@
         <thead>
           <tr>
             <th>ESPECIALIDAD</th>
-            <th>DEPARTAMENTO</th>
-            <th>DURACIÓN</th>
             <th>MÉDICOS ASIGNADOS</th>
             <th>ESTADO</th>
             <th class="col-actions">ACCIONES</th>
@@ -93,7 +91,7 @@
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="6" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td colspan="4" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando catálogo de especialidades médicas...
             </td>
           </tr>
@@ -106,14 +104,6 @@
                 </div>
                 <strong class="item-name">{{ item.nombre }}</strong>
               </div>
-            </td>
-
-            <td class="cell-muted">{{ item.departamento }}</td>
-
-            <td>
-              <span class="tag-duration">
-                🕒 {{ item.duracion }} min
-              </span>
             </td>
 
             <td>
@@ -145,7 +135,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && listaFiltrada().length === 0">
-            <td colspan="6" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td colspan="4" style="text-align: center; padding: 2.5rem; color: #64748b;">
               🔍 No se encontraron especialidades que coincidan con la búsqueda.
             </td>
           </tr>

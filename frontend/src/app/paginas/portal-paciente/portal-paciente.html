@@ -141,15 +141,6 @@
                 Dr(a). {{ t.medico?.nombre }} {{ t.medico?.apellido }}
               </h3>
 
-              <div class="meta-row">
-                <span class="meta-item">
-                  <span class="icon">🪪</span> Matrícula: {{ t.medico?.matricula || 'No especificada' }}
-                </span>
-                <span class="meta-item">
-                  <span class="icon">📍</span> Sede Central — Consultorios Externos
-                </span>
-              </div>
-
               <p class="date-full-text">
                 🗓️ <strong>{{ t.fecha | fechaFormato:'completa' }}</strong> a las <strong>{{ t.hora | horaFormato }}</strong>
               </p>

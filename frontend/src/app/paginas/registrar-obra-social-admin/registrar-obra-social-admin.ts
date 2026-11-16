@@ -23,10 +23,6 @@ export class RegistrarObraSocialAdminComponent {
   obraSocialForm = {
     nombre: '',
     siglas: '',
-    cuit: '',
-    telefono: '',
-    email: '',
-    planesDisponibles: '',
     estado: 'Activa'
   };
 

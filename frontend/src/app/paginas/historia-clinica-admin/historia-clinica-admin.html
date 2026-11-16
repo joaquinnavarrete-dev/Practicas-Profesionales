@@ -69,11 +69,13 @@
 
           <div class="form-group">
             <label class="form-label" for="formMedico">Profesional Médico <span class="required">*</span></label>
-            <select id="formMedico" class="form-control" [(ngModel)]="formIdMedico" name="formMedico" required>
+            <div *ngIf="authService.isMedico()" class="form-control-fixed">
+              👨‍⚕️ Dr(a). {{ medicoActualNombre() }}
+            </div>
+            <select *ngIf="!authService.isMedico()" id="formMedico" class="form-control" [(ngModel)]="formIdMedico" name="formMedico" required>
               <option [ngValue]="0" disabled>-- Seleccione un profesional --</option>
               <option *ngFor="let m of medicos()" [ngValue]="m.idMedico">
-                Dr(a). {{ m.nombre }} {{ m.apellido }} ({{ m.especialidad?.nombre || 'General' }} - Mat. {{ m.matricula
-                }})
+                Dr(a). {{ m.nombre }} {{ m.apellido }} ({{ m.especialidad?.nombre || 'General' }} - Mat. {{ m.matricula }})
               </option>
             </select>
           </div>

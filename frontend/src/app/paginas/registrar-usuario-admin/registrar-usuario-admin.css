@@ -140,6 +140,7 @@
   font-weight: 800;
   color: #475569;
   letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
 
 .form-group input,

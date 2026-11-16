@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminTopbarComponent } from '../../componentes/admin-topbar/admin-topbar';
-import { PacienteService, MedicoService, HistoriaClinicaService, NotificationService, ConfirmModalService, AuthService, DocumentosPdfService } from '../../services';
+import { PacienteService, MedicoService, HistoriaClinicaService, NotificationService, ConfirmModalService, AuthService, DocumentosPdfService, TurnoService } from '../../services';
 import { Paciente, Medico, HistoriaClinica, HistoriaClinicaRequest } from '../../models';
 import { CoberturaPipe } from '../../pipes';
 
@@ -20,6 +20,7 @@ export class HistoriaClinicaAdminComponent implements OnInit {
   private readonly pacienteService = inject(PacienteService);
   private readonly medicoService = inject(MedicoService);
   private readonly historiaClinicaService = inject(HistoriaClinicaService);
+  private readonly turnoService = inject(TurnoService);
   private readonly notify = inject(NotificationService);
   private readonly confirmModal = inject(ConfirmModalService);
   private readonly pdfService = inject(DocumentosPdfService);
@@ -40,6 +41,18 @@ export class HistoriaClinicaAdminComponent implements OnInit {
   formDiagnostico = '';
   formTratamiento = '';
   formObservaciones = '';
+
+  readonly medicoActualNombre = computed(() => {
+    const medId = this.authService.currentUser()?.idMedico;
+    if (medId) {
+      const encontrado = this.medicos().find(m => m.idMedico === medId);
+      if (encontrado) {
+        return `${encontrado.nombre} ${encontrado.apellido} (${encontrado.especialidad?.nombre || 'General'} - Mat. ${encontrado.matricula})`;
+      }
+    }
+    const current = this.authService.currentUser();
+    return current ? `${current.nombreUsuario}` : 'Profesional Médico';
+  });
 
   readonly registrosFiltrados = computed(() => {
     const query = this.busqueda().toLowerCase().trim();
@@ -71,6 +84,11 @@ export class HistoriaClinicaAdminComponent implements OnInit {
       return;
     }
 
+    const motivoParam = this.route.snapshot.queryParamMap.get('motivo');
+    if (motivoParam) {
+      this.formMotivoConsulta = motivoParam;
+    }
+
     this.formFecha = new Date().toISOString().split('T')[0];
     this.cargarDatos(idPaciente);
   }
@@ -83,6 +101,20 @@ export class HistoriaClinicaAdminComponent implements OnInit {
         this.paciente.set(pac);
         this.cargarHistoriasClinicas(idPaciente);
         this.cargarMedicos();
+
+        if (!this.formMotivoConsulta) {
+          this.turnoService.listarTodos().subscribe({
+            next: (turnos) => {
+              const medId = this.authService.currentUser()?.idMedico;
+              const turnoPaciente = turnos.find(t => t.paciente?.idPaciente === idPaciente && (!medId || t.medico?.idMedico === medId));
+              if (turnoPaciente && !this.formMotivoConsulta) {
+                const savedMotivo = localStorage.getItem('turno_motivo_' + turnoPaciente.idTurno);
+                this.formMotivoConsulta = savedMotivo || `Consulta médica en ${turnoPaciente.especialidad?.nombre || 'Consultorios'}`;
+              }
+            },
+            error: () => {}
+          });
+        }
       },
       error: (err) => {
         console.error('Error al cargar datos del paciente:', err);

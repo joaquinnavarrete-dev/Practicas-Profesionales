@@ -73,7 +73,8 @@
     <div class="hero-banner-wrapper">
       <div class="hero-banner-card">
         <div class="hero-banner-image-container">
-          <img src="/img/banner.jpg" alt="Instalaciones y equipo médico de Clínica San Gabriel" class="hero-banner-img" />
+          <img src="/img/banner.jpg" alt="Instalaciones y equipo médico de Clínica San Gabriel"
+            class="hero-banner-img" />
           <div class="hero-banner-badge">
             <span class="badge-pulse"></span>
             <span>Atención Médica Integral</span>
@@ -470,5 +471,10 @@
       <button class="btn-banner-outline" routerLink="/especialidades">Ver Cartilla Médica</button>
     </div>
   </section>
+
+  <button *ngIf="mostrarBotonArriba()" type="button" class="btn-scroll-top" (click)="volverArriba()"
+    title="Volver arriba" aria-label="Volver arriba">
+    ↑
+  </button>
 
 </div>

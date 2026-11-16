@@ -664,6 +664,9 @@ export class SolicitarTurnoComponent implements OnInit {
       hora: this.turnoBorrador.hora
     }).subscribe({
       next: (res) => {
+        if (res && res.idTurno && this.turnoBorrador.motivoConsulta) {
+          localStorage.setItem('turno_motivo_' + res.idTurno, this.turnoBorrador.motivoConsulta);
+        }
         this.cargandoReserva.set(false);
         this.reservaExitosa.set(true);
         this.turnoConfirmado.set(res);
@@ -698,6 +701,9 @@ export class SolicitarTurnoComponent implements OnInit {
       hora: this.turnoBorrador.hora
     }).subscribe({
       next: (res) => {
+        if (res && res.idTurno && this.turnoBorrador.motivoConsulta) {
+          localStorage.setItem('turno_motivo_' + res.idTurno, this.turnoBorrador.motivoConsulta);
+        }
         this.cargandoReserva.set(false);
         this.reservaExitosa.set(true);
         this.turnoConfirmado.set(res);

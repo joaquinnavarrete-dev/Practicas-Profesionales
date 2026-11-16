@@ -83,17 +83,15 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>ENTIDAD / SIGLA</th>
-            <th>TIPO</th>
-            <th>PLANES ADMITIDOS</th>
-            <th>COPAGO REQUERIDO</th>
+            <th>OBRA SOCIAL / COBERTURA</th>
+            <th>SIGLA</th>
             <th>ESTADO</th>
             <th class="col-actions" *ngIf="authService.isAdmin()">ACCIONES</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td [attr.colspan]="authService.isAdmin() ? 6 : 5" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td [attr.colspan]="authService.isAdmin() ? 4 : 3" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando catálogo de obras sociales y convenios...
             </td>
           </tr>
@@ -104,21 +102,12 @@
                 <span class="entity-logo">{{ os.logoUrl }}</span>
                 <div class="entity-info">
                   <strong class="entity-name">{{ os.nombre }}</strong>
-                  <small class="entity-sigla">{{ os.sigla }}</small>
                 </div>
               </div>
             </td>
 
             <td>
-              <span class="tipo-tag">{{ os.tipo }}</span>
-            </td>
-
-            <td>
-              <span class="planes-text" [title]="os.planesAdmitidos">{{ os.planesAdmitidos }}</span>
-            </td>
-
-            <td>
-              <strong class="copago-price">{{ os.copagoSugerido }}</strong>
+              <span class="sigla-badge">{{ os.sigla }}</span>
             </td>
 
             <td>
@@ -145,7 +134,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && obrasSocialesFiltradas().length === 0">
-            <td [attr.colspan]="authService.isAdmin() ? 6 : 5" class="empty-table-row">
+            <td [attr.colspan]="authService.isAdmin() ? 4 : 3" class="empty-table-row">
               <span>🔍 No se encontraron obras sociales con los filtros seleccionados.</span>
             </td>
           </tr>

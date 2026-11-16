@@ -162,7 +162,7 @@ export class PacientesPorMedicoComponent implements OnInit {
             obraSocial: t.paciente?.obraSocial?.sigla || t.paciente?.obraSocial?.nombre || 'Particular',
             obraSocialNombreCompleto: t.paciente?.obraSocial?.nombre || 'Particular',
             planAfiliado: 'Plan Estándar',
-            motivo: `Consulta en ${t.especialidad?.nombre || 'General'}`,
+            motivo: localStorage.getItem('turno_motivo_' + t.idTurno) || `Consulta en ${t.especialidad?.nombre || 'General'}`,
             estado: estadoFinal,
             fecha: t.fecha
           };
@@ -255,7 +255,9 @@ export class PacientesPorMedicoComponent implements OnInit {
       return;
     }
     if (p.pacienteId) {
-      this.router.navigate(['/admin/pacientes', p.pacienteId, 'historia-clinica']);
+      this.router.navigate(['/admin/pacientes', p.pacienteId, 'historia-clinica'], {
+        queryParams: { motivo: p.motivo || '' }
+      });
     } else {
       this.notify.info(`HC: ${p.numHistoriaClinica} • DNI: ${p.dni} • ${p.obraSocial}`, p.nombre);
     }

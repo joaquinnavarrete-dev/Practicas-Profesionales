@@ -123,7 +123,7 @@ export class UsuariosAdminComponent implements OnInit {
   }
 
   editarUsuario(u: UsuarioSistema): void {
-    this.router.navigate(['/admin/usuarios/roles', u.id]);
+    this.router.navigate(['/admin/usuarios/editar', u.id]);
   }
 
   bloquearDesbloquear(u: UsuarioSistema): void {

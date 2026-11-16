@@ -22,49 +22,29 @@
       <div class="form-section">
         <h3 class="section-title">1. Información General del Servicio</h3>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label>NOMBRE DE LA ESPECIALIDAD *</label>
-            <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Ej. Cardiología"
-              required />
-          </div>
-
-          <div class="form-group">
-            <label>CÓDIGO INTERNO / ABREVIATURA *</label>
-            <input type="text" [(ngModel)]="codigo" name="codigo" placeholder="Ej. ESP-CARD-01"
-              required />
-            <small class="input-hint">Identificador único en cartilla.</small>
-          </div>
-        </div>
-
         <div class="form-group">
-          <label>DESCRIPCIÓN Y ÁREAS DE ATENCIÓN</label>
-          <input type="text" [(ngModel)]="descripcion" name="descripcion"
-            placeholder="Ej. Patologías del corazón" />
+          <label>NOMBRE DE LA ESPECIALIDAD *</label>
+          <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Ej. Cardiología"
+            required />
         </div>
       </div>
 
       <div class="form-section">
         <h3 class="section-title">2. Parámetros de Agenda y Estado Institucional</h3>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label>DURACIÓN ESTIMADA POR CONSULTA *</label>
-            <select [(ngModel)]="duracionTurno" name="duracionTurno">
-              <option value="15">15 minutos (Consultas breves / Control)</option>
-              <option value="20">20 minutos (Estándar clínico)</option>
-              <option value="30">30 minutos (Primera vez / Especializado)</option>
-              <option value="45">45 minutos (Estudios complejos / Diagnóstico)</option>
-            </select>
+        <div class="info-alert-banner">
+          <span class="info-alert-icon">ℹ️</span>
+          <div class="info-alert-text">
+            <strong>Duración estimada por consulta:</strong> Por política y configuración del sistema, los turnos para esta especialidad se programan por defecto con una duración de <strong>30 minutos</strong>.
           </div>
+        </div>
 
-          <div class="form-group">
-            <label>ESTADO EN LA CARTILLA WEB *</label>
-            <select [(ngModel)]="estado" name="estado">
-              <option value="Activa">Activa (Visible para asignación de turnos)</option>
-              <option value="Inactiva">Inactiva (Oculta temporalmente)</option>
-            </select>
-          </div>
+        <div class="form-group" style="margin-top: 1.25rem;">
+          <label>ESTADO EN LA CARTILLA WEB *</label>
+          <select [(ngModel)]="estado" name="estado">
+            <option value="Activa">Activa (Visible para asignación de turnos)</option>
+            <option value="Inactiva">Inactiva (Oculta temporalmente)</option>
+          </select>
         </div>
       </div>
 

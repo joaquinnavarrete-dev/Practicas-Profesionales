@@ -37,7 +37,7 @@ export class DashboardAdminComponent implements OnInit {
       return `¡Bienvenido(a), Dr(a). ${nombreLimpio}! 🩺`;
     }
     if (this.authService.isRecepcionista()) {
-      return `¡Hola, ${nombreLimpio}! 👋 (Mesa de Recepción)`;
+      return `¡Hola, ${nombreLimpio}! 👋`;
     }
     return `¡Hola, ${nombreLimpio}! 👋`;
   });

@@ -86,7 +86,6 @@
         <thead>
           <tr>
             <th>USUARIO / NOMBRE</th>
-            <th>EMAIL DE ACCESO</th>
             <th>ROL ASIGNADO</th>
             <th>ESTADO</th>
             <th class="col-actions">ACCIONES</th>
@@ -94,7 +93,7 @@
         </thead>
         <tbody>
           <tr *ngIf="cargando()">
-            <td colspan="5" style="text-align: center; padding: 2.5rem; color: #64748b;">
+            <td colspan="4" style="text-align: center; padding: 2.5rem; color: #64748b;">
               ⏳ Cargando padrón general de usuarios...
             </td>
           </tr>
@@ -107,10 +106,6 @@
                   <strong class="user-name">{{ u.username }}</strong>
                 </div>
               </div>
-            </td>
-
-            <td>
-              <span class="email-text" [style.color]="u.email === 'No registrado' ? '#94a3b8' : 'inherit'">{{ u.email }}</span>
             </td>
 
             <td>
@@ -151,7 +146,7 @@
           </tr>
 
           <tr *ngIf="!cargando() && usuariosFiltrados().length === 0">
-            <td colspan="5" class="empty-table-row">
+            <td colspan="4" class="empty-table-row">
               <span>🔍 No se encontraron usuarios con los filtros seleccionados.</span>
             </td>
           </tr>

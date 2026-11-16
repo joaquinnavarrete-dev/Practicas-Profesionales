@@ -28,8 +28,7 @@
         <div class="v-row">
           <span>Profesional:</span>
           <strong>Dr(a). {{ turnoConfirmado()?.medico?.nombre || turnoBorrador.medico?.nombre }} {{
-            turnoConfirmado()?.medico?.apellido || turnoBorrador.medico?.apellido }} (M.N. {{
-            turnoConfirmado()?.medico?.matricula || turnoBorrador.medico?.matricula }})</strong>
+            turnoConfirmado()?.medico?.apellido || turnoBorrador.medico?.apellido }}</strong>
         </div>
         <div class="v-row">
           <span>Fecha y Hora:</span>
@@ -45,10 +44,6 @@
         <div class="v-row">
           <span>Cobertura:</span>
           <strong [title]="turnoConfirmado()?.paciente?.obraSocial?.nombre || turnoBorrador.obraSocial">{{ (turnoConfirmado()?.paciente?.obraSocial || turnoBorrador.obraSocial) | cobertura }}</strong>
-        </div>
-        <div class="v-row">
-          <span>Lugar:</span>
-          <strong>Sede Central — Consultorios Externos (Piso 2)</strong>
         </div>
       </div>
 
@@ -178,17 +173,13 @@
             <div class="medico-header">
               <div class="medico-avatar-ph">👨‍⚕️</div>
               <div class="medico-info">
-                <div class="medico-name-rating">
-                  <h4>Dr(a). {{ med.nombre }} {{ med.apellido }}</h4>
-                </div>
+                <h4>Dr(a). {{ med.nombre }} {{ med.apellido }}</h4>
                 <span class="medico-subesp">{{ med.especialidad.nombre }}</span>
-                <span class="medico-mat">Matrícula: {{ med.matricula }}</span>
               </div>
             </div>
 
             <div class="medico-details">
               <p>📞 Tel: {{ med.telefono }}</p>
-              <p>📍 Sede Central — Consultorio Asignado</p>
             </div>
 
             <div class="medico-card-footer">
@@ -394,14 +385,12 @@
                     <h3>Dr(a). {{ turnoBorrador.medico?.nombre }} {{ turnoBorrador.medico?.apellido }}</h3>
                     <span class="badge-verified">Verificado</span>
                   </div>
-                  <p class="med-mat-text">Matrícula Profesional: {{ turnoBorrador.medico?.matricula }}</p>
                   <div class="med-tags-row">
                     <span class="pill-blue-light">💙 {{ turnoBorrador.especialidad?.nombre }}</span>
                     <span class="pill-gray-light">✋ Modalidad Presencial</span>
                   </div>
                 </div>
               </div>
-              <p class="loc-text">📍 <strong>Lugar de atención:</strong> {{ turnoBorrador.sede }}</p>
             </div>
 
             <div class="summary-card date-highlight-card">

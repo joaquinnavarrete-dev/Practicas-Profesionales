@@ -17,6 +17,7 @@ import { MedicosAdminComponent } from './paginas/medicos-admin/medicos-admin';
 import { UsuariosAdminComponent } from './paginas/usuarios-admin/usuarios-admin';
 import { RolesAdminComponent } from './paginas/roles-admin/roles-admin';
 import { RegistrarUsuarioAdminComponent } from './paginas/registrar-usuario-admin/registrar-usuario-admin';
+import { EditarUsuarioAdminComponent } from './paginas/editar-usuario-admin/editar-usuario-admin';
 import { RegistrarMedicoAdminComponent } from './paginas/registrar-medico-admin/registrar-medico-admin';
 import { EditarMedicoAdminComponent } from './paginas/editar-medico-admin/editar-medico-admin';
 import { RegistrarPacientePublicoComponent } from './paginas/registrar-paciente-publico/registrar-paciente-publico';
@@ -74,6 +75,7 @@ export const routes: Routes = [
       { path: 'dias-atencion', component: DiasAtencionComponent },
       { path: 'usuarios/roles/:id', component: RolesAdminComponent },
       { path: 'usuarios/nuevo', component: RegistrarUsuarioAdminComponent },
+      { path: 'usuarios/editar/:id', component: EditarUsuarioAdminComponent },
       { path: 'medicos/nuevo', component: RegistrarMedicoAdminComponent },
       { path: 'medicos/editar/:id', component: EditarMedicoAdminComponent },
       { path: 'obras-sociales/nuevo', component: RegistrarObraSocialAdminComponent },

@@ -15,7 +15,7 @@
     <form class="os-form-card" (ngSubmit)="guardarObraSocial()">
 
       <div class="form-section">
-        <h3 class="section-title">1. Información Institucional y Fiscal</h3>
+        <h3 class="section-title">1. Información Institucional</h3>
 
         <div class="form-grid-2">
           <div class="form-group">
@@ -30,48 +30,12 @@
           </div>
         </div>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label>CUIT DE LA INSTITUCIÓN *</label>
-            <input type="text" [(ngModel)]="obraSocialForm.cuit" name="cuit" placeholder="Ej. 30-71042918-4" required />
-            <small class="input-hint">Necesario para los reportes de facturación de la clínica.</small>
-          </div>
-
-          <div class="form-group">
-            <label>ESTADO INICIAL EN EL SISTEMA *</label>
-            <select [(ngModel)]="obraSocialForm.estado" name="estado">
-              <option value="Activa">Activa (Habilitada para turnos y cobros)</option>
-              <option value="Suspendida">Suspendida temporalmente</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">2. Canales de Contacto y Autorizaciones</h3>
-
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label>TELÉFONO DE AUDITORÍA / MESA DE ENTRADAS</label>
-            <input type="text" [(ngModel)]="obraSocialForm.telefono" name="telefono" placeholder="Ej. 0800-555-2244" />
-          </div>
-
-          <div class="form-group">
-            <label>CORREO ELECTRÓNICO INSTITUCIONAL</label>
-            <input type="email" [(ngModel)]="obraSocialForm.email" name="email" placeholder="auditoria@cobertura.com" />
-          </div>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">3. Planes Médicos Asociados</h3>
-
-        <div class="form-group">
-          <label>PLANES DISPONIBLES (SEPARADOS POR COMA O LÍNEA)</label>
-          <input type="text" [(ngModel)]="obraSocialForm.planesDisponibles" name="planesDisponibles"
-            placeholder="Ej. Plan 210, Plan 310, Plan 400, PMO" />
-          <small class="input-hint">Estos planes aparecerán luego en las opciones cuando un paciente reserve un
-            turno.</small>
+        <div class="form-group" style="margin-top: 1.25rem;">
+          <label>ESTADO INICIAL EN EL SISTEMA *</label>
+          <select [(ngModel)]="obraSocialForm.estado" name="estado">
+            <option value="Activa">Activa (Habilitada para turnos y cobros)</option>
+            <option value="Suspendida">Suspendida temporalmente</option>
+          </select>
         </div>
       </div>
 
