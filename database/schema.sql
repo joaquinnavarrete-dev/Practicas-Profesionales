@@ -5,6 +5,17 @@ CREATE DATABASE IF NOT EXISTS turnos_clinicos_db
 
 USE turnos_clinicos_db;
 
+CREATE TABLE empresa(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(150) NOT NULL,
+    cuit VARCHAR(15) NOT NULL,
+    domicilio VARCHAR(255) NOT NULL,
+    telefono INT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    rubro VARCHAR(50) NOT NULL,
+    CONSTRAINT pk_empresa PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE rol (
     id_rol INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(50) NOT NULL,
