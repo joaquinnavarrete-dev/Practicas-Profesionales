@@ -10,3 +10,4 @@ export * from './notification.service';
 export * from './confirm-modal.service';
 export * from './historia-clinica.service';
 export * from './documentos-pdf.service';
+export * from './empresa.service';
