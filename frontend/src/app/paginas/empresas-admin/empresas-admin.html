@@ -4,7 +4,6 @@
         <button class="btn btn-primary" (click)="abrirCrear()">+ Nueva Empresa</button>
     </div>
 
-    <!-- Formulario de Alta / Modificación -->
     <div class="card mb-4" *ngIf="mostrarFormulario()">
         <div class="card-header">
             <h5>{{ editandoId() ? 'Editar Empresa' : 'Registrar Nueva Empresa' }}</h5>
@@ -49,7 +48,6 @@
         </div>
     </div>
 
-    <!-- Tabla de Listado y Baja -->
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
