@@ -54,7 +54,7 @@ public class SedeServiceImpl implements SedeService {
     @Override
     @Transactional
     public SedeResponseDto crear(SedeRequestDto dto) {
-        if (!sedeRepository.existsByNombre(dto.getNombre())) {
+        if (sedeRepository.existsByNombre(dto.getNombre())) {
             throw new ResourceAlreadyExistsException("Ya existe una sede con el nombre: " + dto.getNombre());
         }
 

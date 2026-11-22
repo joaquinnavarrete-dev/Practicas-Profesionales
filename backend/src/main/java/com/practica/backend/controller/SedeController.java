@@ -27,7 +27,7 @@ public class SedeController {
         return ResponseEntity.ok(sedeService.listarSedes());
     }
 
-    @GetMapping("/nombre/{sede}")
+    @GetMapping("/nombre/{nombre}")
     @Operation(summary = "Buscar sede por nombre")
     public ResponseEntity<SedeResponseDto> buscarPorNombre(@PathVariable String nombre) {
         return ResponseEntity.ok(sedeService.buscarPorNombre(nombre));
