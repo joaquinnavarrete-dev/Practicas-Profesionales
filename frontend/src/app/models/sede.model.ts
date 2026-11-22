@@ -5,7 +5,7 @@ export interface Sede {
     telefono: string;
     email: string;
     horario_atencion: string;
-    activo: boolean;
+    activa: boolean;
 }
 
 export interface SedeRequest {
@@ -14,7 +14,7 @@ export interface SedeRequest {
     telefono: string;
     email: string;
     horario_atencion: string;
-    activo: boolean;
+    activa: boolean;
 }
 
 export interface SedeItem {
