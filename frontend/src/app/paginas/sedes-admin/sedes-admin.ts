@@ -8,9 +8,9 @@ import { Sede, SedeRequest } from '../../models';
 
 @Component({
   imports: [CommonModule, FormsModule],
-  selector: 'app-sede-admin',
-  styleUrl: './sede-admin.css',
-  templateUrl: './sede-admin.html',
+  selector: 'app-sedes-admin',
+  styleUrl: './sedes-admin.css',
+  templateUrl: './sedes-admin.html',
 })
 export class SedesAdminComponent implements OnInit {
 
@@ -30,7 +30,7 @@ export class SedesAdminComponent implements OnInit {
     telefono: '',
     email: '',
     horario_atencion: '',
-    activo: true
+    activa: true
   };
 
   ngOnInit(): void {
@@ -59,7 +59,7 @@ export class SedesAdminComponent implements OnInit {
       telefono: '',
       email: '',
       horario_atencion: '',
-      activo: true
+      activa: true
     };
     this.mostrarFormulario.set(true);
   }
@@ -72,7 +72,7 @@ export class SedesAdminComponent implements OnInit {
       telefono: s.telefono,
       email: s.email,
       horario_atencion: s.horario_atencion,
-      activo: s.activo
+      activa: s.activa
     };
     this.mostrarFormulario.set(true);
   }
