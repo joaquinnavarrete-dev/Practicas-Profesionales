@@ -94,6 +94,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/obras-sociales/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/turnos/disponibles/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/dias-atencion", "/api/dias-atencion/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/proveedores", "/api/proveedores/**").permitAll()
 
                 .requestMatchers("/api/pacientes/mi-perfil", "/api/pacientes/mi-perfil/**").hasRole("PACIENTE")
                 .requestMatchers(
@@ -115,6 +116,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/medicos/**").hasRole("ADMINISTRADOR")
                 .requestMatchers(HttpMethod.PUT, "/api/medicos/**").hasRole("ADMINISTRADOR")
                 .requestMatchers(HttpMethod.DELETE, "/api/medicos/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers(HttpMethod.POST, "/api/proveedores/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers(HttpMethod.PUT, "/api/proveedores/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers(HttpMethod.DELETE, "/api/proveedores/**").hasRole("ADMINISTRADOR")
 
                 .requestMatchers(HttpMethod.POST, "/api/dias-atencion/**").hasAnyRole("ADMINISTRADOR", "MEDICO")
                 .requestMatchers(HttpMethod.PUT, "/api/dias-atencion/**").hasAnyRole("ADMINISTRADOR", "MEDICO")
