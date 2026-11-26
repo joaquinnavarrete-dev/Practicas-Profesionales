@@ -33,6 +33,7 @@ import { DirectorioColegasComponent } from './paginas/directorio-colegas/directo
 import { MisMetricasMedicoComponent } from './paginas/mis-metricas-medico/mis-metricas-medico';
 import { CarteleraMedicosComponent } from './paginas/cartelera-medicos/cartelera-medicos';
 import { ReportesAdminComponent } from './paginas/reportes-admin/reportes-admin';
+import { CampaniaSaludAdminComponent } from './paginas/campania-salud-admin/campania-salud-admin';
 
 export const routes: Routes = [
   {
@@ -81,7 +82,8 @@ export const routes: Routes = [
       { path: 'obras-sociales/nuevo', component: RegistrarObraSocialAdminComponent },
       { path: 'especialidades/nuevo', component: RegistrarEspecialidadAdminComponent },
       { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent },
-      { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent }
+      { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
+      { path: 'campanias', component: CampaniaSaludAdminComponent }
     ]
   },
 
