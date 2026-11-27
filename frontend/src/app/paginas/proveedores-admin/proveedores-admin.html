@@ -1,0 +1,134 @@
+<div class="container py-4">
+    <div class="header-flex">
+        <h2>Gestion de Proveedores</h2>
+        <button class="btn btn-primary" (click)="abrirCrear()">+ Nuevo Proveedor</button>
+    </div>
+
+    <div class="row g-3 mb-4 indicators-group">
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-primary">
+                <h3 class="fw-bold">{{ totalProveedores() }}</h3>
+                <span class="text-muted">Total Proveedores</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-success">
+                <h3 class="fw-bold text-success">{{ proveedoresActivos() }}</h3>
+                <span class="text-muted">Activos</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-danger">
+                <h3 class="fw-bold text-danger">{{ proveedoresInactivos() }}</h3>
+                <span class="text-muted">Inactivos</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-info">
+                <h3 class="fw-bold text-info">{{ totalRubros() }}</h3>
+                <span class="text-muted">Rubros Distintos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-4">
+        <div class="row g-3 align-items-end row-filters">
+            <div class="col-md-5">
+                <label class="form-label">Buscar por Razón Social o CUIT</label>
+                <input type="text" class="form-control" [ngModel]="busquedaTexto()"
+                    (ngModelChange)="busquedaTexto.set($event)" placeholder="Ej: Laboratorio Bagó...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Filtrar por Rubro</label>
+                <select class="form-select" [ngModel]="filtroRubro()" (ngModelChange)="filtroRubro.set($event)">
+                    <option value="Todos">Todos los Rubros</option>
+                    <option value="Farmacéutica">Farmacéutica</option>
+                    <option value="Descartables">Descartables</option>
+                    <option value="Equipamiento Médico">Equipamiento Médico</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                <select class="form-select" [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event)">
+                    <option value="Todos">Todos</option>
+                    <option value="Activo">Activos</option>
+                    <option value="Inactivo">Inactivos</option>
+                </select>
+            </div>
+            <div class="col-md-2 text-end">
+                <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4" *ngIf="mostrarFormulario()">
+        <div class="card-header">
+            <h5>{{ editandoId() ? 'Editar Proveedor' : 'Registrar Nuevo Proveedor' }}</h5>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="guardar()">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Razon Social *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.razonSocial" name="razonSocial"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">CUIT *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.cuit" name="cuit" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Rubro *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.rubro" name="rubro" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Correo Electrónico *</label>
+                        <input type="email" class="form-control" [(ngModel)]="formData.email" name="email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Estado *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.estado" name="estado" required>
+                    </div>
+                </div>
+                <div class="btn-options-form">
+                    <button type="button" class="btn btn-secondary me-2" (click)="cerrarFormulario()">Cancelar</button>
+                    <button type="submit" class="btn btn-success" [disabled]="guardando()">
+                        {{ guardando() ? 'Guardando...' : (editandoId() ? 'Actualizar' : 'Guardar') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Razon Social</th>
+                    <th>CUIT</th>
+                    <th>Rubro</th>
+                    <th>Correo Electronico</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of proveedoresFiltrados()">
+                    <td>{{ p.razonSocial }}</td>
+                    <td>{{ p.cuit }}</td>
+                    <td>{{ p.rubro }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.estado }}</td>
+                    <td class="group-actions">
+                        <button class="btn btn-sm btn-warning me-1" (click)="abrirEditar(p)">Editar</button>
+                        <button class="btn btn-sm btn-danger" (click)="eliminar(p)">Eliminar</button>
+                    </td>
+                </tr>
+                <tr *ngIf="proveedoresFiltrados().length === 0 && !cargando()">
+                    <td colspan="7" class="text-center">No hay proveedores registrados.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

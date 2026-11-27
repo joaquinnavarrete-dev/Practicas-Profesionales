@@ -12,3 +12,8 @@ export * from './calendario.model';
 export * from './ui.model';
 export * from './historia-clinica.model';
 export * from './reporte.model';
+export * from './empresa.model';
+
+export * from './sede.model';
+export * from './campania-salud.model';
+export * from './proveedor.model';

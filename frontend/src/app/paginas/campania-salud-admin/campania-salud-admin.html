@@ -1,0 +1,151 @@
+<div class="container py-4">
+    <div class="header-flex">
+        <h2>Gestion de Campañias</h2>
+        <button class="btn btn-primary" (click)="abrirCrear()">+ Nueva Campaña</button>
+    </div>
+
+    <div class="row g-3 mb-4 indicators-group">
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-primary">
+                <h3 class="fw-bold">{{ totalCampanias() }}</h3>
+                <span class="text-muted">Total Campañias</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-success">
+                <h3 class="fw-bold text-success">{{ campaniasEnCurso() }}</h3>
+                <span class="text-muted">En Curso</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-danger">
+                <h3 class="fw-bold text-danger">{{ campaniasPlanificadas() }}</h3>
+                <span class="text-muted">Planificadas</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="indicator-box p-3 text-center border-info">
+                <h3 class="fw-bold text-info">{{ totalCupos() }}</h3>
+                <span class="text-muted">Total Cupos Ofrecidos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-4">
+        <div class="row g-3 align-items-end row-filters">
+            <div class="col-md-5">
+                <label class="form-label">Buscar por Nombre de Campaña</label>
+                <input type="text" class="form-control" [ngModel]="busquedaTexto()"
+                    (ngModelChange)="busquedaTexto.set($event)" placeholder="Ej: Campaña de Vacunacion...">
+            </div>
+            <!-- <div class="col-md-3">
+                <label class="form-label">Filtrar por Rubro</label>
+                <select class="form-select" [ngModel]="filtroRubro()" (ngModelChange)="filtroRubro.set($event)">
+                    <option value="Todos">Todos los Rubros</option>
+                    <option value="Farmacéutica">Farmacéutica</option>
+                    <option value="Descartables">Descartables</option>
+                    <option value="Equipamiento Médico">Equipamiento Médico</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                </select>
+            </div> -->
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                <select class="form-select" [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event)">
+                    <option value="Todos">Todos</option>
+                    <option value="Planificada">Planificada</option>
+                    <option value="En Curso">En Curso</option>
+                    <option value="Finalizada">Finalizada</option>
+                </select>
+            </div>
+            <div class="col-md-2 text-end">
+                <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4" *ngIf="mostrarFormulario()">
+        <div class="card-header">
+            <h5>{{ editandoId() ? 'Editar Campaña' : 'Registrar Nueva Campaña' }}</h5>
+        </div>
+        <div class="card-body">
+            <form (ngSubmit)="guardar()">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nombre de la Campaña *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.nombre" name="nombre" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Descripcion *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.descripcion" name="descripcion"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Fecha de Inicio de la Campaña *</label>
+                        <input type="date" class="form-control" [(ngModel)]="formData.fechaInicio" name="fechaInicio"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Fecha de Finalizacion *</label>
+                        <input type="date" class="form-control" [(ngModel)]="formData.fechaFin" name="fechaFin"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Publico Objetivo *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.publicoObjetivo"
+                            name="publicoObjetivo" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Cupo Maximo *</label>
+                        <input type="number" class="form-control" [(ngModel)]="formData.cupoMaximo" name="cupoMaximo"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label custom">Estado *</label>
+                        <input type="text" class="form-control" [(ngModel)]="formData.estado" name="estado" required>
+                    </div>
+                </div>
+                <div class="btn-options-form">
+                    <button type="button" class="btn btn-secondary me-2" (click)="cerrarFormulario()">Cancelar</button>
+                    <button type="submit" class="btn btn-success" [disabled]="guardando()">
+                        {{ guardando() ? 'Guardando...' : (editandoId() ? 'Actualizar' : 'Guardar') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha de Fin</th>
+                    <th>Publico Objetivo</th>
+                    <th>Cupo Maximo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of campanias()">
+                    <td>{{ c.nombre }}</td>
+                    <td>{{ c.descripcion }}</td>
+                    <td>{{ c.fechaInicio }}</td>
+                    <td>{{ c.fechaFin }}</td>
+                    <td>{{ c.publicoObjetivo }}</td>
+                    <td>{{ c.cupoMaximo }}</td>
+                    <td>{{ c.estado }}</td>
+                    <td class="group-actions">
+                        <button class="btn btn-sm btn-warning me-1" (click)="abrirEditar(c)">Editar</button>
+                        <button class="btn btn-sm btn-danger" (click)="eliminar(c)">Eliminar</button>
+                    </td>
+                </tr>
+                <tr *ngIf="campanias().length === 0 && !cargando()">
+                    <td colspan="7" class="text-center">No hay campañas registradas.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
