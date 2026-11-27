@@ -87,7 +87,7 @@
           </div>
         </div>
 
-        <div class="kpi-card">
+        <!-- <div class="kpi-card">
           <div class="kpi-top">
             <span class="kpi-label">TURNOS DEL MES EN CURSO</span>
             <div class="kpi-icon-box icon-purple">🗓️</div>
@@ -96,7 +96,7 @@
           <div class="kpi-footer">
             <span class="kpi-subtext">Citas programadas en el mes</span>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="dash-card">
@@ -267,7 +267,7 @@
         </div>
       </div>
     </ng-container>
-
+    <!--INDICADORES-->
     <ng-container *ngIf="authService.isAdmin()">
       <div class="kpi-cards-grid">
         <div class="kpi-card">
@@ -303,7 +303,7 @@
           </div>
         </div>
 
-        <div class="kpi-card">
+        <!-- <div class="kpi-card">
           <div class="kpi-top">
             <span class="kpi-label">TASA GLOBAL DE AUSENTISMO</span>
             <div class="kpi-icon-box icon-amber">📉</div>
@@ -311,6 +311,17 @@
           <strong class="kpi-value">{{ adminTasaAusentismo() }}%</strong>
           <div class="kpi-footer">
             <span class="kpi-subtext">Porcentaje de citas no concretadas</span>
+          </div>
+        </div> -->
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TOTAL TURNO DEL AÑO</span>
+            <div class="kpi-icon-box icon-amber">📉</div>
+          </div>
+          <strong class="kpi-value">{{ adminTurnosAnioActual() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Cantidad de pacientes con turnos en el ultimo año</span>
           </div>
         </div>
       </div>

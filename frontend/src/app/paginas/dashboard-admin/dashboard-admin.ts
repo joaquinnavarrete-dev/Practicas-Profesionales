@@ -71,7 +71,7 @@ export class DashboardAdminComponent implements OnInit {
   readonly demandaEspecialidades = signal<DemandaEspecialidad[]>([]);
   readonly proximosTurnosGlobal = signal<ProximoTurno[]>([]);
 
-  readonly adminTurnosMesActual = signal<number>(0);
+  readonly adminTurnosAnioActual = signal<number>(0);
 
   ngOnInit(): void {
     this.formatearFechaHoy();
@@ -201,11 +201,22 @@ export class DashboardAdminComponent implements OnInit {
 
   private procesarMetricasAdmin(turnos: Turno[], fechaHoyIso: string): void {
     if (turnos.length > 0) {
-      const mesActualPrefix = fechaHoyIso.substring(0, 7);
-      const turnosDelMes = turnos.filter(t =>
-        t.fecha &&
-        t.fecha.startsWith(mesActualPrefix));
-      this.adminTurnosMesActual.set(turnosDelMes.length);
+      const anioActualPrefix = fechaHoyIso.substring(0, 4);
+      const turnosDelPeriodo = turnos.filter(t =>
+        t.fecha && t.fecha.startsWith(anioActualPrefix)
+      );
+
+      const idsPacientesVistos = new Set<number | string>();
+      const turnosPacientesDistintos = turnosDelPeriodo.filter(t => {
+        const idPaciente = t.paciente?.idPaciente || t.paciente?.dni;
+        if (!idPaciente || idsPacientesVistos.has(idPaciente)) {
+          return false;
+        }
+        idsPacientesVistos.add(idPaciente);
+        return true;
+      });
+
+      this.adminTurnosAnioActual.set(turnosPacientesDistintos.length);
       const turnosAusentes = turnos.filter(t => {
         const st = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
         return st === 'Ausente';
