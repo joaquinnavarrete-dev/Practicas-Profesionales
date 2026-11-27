@@ -35,6 +35,7 @@ import { CarteleraMedicosComponent } from './paginas/cartelera-medicos/cartelera
 import { ReportesAdminComponent } from './paginas/reportes-admin/reportes-admin';
 import { EmpresasAdminComponent } from './paginas/empresas-admin/empresas-admin';
 import { SedesAdminComponent } from './paginas/sedes-admin/sedes-admin';
+import { CampaniaSaludAdminComponent } from './paginas/campania-salud-admin/campania-salud-admin';
 
 export const routes: Routes = [
   {
@@ -86,7 +87,9 @@ export const routes: Routes = [
       { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
       { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
       { path: 'empresas', component: EmpresasAdminComponent },
-      { path: 'sedes', component: SedesAdminComponent }
+      { path: 'sedes', component: SedesAdminComponent },
+      { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
+      { path: 'campanias', component: CampaniaSaludAdminComponent }
     ]
   },
 

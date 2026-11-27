@@ -27,6 +27,19 @@ CREATE TABLE empresa(
     CONSTRAINT pk_empresa PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE campania_salud (
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(150) NOT NULL UNIQUE,
+    descripcion VARCHAR(255) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    publico_objetivo VARCHAR(50) NOT NULL,
+    cupo_maximo INT NOT NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'Planificada',
+    CONSTRAINT pk_campania PRIMARY KEY (id),
+    CONSTRAINT uq_campania_nombre UNIQUE (nombre)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE rol (
     id_rol INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(50) NOT NULL,

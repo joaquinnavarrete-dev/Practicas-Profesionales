@@ -15,3 +15,4 @@ export * from './reporte.model';
 export * from './empresa.model';
 
 export * from './sede.model';
+export * from './campania-salud.model';

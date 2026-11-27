@@ -13,3 +13,4 @@ export * from './documentos-pdf.service';
 export * from './empresa.service';
 
 export * from './sede.service';
+export * from './campania-salud.service';
