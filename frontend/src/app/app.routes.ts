@@ -34,6 +34,7 @@ import { MisMetricasMedicoComponent } from './paginas/mis-metricas-medico/mis-me
 import { CarteleraMedicosComponent } from './paginas/cartelera-medicos/cartelera-medicos';
 import { ReportesAdminComponent } from './paginas/reportes-admin/reportes-admin';
 import { EmpresasAdminComponent } from './paginas/empresas-admin/empresas-admin';
+import { SedesAdminComponent } from './paginas/sedes-admin/sedes-admin';
 
 export const routes: Routes = [
   {
@@ -83,7 +84,9 @@ export const routes: Routes = [
       { path: 'especialidades/nuevo', component: RegistrarEspecialidadAdminComponent },
       { path: 'especialidades/editar/:id', component: EditarEspecialidadAdminComponent },
       { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
-      { path: 'empresas', component: EmpresasAdminComponent }
+      { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
+      { path: 'empresas', component: EmpresasAdminComponent },
+      { path: 'sedes', component: SedesAdminComponent }
     ]
   },
 

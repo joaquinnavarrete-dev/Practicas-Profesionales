@@ -13,3 +13,5 @@ export * from './ui.model';
 export * from './historia-clinica.model';
 export * from './reporte.model';
 export * from './empresa.model';
+
+export * from './sede.model';

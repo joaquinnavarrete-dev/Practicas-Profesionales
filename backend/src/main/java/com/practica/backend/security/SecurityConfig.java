@@ -94,7 +94,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/obras-sociales/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/turnos/disponibles/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/dias-atencion", "/api/dias-atencion/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/empresas/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/empresas", "/api/empresas/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/sedes", "/api/sedes/**").permitAll()
 
                 .requestMatchers("/api/pacientes/mi-perfil", "/api/pacientes/mi-perfil/**").hasRole("PACIENTE")
                 .requestMatchers(
@@ -119,6 +120,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/empresas/**").hasRole("ADMINISTRADOR")
                     .requestMatchers(HttpMethod.PUT, "/api/empresas/**").hasRole("ADMINISTRADOR")
                     .requestMatchers(HttpMethod.DELETE, "/api/empresas/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers(HttpMethod.POST, "/api/sedes/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers(HttpMethod.PUT, "/api/sedes/**").hasRole("ADMINISTRADOR")
+                    .requestMatchers(HttpMethod.DELETE, "/api/sedes/**").hasRole("ADMINISTRADOR")
 
                 .requestMatchers(HttpMethod.POST, "/api/dias-atencion/**").hasAnyRole("ADMINISTRADOR", "MEDICO")
                 .requestMatchers(HttpMethod.PUT, "/api/dias-atencion/**").hasAnyRole("ADMINISTRADOR", "MEDICO")
