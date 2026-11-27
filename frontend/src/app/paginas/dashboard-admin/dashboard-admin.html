@@ -86,6 +86,17 @@
             <span class="kpi-subtext">Atención privada/particular en la fecha</span>
           </div>
         </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <span class="kpi-label">TURNOS DEL MES EN CURSO</span>
+            <div class="kpi-icon-box icon-purple">🗓️</div>
+          </div>
+          <strong class="kpi-value">{{ adminTurnosMesActual() }}</strong>
+          <div class="kpi-footer">
+            <span class="kpi-subtext">Citas programadas en el mes</span>
+          </div>
+        </div>
       </div>
 
       <div class="dash-card">
@@ -121,7 +132,8 @@
                 <td><strong class="time-text">🕒 {{ t.hora | horaFormato }}</strong></td>
                 <td><strong class="patient-name">{{ t.paciente }}</strong></td>
                 <td>{{ t.dni }}</td>
-                <td><span class="esp-tag" [title]="t.obraSocialNombreCompleto || t.obraSocial">{{ t.obraSocial | cobertura }}</span></td>
+                <td><span class="esp-tag" [title]="t.obraSocialNombreCompleto || t.obraSocial">{{ t.obraSocial |
+                    cobertura }}</span></td>
                 <td>{{ t.motivo }}</td>
                 <td>
                   <span class="status-badge" [ngClass]="{
@@ -233,7 +245,8 @@
                 <td>{{ t.dni }}</td>
                 <td>{{ t.medico }}</td>
                 <td><span class="esp-tag">{{ t.especialidad }}</span></td>
-                <td><span [title]="t.obraSocialNombreCompleto || t.obraSocial">{{ t.obraSocial | cobertura }}</span></td>
+                <td><span [title]="t.obraSocialNombreCompleto || t.obraSocial">{{ t.obraSocial | cobertura }}</span>
+                </td>
                 <td>
                   <span class="status-badge" [ngClass]="{
                       'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',
@@ -409,7 +422,8 @@
                 <td>{{ t.dni }}</td>
                 <td>{{ t.medico }}</td>
                 <td><span class="esp-tag">{{ t.especialidad }}</span></td>
-                <td><span [title]="t.obraSocialNombreCompleto || t.obraSocial">{{ t.obraSocial | cobertura }}</span></td>
+                <td><span [title]="t.obraSocialNombreCompleto || t.obraSocial">{{ t.obraSocial | cobertura }}</span>
+                </td>
                 <td>
                   <span class="status-badge" [ngClass]="{
                       'st-espera': t.estado === 'En Espera' || t.estado === 'Pendiente de Reubicación',

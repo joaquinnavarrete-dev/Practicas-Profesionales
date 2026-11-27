@@ -71,6 +71,8 @@ export class DashboardAdminComponent implements OnInit {
   readonly demandaEspecialidades = signal<DemandaEspecialidad[]>([]);
   readonly proximosTurnosGlobal = signal<ProximoTurno[]>([]);
 
+  readonly adminTurnosMesActual = signal<number>(0);
+
   ngOnInit(): void {
     this.formatearFechaHoy();
     this.cargarDatosDashboard();
@@ -199,6 +201,11 @@ export class DashboardAdminComponent implements OnInit {
 
   private procesarMetricasAdmin(turnos: Turno[], fechaHoyIso: string): void {
     if (turnos.length > 0) {
+      const mesActualPrefix = fechaHoyIso.substring(0, 7);
+      const turnosDelMes = turnos.filter(t =>
+        t.fecha &&
+        t.fecha.startsWith(mesActualPrefix));
+      this.adminTurnosMesActual.set(turnosDelMes.length);
       const turnosAusentes = turnos.filter(t => {
         const st = this.calcularEstadoTurno(t.fecha, t.hora, t.estado);
         return st === 'Ausente';
