@@ -14,3 +14,4 @@ export * from './empresa.service';
 
 export * from './sede.service';
 export * from './campania-salud.service';
+export * from './proveedor.service';

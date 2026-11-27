@@ -36,6 +36,7 @@ import { ReportesAdminComponent } from './paginas/reportes-admin/reportes-admin'
 import { EmpresasAdminComponent } from './paginas/empresas-admin/empresas-admin';
 import { SedesAdminComponent } from './paginas/sedes-admin/sedes-admin';
 import { CampaniaSaludAdminComponent } from './paginas/campania-salud-admin/campania-salud-admin';
+import { ProveedoresAdminComponent } from './paginas/proveedores-admin/proveedores-admin';
 
 export const routes: Routes = [
   {
@@ -89,7 +90,9 @@ export const routes: Routes = [
       { path: 'empresas', component: EmpresasAdminComponent },
       { path: 'sedes', component: SedesAdminComponent },
       { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
-      { path: 'campanias', component: CampaniaSaludAdminComponent }
+      { path: 'campanias', component: CampaniaSaludAdminComponent },
+      { path: 'especialidades/:id/detalle', component: DetalleEspecialidadAdminComponent },
+      { path: 'proveedores', component: ProveedoresAdminComponent }
     ]
   },
 

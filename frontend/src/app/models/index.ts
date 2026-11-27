@@ -16,3 +16,4 @@ export * from './empresa.model';
 
 export * from './sede.model';
 export * from './campania-salud.model';
+export * from './proveedor.model';
